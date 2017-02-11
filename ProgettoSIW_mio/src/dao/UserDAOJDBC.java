@@ -8,7 +8,6 @@ import java.util.List;
 
 import model.User;
 import persistence.DataSource;
-import persistence.PersistenceException;
 
 public class UserDAOJDBC implements UserDAO {
 
@@ -53,16 +52,17 @@ public class UserDAOJDBC implements UserDAO {
 	}
 
 	@Override
-	public User findByPrimaryKey(String email) {
+	public User findByPrimaryKey(String email, String password) {
 		Connection connection = this.dataSource.getConnection();
 		User user = null;
 		try {
 			PreparedStatement statement;
-			String query = "select * from user where email=?";
+			String query = "select * from user where email=? && password=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setString(1, email);
+			statement.setString(2, password);
 			ResultSet results = statement.executeQuery();
-			if (results.next()) {
+			while (results.next()) {
 				user = new User();
 				user.setId(results.getInt("id"));
 				user.setName(results.getString("name"));
@@ -72,13 +72,22 @@ public class UserDAOJDBC implements UserDAO {
 			}
 
 		} catch (Exception e) {
-			throw new PersistenceException(e.getMessage());
+			return null;
+			// throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-				throw new PersistenceException(e.getMessage());
+				return null;
+				// throw new PersistenceException(e.getMessage());
 			}
+		}
+		try {
+			if(!connection.isClosed())
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return user;
 	}

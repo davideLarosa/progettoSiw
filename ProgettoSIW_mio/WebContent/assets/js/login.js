@@ -116,4 +116,4 @@ function init() {
 	form_signup_button.on('click', getSignupFormData);
 }
 
-$(document).ready(init);
+//$(document).ready(init);

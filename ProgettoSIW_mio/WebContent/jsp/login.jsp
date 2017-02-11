@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page session="true"%>
 <html lang="en">
 <head>
 <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
@@ -10,6 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Login | E-Shopper</title>
 <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="../assets/css/font-awesome.min.css" rel="stylesheet">
@@ -22,7 +24,7 @@
     <script src="../assets/js/html5shiv.js"></script>
     <script src="../assets/js/respond.min.js"></script>
     <![endif]-->
-<link rel="shortcut icon" href="../../favicon.ico">
+<link rel="shortcut icon" href="../favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="144x144"
 	href="../images/ico/apple-touch-icon-144-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="114x114"
@@ -78,13 +80,27 @@
 				<div class="col-sm-8">
 					<div class="shop-menu pull-right">
 						<ul class="nav navbar-nav">
-							<li><a href=""><i class="fa fa-user"></i> Account</a></li>
+							<li><a href=""><i class="fa fa-user"></i> <c:choose>
+										<c:when test="${username == null }">
+											Account
+										</c:when>
+										<c:otherwise>
+											Welcome ${username }
+										</c:otherwise>
+									</c:choose> </a></li>
 							<li><a href="../html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
 							<li><a href="../html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li><a href="login.jsp" class="active"><i
-									class="fa fa-lock"></i> Login</a></li>
+							<li><a href="login.jsp" class="active"> <c:choose>
+										<c:when test="${username == null }">
+											<i class="fa fa-unlock"></i> Login
+										</c:when>
+										<c:otherwise>
+											<i class="fa fa-lock"></i> Logout
+										</c:otherwise>
+									</c:choose>
+							</a></li>
 						</ul>
 					</div>
 				</div>
@@ -146,15 +162,18 @@
 				<div class="login-form">
 					<!--login form-->
 					<h2>Login to your account</h2>
-					<div class="error_message" id="error_message"></div>
-					<form id="login-form" action="#">
-						<input type="email" placeholder="Email Address" required /> <input
-							type="password" placeholder="Password" required /> <span> <input
-							id="keepsigned" type="checkbox" class="checkbox"> Keep me
-							signed in
+					<div class="error_message" id="error_message">
+						<c:if test="${errorMessage!=null }">
+							<c:out value="${errorMessage}"></c:out>
+						</c:if>
+					</div>
+					<form id="login-form" action="../login" method="POST">
+						<input type="email" placeholder="Email Address" name="email"
+							required /> <input type="password" placeholder="Password"
+							name="password" required /> <span> <input id="keepsigned"
+							type="checkbox" class="checkbox"> Keep me signed in
 						</span>
-						<button type="submit" id="form-login-button"
-							class="btn btn-default">Login</button>
+						<button type="submit" id="login" class="btn btn-default">Login</button>
 					</form>
 
 				</div>
@@ -167,18 +186,42 @@
 				<div class="signup-form">
 					<!--sign up form-->
 					<h2>New User Signup!</h2>
-					<form id="signup_form_data" name="signup_form_data" action="#">
-					<input type="text" placeholder="Name" required/>
-					<input type="text" placeholder="Surname" required />
-					 <input type="email" placeholder="Email Address" required/>
-					 <input type="text" placeholder="Phone" required/>
-					 <input type="text" placeholder="Address" required/>
-					  <input type="password" placeholder="Password" required/>
-					  <input type="password" placeholder="Confirm Password" required/>
-					   <span> <input id="seller" type="checkbox" class="checkbox"> I'm a seller!
+					<c:choose>
+						<c:when test="${error_message != null }">
+							<c:out value="${error_message }"></c:out>
+						</c:when>
+						<c:when test="${ok_message != null }">
+							<c:out value="${ok_message }"></c:out>
+						</c:when>
+					</c:choose>
+					<form id="signup_form_data" name="signup_form_data"
+						action="../signup" method="POST">
+						
+						<input type="text" placeholder="Name" name="name" required /> <input
+							type="text" placeholder="Surname" name="surname" required /> <input
+							type="email" placeholder="Email Address" name="email" required />
+						<input type="text" placeholder="Phone" name="phone" required /> <input
+							type="text" placeholder="Address" name="address" required />
+
+						<c:choose>
+							<c:when test="${error_message != null }">
+								<input class="error" type="password" placeholder="Password"
+									name="password" style="border: 2px solid #E77471" required />
+								<input class="error" type="password"
+									placeholder="Confirm Password" name="confirm"
+									style="border: 2px solid #E77471" required />
+							</c:when>
+							<c:when test="${ok_message != null }">
+								<input class="error" type="password" placeholder="Password"
+									name="password" required />
+								<input class="error" type="password"
+									placeholder="Confirm Password" name="confirm" required />
+							</c:when>
+						</c:choose>
+						<span> <input type="checkbox" class="checkbox"
+							name="seller"> I'm a seller!
 						</span>
-						<button type="submit" name="form_signup_button" id="form_signup_button"
-							class="btn btn-default">Signup</button>
+						<button type="submit" id="signup" class="btn btn-default">Signup</button>
 					</form>
 				</div>
 				<!--/sign up form-->
@@ -376,6 +419,6 @@
 	<script src="../assets/js/bootstrap.min.js"></script>
 	<script src="../assets/js/jquery.prettyPhoto.js"></script>
 	<script src="../assets/js/main.js"></script>
-	<script src="../assets/js/login.js"></script>
+	<!-- <script src="../assets/js/login.js"></script> -->
 </body>
 </html>
