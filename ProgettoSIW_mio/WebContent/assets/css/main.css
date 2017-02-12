@@ -1410,8 +1410,13 @@ h2.title {
 	overflow: hidden;
 }
 
-.error_message{
+.error_message {
 	color: red;
+	text-align: center;
+}
+
+.ok_message {
+	color: green;
 	text-align: center;
 }
 

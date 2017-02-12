@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import model.User;
 import persistence.DBManager;
@@ -22,7 +23,7 @@ public class LoginServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// redirect to index
-//		request.setAttribute("name", request.getParameter("nome"));
+		// request.setAttribute("name", request.getParameter("nome"));
 		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
 		dispatcher.forward(request, response);
 		// response.setStatus(HttpServletResponse.SC_OK);
@@ -38,13 +39,17 @@ public class LoginServlet extends HttpServlet {
 
 		if (email != null && password != null) {
 			if (tryLogin != null) {
-//				System.out.println(tryLogin.getName());
-				request.getSession().setAttribute("username", tryLogin.getName());
+				System.out.println("User logging in:" + tryLogin.getName());
+				HttpSession session = request.getSession(true);
+				if (session.getAttribute("username") != tryLogin.getName()) {
+					request.getSession().setAttribute("username", tryLogin.getName());
+				}
+
 				response.sendRedirect("index.jsp");
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else {
-				request.getSession().setAttribute("errorMessage", "Wrong username or password");
-				response.sendRedirect(request.getHeader("referer"));
+				request.getSession().setAttribute("loginMessage", "Wrong username or password");
+				response.sendRedirect("login.jsp");
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
 		}

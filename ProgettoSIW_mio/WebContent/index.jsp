@@ -90,7 +90,7 @@
 									class="fa fa-crosshairs"></i> Checkout</a></li>
 							<li><a href="html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li><a href="jsp/login.jsp" class="active"><i
+							<li><a href="login.jsp" class="active"><i
 									class="fa fa-lock"></i> Login</a></li>
 						</ul>
 					</div>
@@ -124,7 +124,7 @@
 											Details</a></li>
 									<li><a href="html/checkout.html">Checkout</a></li>
 									<li><a href="html/cart.html">Cart</a></li>
-									<li><a href="jsp/login.jsp">Login</a></li>
+									<li><a href="login.jsp">Login</a></li>
 								</ul></li>
 							<li class="dropdown"><a href="#">Blog<i
 									class="fa fa-angle-down"></i></a>

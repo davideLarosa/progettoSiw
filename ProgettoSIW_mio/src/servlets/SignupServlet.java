@@ -20,6 +20,7 @@ public class SignupServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setAttribute("error_message", "messsaggio4");
 		RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
 		dispatcher.forward(request, response);
 	}
@@ -34,19 +35,29 @@ public class SignupServlet extends HttpServlet {
 		registeringUser.setAddress(request.getParameter("address"));
 		registeringUser.setEmail(request.getParameter("email"));
 		registeringUser.setPassword(request.getParameter("password"));
-		String confirm = request.getParameter("confirm");
 		registeringUser.setSeller(Boolean.parseBoolean(request.getParameter("seller")));
 
-		if (confirm.equals(registeringUser.getPassword())) {
-			System.out.println(DBManager.getInstance().getUserDAO().save(registeringUser));
-			request.getSession().setAttribute("ok_message", "Registration successfull");
-			response.sendRedirect(request.getHeader("referer"));
-			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			System.out.println("Signup error");
-			request.getSession().setAttribute("error_message", "Password doesn't matches");
-			response.sendRedirect(request.getHeader("referer"));
-			response.setStatus(HttpServletResponse.SC_OK);
+		
+
+		// TODO togli sessione
+		switch (DBManager.getInstance().getUserDAO().save(registeringUser)) {
+		case 0:
+			request.setAttribute("signupMessage", "Registration successfull");
+			System.out.println("Registration successfull");
+			break;
+
+		case 1:
+			request.setAttribute("signupMessage", "User already exists");
+			System.out.println("User already exists");
+			break;
+
+		default:
+			request.setAttribute("signupMessage", "Some mistery error");
+			System.out.println("Some mistery error");
+			break;
 		}
+
+		this.getServletContext().getRequestDispatcher("/login.jsp").forward(request, response);
+
 	}
 }

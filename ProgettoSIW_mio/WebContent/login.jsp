@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page session="true"%>
 <html lang="en">
 <head>
@@ -13,26 +14,26 @@
 <meta name="author" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Login | E-Shopper</title>
-<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
-<link href="../assets/css/prettyPhoto.css" rel="stylesheet">
-<link href="../assets/css/price-range.css" rel="stylesheet">
-<link href="../assets/css/animate.css" rel="stylesheet">
-<link href="../assets/css/main.css" rel="stylesheet">
-<link href="../assets/css/responsive.css" rel="stylesheet">
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/css/font-awesome.min.css" rel="stylesheet">
+<link href="assets/css/prettyPhoto.css" rel="stylesheet">
+<link href="assets/css/price-range.css" rel="stylesheet">
+<link href="assets/css/animate.css" rel="stylesheet">
+<link href="assets/css/main.css" rel="stylesheet">
+<link href="assets/css/responsive.css" rel="stylesheet">
 <!--[if lt IE 9]>
     <script src="../assets/js/html5shiv.js"></script>
     <script src="../assets/js/respond.min.js"></script>
     <![endif]-->
-<link rel="shortcut icon" href="../favicon.ico">
+<link rel="shortcut icon" href="favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="144x144"
-	href="../images/ico/apple-touch-icon-144-precomposed.png">
+	href="images/ico/apple-touch-icon-144-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="114x114"
-	href="../images/ico/apple-touch-icon-114-precomposed.png">
+	href="images/ico/apple-touch-icon-114-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="72x72"
-	href="../images/ico/apple-touch-icon-72-precomposed.png">
+	href="images/ico/apple-touch-icon-72-precomposed.png">
 <link rel="apple-touch-icon-precomposed"
-	href="../images/ico/apple-touch-icon-57-precomposed.png">
+	href="images/ico/apple-touch-icon-57-precomposed.png">
 </head>
 <!--/head-->
 <body>
@@ -73,8 +74,7 @@
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="logo pull-left">
-						<a href="../index.html"><img src="../images/home/logo.png"
-							alt="" /></a>
+						<a href="index.jsp"><img src="images/home/logo.png" alt="" /></a>
 					</div>
 				</div>
 				<div class="col-sm-8">
@@ -88,19 +88,19 @@
 											Welcome ${username }
 										</c:otherwise>
 									</c:choose> </a></li>
-							<li><a href="../html/checkout.html"><i
+							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
-							<li><a href="../html/cart.html"><i
+							<li><a href="html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li><a href="login.jsp" class="active"> <c:choose>
+							<li> <c:choose>
 										<c:when test="${username == null }">
-											<i class="fa fa-unlock"></i> Login
+											<a href="login.jsp" class="active"><i class="fa fa-unlock"></i> Login</a>
 										</c:when>
 										<c:otherwise>
-											<i class="fa fa-lock"></i> Logout
+											<a href="logout" class="active"><i class="fa fa-lock"></i> Logout</a>
 										</c:otherwise>
 									</c:choose>
-							</a></li>
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -124,7 +124,7 @@
 					</div>
 					<div class="mainmenu pull-left">
 						<ul class="nav navbar-nav collapse navbar-collapse">
-							<li><a href="../index.html">Home</a></li>
+							<li><a href="index.html">Home</a></li>
 							<li class="dropdown"><a href="#">Shop<i
 									class="fa fa-angle-down"></i></a>
 								<ul role="menu" class="sub-menu">
@@ -137,10 +137,10 @@
 							<li class="dropdown"><a href="#">Blog<i
 									class="fa fa-angle-down"></i></a>
 								<ul role="menu" class="sub-menu">
-									<li><a href="../html/blog.html">Blog List</a></li>
-									<li><a href="../html/blog-single.html">Blog Single</a></li>
+									<li><a href="html/blog.html">Blog List</a></li>
+									<li><a href="html/blog-single.html">Blog Single</a></li>
 								</ul></li>
-							<li><a href="../html/contact-us.html">Contact</a></li>
+							<li><a href="html/contact-us.html">Contact</a></li>
 						</ul>
 					</div>
 				</div>
@@ -162,12 +162,19 @@
 				<div class="login-form">
 					<!--login form-->
 					<h2>Login to your account</h2>
-					<div class="error_message" id="error_message">
-						<c:if test="${errorMessage!=null }">
-							<c:out value="${errorMessage}"></c:out>
+					<div class="servletMessage" id="servletMessage">
+						<c:if test="${loginMessage!=null }">
+							<div class="error_message">
+								<c:out value="${loginMessage}"></c:out>
+							</div>
+						</c:if>
+						<c:if test="${loginMessge==null }">
+							<%
+								request.getSession().removeAttribute("loginMessage");
+							%>
 						</c:if>
 					</div>
-					<form id="login-form" action="../login" method="POST">
+					<form id="login-form" action="login" method="POST">
 						<input type="email" placeholder="Email Address" name="email"
 							required /> <input type="password" placeholder="Password"
 							name="password" required /> <span> <input id="keepsigned"
@@ -186,42 +193,42 @@
 				<div class="signup-form">
 					<!--sign up form-->
 					<h2>New User Signup!</h2>
-					<c:choose>
-						<c:when test="${error_message != null }">
-							<c:out value="${error_message }"></c:out>
-						</c:when>
-						<c:when test="${ok_message != null }">
-							<c:out value="${ok_message }"></c:out>
-						</c:when>
-					</c:choose>
-					<form id="signup_form_data" name="signup_form_data"
-						action="../signup" method="POST">
-						
-						<input type="text" placeholder="Name" name="name" required /> <input
-							type="text" placeholder="Surname" name="surname" required /> <input
-							type="email" placeholder="Email Address" name="email" required />
-						<input type="text" placeholder="Phone" name="phone" required /> <input
-							type="text" placeholder="Address" name="address" required />
+					<div class="servlet_message">
+						<p>
+							<c:if test="${signupMessage != null }">
+								<c:set var="signupMessage" value="${signupMessage }"></c:set>
+								<c:if test="${!fn:contains(signupMessage, 'successfull')}">
+									<div class="error_message">
+										<c:out value="${signupMessage }"></c:out>
+									</div>
+								</c:if>
 
-						<c:choose>
-							<c:when test="${error_message != null }">
-								<input class="error" type="password" placeholder="Password"
-									name="password" style="border: 2px solid #E77471" required />
-								<input class="error" type="password"
-									placeholder="Confirm Password" name="confirm"
-									style="border: 2px solid #E77471" required />
-							</c:when>
-							<c:when test="${ok_message != null }">
-								<input class="error" type="password" placeholder="Password"
-									name="password" required />
-								<input class="error" type="password"
-									placeholder="Confirm Password" name="confirm" required />
-							</c:when>
-						</c:choose>
-						<span> <input type="checkbox" class="checkbox"
-							name="seller"> I'm a seller!
+								<c:if test="${fn:contains(signupMessage, 'successfull')}">
+									<div class="ok_message">
+										<c:out value="${signupMessage }"></c:out>
+									</div>
+								</c:if>
+
+							</c:if>
+						</p>
+					</div>
+					<form id="signup_form_data" name="signup_form_data" method="POST"
+						action="signup">
+						<input type="text" placeholder="Name" id="name" name="name"
+							required /> <input type="text" placeholder="Surname"
+							id="surname" name="surname" required /> <input type="email"
+							placeholder="Email Address" id="email" name="email" required />
+						<input type="text" placeholder="Phone" id="phone" name="phone"
+							required /> <input type="text" placeholder="Address"
+							id="address" name="address" required /> <input type="password"
+							placeholder="Password" id="password" name="password"
+							name="password" required /> <input type="password"
+							placeholder="Confirm Password" id="confirm" name="confirm"
+							required /> <span> <input type="checkbox"
+							class="checkbox" name="seller"> I'm a seller!
 						</span>
-						<button type="submit" id="signup" class="btn btn-default">Signup</button>
+						<button type="submit" id="signup_btn" name="signup_btn"
+							class="btn btn-default" disabled>Signup</button>
 					</form>
 				</div>
 				<!--/sign up form-->
@@ -249,7 +256,7 @@
 					<div class="col-sm-3">
 						<div class="video-gallery">
 							<div class="iframe-img">
-								<a href="#"> <img src="../images/home/iframe1.png" alt="" />
+								<a href="#"> <img src="images/home/iframe1.png" alt="" />
 								</a>
 							</div>
 							<div class="overlay-icon">
@@ -266,7 +273,7 @@
 					<div class="col-sm-3">
 						<div class="video-gallery">
 							<div class="iframe-img">
-								<a href="#"> <img src="../images/home/iframe2.png" alt="" />
+								<a href="#"> <img src="images/home/iframe2.png" alt="" />
 								</a>
 							</div>
 							<div class="overlay-icon">
@@ -283,7 +290,7 @@
 					<div class="col-sm-3">
 						<div class="video-gallery">
 							<div class="iframe-img">
-								<a href="#"> <img src="../images/home/iframe3.png" alt="" />
+								<a href="#"> <img src="images/home/iframe3.png" alt="" />
 								</a>
 							</div>
 							<div class="overlay-icon">
@@ -300,7 +307,7 @@
 					<div class="col-sm-3">
 						<div class="video-gallery">
 							<div class="iframe-img">
-								<a href="#"> <img src="../images/home/iframe4.png" alt="" />
+								<a href="#"> <img src="images/home/iframe4.png" alt="" />
 								</a>
 							</div>
 							<div class="overlay-icon">
@@ -316,7 +323,7 @@
 				</div>
 				<div class="col-sm-3">
 					<div class="address">
-						<img src="../images/home/map.png" alt="" />
+						<img src="images/home/map.png" alt="" />
 						<p>Worldwide Company</p>
 					</div>
 				</div>
@@ -413,12 +420,12 @@
 
 
 
-	<script src="../assets/js/jquery.js"></script>
-	<script src="../assets/js/price-range.js"></script>
-	<script src="../assets/js/jquery.scrollUp.min.js"></script>
-	<script src="../assets/js/bootstrap.min.js"></script>
-	<script src="../assets/js/jquery.prettyPhoto.js"></script>
-	<script src="../assets/js/main.js"></script>
-	<!-- <script src="../assets/js/login.js"></script> -->
+	<script src="assets/js/jquery.js"></script>
+	<script src="assets/js/price-range.js"></script>
+	<script src="assets/js/jquery.scrollUp.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.prettyPhoto.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script src="assets/js/login.js"></script>
 </body>
 </html>
