@@ -1,5 +1,7 @@
 package persistence;
 
+import dao.MailingListDAO;
+import dao.MailingListDAOJDBC;
 import dao.UserDAO;
 import dao.UserDAOJDBC;
 
@@ -20,6 +22,11 @@ public class MySQLDAOFactory extends DAOFactory {
 	@Override
 	public UserDAO getUserDAO() {
 		return new UserDAOJDBC(this.dataSource);
+	}
+
+	@Override
+	public MailingListDAO getMailingListDAO() {
+		return new MailingListDAOJDBC(this.dataSource);
 	}
 
 	// @Override

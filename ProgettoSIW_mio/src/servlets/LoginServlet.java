@@ -43,8 +43,8 @@ public class LoginServlet extends HttpServlet {
 				HttpSession session = request.getSession(true);
 				if (session.getAttribute("username") != tryLogin.getName()) {
 					request.getSession().setAttribute("username", tryLogin.getName());
+					request.getSession().setAttribute("email", tryLogin.getEmail());
 				}
-
 				response.sendRedirect("index.jsp");
 				response.setStatus(HttpServletResponse.SC_OK);
 			} else {

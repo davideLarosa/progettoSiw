@@ -1,5 +1,6 @@
 package persistence;
 
+import dao.MailingListDAO;
 import dao.UserDAO;
 
 public abstract class DAOFactory {
@@ -38,6 +39,8 @@ public abstract class DAOFactory {
 	}
 	
 	public abstract UserDAO getUserDAO();
+	
+	public abstract MailingListDAO getMailingListDAO();
 	
 //	public abstract MessaggioDAO getMessaggioDAO();
 //	

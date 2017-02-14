@@ -6,14 +6,12 @@
 <%@ page session="true"%>
 <html lang="en">
 <head>
-<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Login | E-Shopper</title>
+<title>Account | E-Shopper</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/prettyPhoto.css" rel="stylesheet">
@@ -22,8 +20,8 @@
 <link href="assets/css/main.css" rel="stylesheet">
 <link href="assets/css/responsive.css" rel="stylesheet">
 <!--[if lt IE 9]>
-    <script src="../assets/js/html5shiv.js"></script>
-    <script src="../assets/js/respond.min.js"></script>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
     <![endif]-->
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="144x144"
@@ -36,6 +34,7 @@
 	href="images/ico/apple-touch-icon-57-precomposed.png">
 </head>
 <!--/head-->
+
 <body>
 	<header id="header"> <!--header-->
 	<div class="header_top">
@@ -81,26 +80,28 @@
 					<div class="shop-menu pull-right">
 						<ul class="nav navbar-nav">
 							<li><c:choose>
-										<c:when test="${username == null }">
-											<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
-										</c:when>
-										<c:otherwise>
-											<a href="modify"><i class="fa fa-user"></i> Welcome ${username } </a>
-										</c:otherwise>
-									</c:choose></li>
+									<c:when test="${username == null }">
+										<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
+									</c:when>
+									<c:otherwise>
+										<a href="modify"><i class="fa fa-user"></i> Welcome
+											${username } </a>
+									</c:otherwise>
+								</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
 							<li><a href="html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li> <c:choose>
-										<c:when test="${username == null }">
-											<a href="login.jsp" class="active"><i class="fa fa-unlock"></i> Login</a>
-										</c:when>
-										<c:otherwise>
-											<a href="logout" class="active"><i class="fa fa-lock"></i> Logout</a>
-										</c:otherwise>
-									</c:choose>
-							</li>
+							<li><c:choose>
+									<c:when test="${username == null }">
+										<a href="login.jsp" class="active"><i class="fa fa-unlock"></i>
+											Login</a>
+									</c:when>
+									<c:otherwise>
+										<a href="logout" class="active"><i class="fa fa-lock"></i>
+											Logout</a>
+									</c:otherwise>
+								</c:choose></li>
 						</ul>
 					</div>
 				</div>
@@ -155,88 +156,68 @@
 	<!--/header-bottom--> </header>
 	<!--/header-->
 
-	<section id="login-form"> <!--form-->
+	<section>
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-4 col-sm-offset-1">
-				<div class="login-form">
-					<!--login form-->
-					<h2>Login to your account</h2>
-					<div class="servletMessage" id="servletMessage">
-						<c:if test="${loginMessage!=null }">
+			<div class="col-sm-3">
+				<div class="left-sidebar">
+					<h2>MY ACCOUNT</h2>
+					<div class="panel-group category-products" id="accordian">
+						<!--category-productsr-->
+
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="#">General</a>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="notification.jsp">Notifications</a>
+								</h4>
+							</div>
+						</div>
+					</div>
+					<!--/category-products-->
+				</div>
+			</div>
+
+			<div class="col-sm-9 padding-right">
+				<div class="features_items">
+					<!--features_items-->
+					<h2 class="title-details text-center">Details</h2>
+					<div class="text-center">
+						<c:if test="${email == null }">
 							<div class="error_message">
-								<c:out value="${loginMessage}"></c:out>
+								<p>
+									You must <a href="login.jsp">login</a> first
+								</p>
 							</div>
 						</c:if>
-						<c:if test="${loginMessge==null }">
-							<%
-								request.getSession().removeAttribute("loginMessage");
-							%>
+						<c:if test="${update == null && email != null}">
+							<p>From here you can modify your account informations</p>
+						</c:if>
+						<c:if test="${update == 'ok'}">
+							<div class="ok_message">
+								<p>Data update done correctly!!!</p>
+							</div>
 						</c:if>
 					</div>
-					<form id="login-form" action="login" method="POST">
-						<input type="email" placeholder="Email Address" name="email"
-							required /> <input type="password" placeholder="Password"
-							name="password" required /> <span> <input id="keepsigned"
-							type="checkbox" class="checkbox"> Keep me signed in
-						</span>
-						<button type="submit" id="login" class="btn btn-default">Login</button>
-					</form>
+					<div class="col-sm-4 col-sm-offset-1 signup-form">
+						<form id="modify_form_data" method="POST" action="subscribeMailingList">
+							<span><input type="checkbox"> I want receive email notifications.</span>
+						</form>
 
-				</div>
-				<!--/login form-->
-			</div>
-			<div class="col-sm-1">
-				<h2 class="or">OR</h2>
-			</div>
-			<div class="col-sm-4">
-				<div class="signup-form">
-					<!--sign up form-->
-					<h2>New User Signup!</h2>
-					<div class="servlet_message">
-						<p>
-							<c:if test="${signupMessage != null }">
-								<c:set var="signupMessage" value="${signupMessage }"></c:set>
-								<c:if test="${!fn:contains(signupMessage, 'successfull')}">
-									<div class="error_message">
-										<c:out value="${signupMessage }"></c:out>
-									</div>
-								</c:if>
-
-								<c:if test="${fn:contains(signupMessage, 'successfull')}">
-									<div class="ok_message">
-										<c:out value="${signupMessage }"></c:out>
-									</div>
-								</c:if>
-
-							</c:if>
-						</p>
 					</div>
-					<form id="signup_form_data" name="signup_form_data" method="POST"
-						action="signup">
-						<input type="text" placeholder="Name" id="name" name="name"
-							required /> <input type="text" placeholder="Surname"
-							id="surname" name="surname" required /> <input type="email"
-							placeholder="Email Address" id="email" name="email" required />
-						<input type="text" placeholder="Phone" id="phone" name="phone"
-							required /> <input type="text" placeholder="Address"
-							id="address" name="address" required /> <input type="password"
-							placeholder="Password" id="password" name="password"
-							name="password" required /> <input type="password"
-							placeholder="Confirm Password" id="confirm" name="confirm"
-							required /> <span> <input type="checkbox"
-							class="checkbox" name="seller"> I'm a seller!
-						</span>
-						<button type="submit" id="signup_btn" name="signup_btn"
-							class="btn btn-default" disabled>Signup</button>
-					</form>
+
 				</div>
-				<!--/sign up form-->
+				<!--features_items-->
 			</div>
 		</div>
 	</div>
 	</section>
-	<!--/form-->
 
 
 	<footer id="footer"> <!--Footer-->
@@ -419,13 +400,12 @@
 	<!--/Footer-->
 
 
-
 	<script src="assets/js/jquery.js"></script>
-	<script src="assets/js/price-range.js"></script>
-	<script src="assets/js/jquery.scrollUp.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.scrollUp.min.js"></script>
+	<script src="assets/js/price-range.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-	<script src="assets/js/login.js"></script>
+	<script src="assets/js/account.js"></script>
 </body>
 </html>

@@ -72,26 +72,33 @@
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="logo pull-left">
-						<a href="index.html"><img src="images/home/logo.png" alt="" /></a>
+						<a href="index.jsp"><img src="images/home/logo.png" alt="" /></a>
 					</div>
 				</div>
 				<div class="col-sm-8">
 					<div class="shop-menu pull-right">
 						<ul class="nav navbar-nav">
-							<li><a href=""><i class="fa fa-user"></i> <c:choose>
+							<li><c:choose>
 										<c:when test="${username == null }">
-											Account
+											<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
 										</c:when>
 										<c:otherwise>
-											Welcome ${username }
+											<a href="modify"><i class="fa fa-user"></i> Welcome ${username } </a>
 										</c:otherwise>
-									</c:choose> </a></li>
+									</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
 							<li><a href="html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li><a href="login.jsp" class="active"><i
-									class="fa fa-lock"></i> Login</a></li>
+							<li> <c:choose>
+										<c:when test="${username == null }">
+											<a href="login.jsp" class="active"><i class="fa fa-unlock"></i> Login</a>
+										</c:when>
+										<c:otherwise>
+											<a href="logout" class="active"><i class="fa fa-lock"></i> Logout</a>
+										</c:otherwise>
+									</c:choose>
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -115,16 +122,15 @@
 					</div>
 					<div class="mainmenu pull-left">
 						<ul class="nav navbar-nav collapse navbar-collapse">
-							<li><a href="index.html" class="active">Home</a></li>
+							<li><a href="index.jsp">Home</a></li>
 							<li class="dropdown"><a href="#">Shop<i
 									class="fa fa-angle-down"></i></a>
 								<ul role="menu" class="sub-menu">
-									<li><a href="html/shop.html">Products</a></li>
-									<li><a href="html/product-details.html">Product
-											Details</a></li>
-									<li><a href="html/checkout.html">Checkout</a></li>
-									<li><a href="html/cart.html">Cart</a></li>
-									<li><a href="login.jsp">Login</a></li>
+									<li><a href="shop.html">Products</a></li>
+									<li><a href="product-details.html">Product Details</a></li>
+									<li><a href="checkout.html">Checkout</a></li>
+									<li><a href="cart.html">Cart</a></li>
+									<li><a href="login.html" class="active">Login</a></li>
 								</ul></li>
 							<li class="dropdown"><a href="#">Blog<i
 									class="fa fa-angle-down"></i></a>
@@ -132,12 +138,13 @@
 									<li><a href="html/blog.html">Blog List</a></li>
 									<li><a href="html/blog-single.html">Blog Single</a></li>
 								</ul></li>
+							<li><a href="html/contact-us.html">Contact</a></li>
 						</ul>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="search_box pull-right">
-						<input type="text" placeholder="Search" />//TODO
+						<input type="text" placeholder="Search" />
 					</div>
 				</div>
 			</div>
@@ -145,6 +152,7 @@
 	</div>
 	<!--/header-bottom--> </header>
 	<!--/header-->
+
 
 	<section id="slider"> <!--slider-->
 	<div class="container">

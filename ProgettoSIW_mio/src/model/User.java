@@ -11,6 +11,7 @@ public class User {
 	private String address;
 	private String email;
 	private String password;
+	private String confirm;
 	private boolean keepSigned;
 	private boolean seller;
 
@@ -31,7 +32,7 @@ public class User {
 		this.keepSigned = keepSigned;
 		this.seller = seller;
 	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -106,5 +107,13 @@ public class User {
 
 	public void setSeller(boolean seller) {
 		this.seller = seller;
+	}
+
+	public String getConfirm() {
+		return confirm;
+	}
+
+	public void setConfirm(String confirm) {
+		this.confirm = confirm;
 	}
 }

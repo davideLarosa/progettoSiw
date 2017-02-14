@@ -1,8 +1,6 @@
 package persistence;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import dao.MailingListDAO;
 import dao.UserDAO;
 
 public class DBManager {
@@ -13,10 +11,10 @@ public class DBManager {
 	// Port number: 3306
 	private static DBManager instance = null;
 	private UserDAO userDAO;
-//	ContattoDAO contattoDao;
-//	MessaggioDAO messaggioDao;
-//	TelefonoDAO telefonoDao;
-
+	private MailingListDAO mailingListDAO;
+	// ContattoDAO contattoDao;
+	// MessaggioDAO messaggioDao;
+	// TelefonoDAO telefonoDao;
 
 	public static DBManager getInstance() {
 		if (instance == null) {
@@ -33,28 +31,33 @@ public class DBManager {
 		DAOFactory daoFactory = new MySQLDAOFactory("10.0.0.2", "progetto_siw", "3306", "root", "root");
 
 		this.userDAO = daoFactory.getUserDAO();
+		this.mailingListDAO = daoFactory.getMailingListDAO();
 
 		// contattoDao = daoFactory.getContattoDAO();
 		// messaggioDao = daoFactory.getMessaggioDAO();
 		// telefonoDao = daoFactory.getTelefonoDAO();
 
 	}
-	
-	public UserDAO getUserDAO(){
+
+	public UserDAO getUserDAO() {
 		return this.userDAO;
 	}
 
-//	public ContattoDAO getContattoDao() {
-//		return contattoDao;
-//	}
-//
-//	public TelefonoDAO getTelefonoDao() {
-//		return telefonoDao;
-//	}
-//
-//	public MessaggioDAO getMessaggioDao() {
-//		return messaggioDao;
-//	}
+	public MailingListDAO getMailingListDAO() {
+		return this.mailingListDAO;
+	}
+
+	// public ContattoDAO getContattoDao() {
+	// return contattoDao;
+	// }
+	//
+	// public TelefonoDAO getTelefonoDao() {
+	// return telefonoDao;
+	// }
+	//
+	// public MessaggioDAO getMessaggioDao() {
+	// return messaggioDao;
+	// }
 
 	// public List<Contatto> contatti = new ArrayList<Contatto>();
 	// public List<Telefono> telefoni = new ArrayList<Telefono>();
