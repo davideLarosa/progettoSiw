@@ -20,6 +20,7 @@ public class ModifyUser extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String email = (String) request.getSession().getAttribute("email");
+		// TODO elimina syso
 		System.out.println("modifica " + email);
 		if (email == null) {
 			response.sendRedirect("login.jsp");
@@ -37,7 +38,6 @@ public class ModifyUser extends HttpServlet {
 		if (request.getParameterNames().hasMoreElements()) {
 			String jsonString = request.getParameter("toModify");
 			if (jsonString != null) {
-				System.out.println("jsonString " + jsonString);
 				ObjectMapper mapper = new ObjectMapper();
 				User toModify = (User) mapper.readValue(jsonString, User.class);
 				update(toModify);
@@ -48,8 +48,9 @@ public class ModifyUser extends HttpServlet {
 				addNewAttributes(toModify, request.getSession());
 
 				mapper.writeValue(response.getOutputStream(), toModify);
-				
-//				response.sendRedirect("login.jsp");
+
+				// TODO controlla commento
+				// response.sendRedirect("login.jsp");
 			}
 		} else {
 			request.getSession().removeAttribute("update");

@@ -8,6 +8,7 @@ import java.util.List;
 
 import model.Email;
 import persistence.DataSource;
+import persistence.PersistenceException;
 
 public class MailingListDAOJDBC implements MailingListDAO {
 
@@ -61,14 +62,14 @@ public class MailingListDAOJDBC implements MailingListDAO {
 			}
 
 		} catch (Exception e) {
-			return null;
-			// throw new PersistenceException(e.getMessage());
+//			return null;
+			 throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-				return null;
-				// throw new PersistenceException(e.getMessage());
+//				return null;
+				 throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -89,7 +90,23 @@ public class MailingListDAOJDBC implements MailingListDAO {
 
 	@Override
 	public void delete(Email email) {
-		// TODO Auto-generated method stub
+		Connection connection = this.dataSource.getConnection();
+		try {
+			String delete = "delete FROM mailingList WHERE email = ? ";
+			PreparedStatement statement = connection.prepareStatement(delete);
+			statement.setString(1, email.getAddress());
+			connection.setAutoCommit(false);
+			statement.executeUpdate();
+			connection.commit();
+		} catch (SQLException e) {
+			 throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				 throw new PersistenceException(e.getMessage());
+			}
+		}
 
 	}
 

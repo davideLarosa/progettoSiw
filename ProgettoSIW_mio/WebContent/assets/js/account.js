@@ -54,27 +54,60 @@ function sendData() {
 		confirm : user.confirm,
 	}
 	$.ajax({
-		type: "POST",
-		url: "modify",
-		datatype: "json",
-		data: {
-			toModify: JSON.stringify(jsonUser),
+		type : "POST",
+		url : "modify",
+		datatype : "json",
+		data : {
+			toModify : JSON.stringify(jsonUser),
 		},
-		success: function(data){
+		success : function(data) {
 			location.reload();
 		},
-		error: function(data){
-			alert("Sorry some error occured please retry later");	
+		error : function(data) {
+			alert("Sorry some error occured please retry later");
 		}
 	});
 }
 
+function sendMailing() {
+	var checkbox;
+	if($("#receiveNotifications:checked").length == 0){
+		checkbox = true;
+	}else{
+		checkbox = false;
+	}
+
+	alert(checkbox);
+
+	$.ajax({
+		method : "POST",
+		url : "mailingList",
+		datatype : "json",
+
+		data : {
+			check : JSON.stringify(checkbox),
+		},
+		success : function(data) {
+			alert(data);
+		}
+	});
+
+}
+
 function init() {
-	$("#modify_form_data").submit(function(event){
+	$("#modify_form_data").submit(function(event) {
 		event.preventDefault();
 	});
 	$("#save_btn").on("click", function() {
 		sendData();
+	});
+
+	$("#notification").submit(function(event){
+		event.preventDefault();
+	});
+	
+	$("#save_btn_mailing").on("click", function() {
+		sendMailing();
 	});
 }
 

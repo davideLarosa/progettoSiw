@@ -54,6 +54,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>MailingList</servlet-name>
-    <url-pattern>/subscribeMailingList</url-pattern>
+    <url-pattern>/mailingList</url-pattern>
   </servlet-mapping>
 </web-app>

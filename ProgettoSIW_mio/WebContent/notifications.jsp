@@ -168,14 +168,21 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="#">General</a>
+									<a href="account.jsp">General</a>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="notification.jsp">Notifications</a>
+									<a href="mailingList">Notifications</a>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="sell">Sell</a>
 								</h4>
 							</div>
 						</div>
@@ -192,7 +199,8 @@
 						<c:if test="${email == null }">
 							<div class="error_message">
 								<p>
-									You must <a href="login.jsp">login</a> first
+									You must <a id="error_a" class="error_a" href="login.jsp">login</a>
+									first
 								</p>
 							</div>
 						</c:if>
@@ -206,8 +214,14 @@
 						</c:if>
 					</div>
 					<div class="col-sm-4 col-sm-offset-1 signup-form">
-						<form id="modify_form_data" method="POST" action="subscribeMailingList">
-							<span><input type="checkbox"> I want receive email notifications.</span>
+						<form id="notification" method="POST" action="#">
+							<span> <c:if test="${subscribed == 'no' }">
+									<input type="checkbox" />
+								</c:if> <c:if test="${subscribed == 'yes' }">
+									<input class="receiveNotifications" type="checkbox" checked />
+								</c:if> I want receive email notifications.
+								<button class="btn btn-default" id="save_btn_mailing"
+									name="save_btn_mailing">Save</button></span>
 						</form>
 
 					</div>

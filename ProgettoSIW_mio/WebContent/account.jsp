@@ -166,14 +166,21 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="#">General</a>
+									<a href="account.jsp">General</a>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="notifications.jsp">Notifications</a>
+									<a href="mailingList">Notifications</a>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="sell">Sell</a>
 								</h4>
 							</div>
 						</div>
