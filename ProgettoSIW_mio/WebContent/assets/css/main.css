@@ -334,12 +334,16 @@ opacity
 
 
 
+
+
 :
 
 
 
 
+
  
+
 
 
 
@@ -354,7 +358,10 @@ opacity
 
 
 
+
+
 :
+
 
 
 
@@ -364,7 +371,10 @@ opacity
 
 
 
+
 translateY
+
+
 
 
 
@@ -383,7 +393,10 @@ transform
 
 
 
+
+
 :
+
 
 
 
@@ -393,7 +406,10 @@ transform
 
 
 
+
 translateY
+
+
 
 
 
@@ -2593,3 +2609,72 @@ i#bid.fa.fa-gavel, i#buy_now.fa.fa-money {
 	color: #696763;
 	padding-right: 3px;
 }
+
+select#time, select#category {
+	height: 35px;
+	margin-bottom: 10px;
+	padding: 1px;
+	padding-left: 10px;
+color: #696763;
+}
+
+.select-styled {
+  position: absolute; 
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #696763;
+  padding: 8px 15px;
+  @include transition(all 0.2s ease-in);
+  &:after {
+    content:"";
+    width: 0;
+    height: 0;
+    border: 7px solid transparent;
+    border-color: #696763 transparent transparent transparent;
+    position: absolute;
+    top: 16px;
+    right: 10px;
+  }
+  &:hover {
+    background-color: darken(#696763, 2);
+  }
+  &:active, &.active {
+    background-color: darken(#696763, 5);
+    &:after {
+      top: 9px;
+      border-color: transparent transparent $select-color transparent;
+    }
+  }
+}
+
+.select-options {
+  display: none; 
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 999;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: darken(#696763, 5);
+  li {
+    margin: 0;
+    padding: 12px 0;
+    text-indent: 15px;
+    border-top: 1px solid darken(#696763, 10);
+    @include transition(all 0.15s ease-in);
+    &:hover {
+      color: #696763;
+      background: #696763;
+    }
+    &[rel="hide"] {
+      display: none;
+    }
+  }
+}
+  
+  
+

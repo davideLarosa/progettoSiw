@@ -224,13 +224,20 @@
 							<i class="fa fa-eur"></i> Current best bid
 							<input type="text" name="best_bid" id="best_bid" value="${best_bid }" placeholder="${best_bid }" disabled/>
 
-							//TODO prendi dalla servlet le categorie 
+							 
 							<i class="fa fa-bars"></i> Category 
-							<input type="category" name="category" id="category" value="${category }" placeholder="${category }" />
+							<select name="category" id="category">
+							
+							<option>//TODO prendi dalla servlet le categorie</option>
+							
+							</select>
 
-							//TODO selettore per i mesi
 							<i class="fa fa-calendar-check-o"></i> Expiration time (1/2/3 Months) 
-							<input type="text" name="time" id="time" value="${time }" placeholder="${time }" />
+							<select name="time" id="time" >
+							<option>1 Month</option>
+							<option>2 Months</option>
+							<option>3 Months</option>
+							</select>
 
 							<div class="checkout-options">
 <span>
