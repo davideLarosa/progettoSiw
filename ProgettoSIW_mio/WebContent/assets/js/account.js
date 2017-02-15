@@ -71,13 +71,11 @@ function sendData() {
 
 function sendMailing() {
 	var checkbox;
-	if($("#receiveNotifications:checked").length == 0){
+	if ($("#receiveNotifications:checked").length == 0) {
 		checkbox = true;
-	}else{
+	} else {
 		checkbox = false;
 	}
-
-	alert(checkbox);
 
 	$.ajax({
 		method : "POST",
@@ -88,10 +86,9 @@ function sendMailing() {
 			check : JSON.stringify(checkbox),
 		},
 		success : function(data) {
-			alert(data);
+			alert("Done!");
 		}
 	});
-
 }
 
 function init() {
@@ -102,10 +99,10 @@ function init() {
 		sendData();
 	});
 
-	$("#notification").submit(function(event){
+	$("#notification").submit(function(event) {
 		event.preventDefault();
 	});
-	
+
 	$("#save_btn_mailing").on("click", function() {
 		sendMailing();
 	});

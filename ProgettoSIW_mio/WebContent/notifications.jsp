@@ -168,14 +168,14 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="account.jsp">General</a>
+									<a href="modify">Info</a>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="mailingList">Notifications</a>
+									<i class="fa fa-angle-right"></i> <a href="mailingList">Notifications</a>
 								</h4>
 							</div>
 						</div>
@@ -194,7 +194,7 @@
 			<div class="col-sm-9 padding-right">
 				<div class="features_items">
 					<!--features_items-->
-					<h2 class="title-details text-center">Details</h2>
+					<h2 class="title text-center">Notification</h2>
 					<div class="text-center">
 						<c:if test="${email == null }">
 							<div class="error_message">

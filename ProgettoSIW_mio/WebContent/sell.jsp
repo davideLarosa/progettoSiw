@@ -11,7 +11,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Account | E-Shopper</title>
+<title>Sell | E-Shopper</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/prettyPhoto.css" rel="stylesheet">
@@ -168,8 +168,7 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span> <i class="fa fa-angle-right"></i> <a
-										href="modify">Info</a></span>
+									<a href="modify">Info</a>
 								</h4>
 							</div>
 						</div>
@@ -183,7 +182,8 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="sell">Sell</a>
+									<span> <i class="fa fa-angle-right"></i> <a href="sell">Sell</a>
+									</span>
 								</h4>
 							</div>
 						</div>
@@ -195,7 +195,7 @@
 			<div class="col-sm-9 padding-right">
 				<div class="features_items">
 					<!--features_items-->
-					<h2 class="title-details text-center">Info</h2>
+					<h2 class="title-details text-center">Sell</h2>
 					<div class="text-center">
 						<c:if test="${email == null }">
 							<div class="error_message">
@@ -206,7 +206,8 @@
 							</div>
 						</c:if>
 						<c:if test="${update == null && email != null}">
-							<p>From here you can modify your account informations</p>
+							<p>Seller page</p>
+							<p>From here you can sell your products</p>
 						</c:if>
 						<c:if test="${update == 'ok'}">
 							<div class="ok_message">
@@ -216,23 +217,41 @@
 					</div>
 					<div class="col-sm-4 col-sm-offset-1 signup-form">
 						<form id="modify_form_data">
-							<i class="fa fa-user"></i> Name <input type="text" name="name"
-								id="name" value="${name }" placeholder="${name }" /> <i
-								class="fa fa-user"></i> Surname <input type="text"
-								name="surname" id="surname" value="${surname }"
-								placeholder="${surname }" /> <i class="fa fa-envelope-o"></i>
-							Email** <input type="email" name="email" id="email"
-								value="${email }" placeholder="${email }" disabled /> <i
-								class="fa fa-phone"></i>/<i class="fa fa-mobile"></i> Phone <input
-								type="tel" name="phone" id="phone" value="${phone }"
-								placeholder="${phone }" /> <i class="fa fa-map-marker"></i>
-							Address <input type="text" name="address" id="address"
-								value="${address }" placeholder="${address }" /> <i
-								class="fa fa-key"></i> Password* <input type="password"
-								name="password" id="password" placeholder="New password" /> <i
-								class="fa fa-key"></i> Password* <input type="password"
-								name="confirm" id="confirm" placeholder="Confirm" /> <span><button
-									class="btn btn-default" id="save_btn" name="save_btn" disabled>Save</button></span>
+							<i class="fa fa-eye"></i> Product Name
+							 <input type="text" name="product_name"	id="product_name" value="${product_name }" placeholder="${product_name }" />
+							<i class="fa fa-eur"></i> Minimum buy price 
+							<input type="text" name="minimim_buy_price" id="minimim_buy_price" value="${minimim_buy_price }" placeholder="${minimim_buy_price }" />
+							<i class="fa fa-eur"></i> Current best bid
+							<input type="text" name="best_bid" id="best_bid" value="${best_bid }" placeholder="${best_bid }" disabled/>
+
+							//TODO prendi dalla servlet le categorie 
+							<i class="fa fa-bars"></i> Category 
+							<input type="category" name="category" id="category" value="${category }" placeholder="${category }" />
+
+							//TODO selettore per i mesi
+							<i class="fa fa-calendar-check-o"></i> Expiration time (1/2/3 Months) 
+							<input type="text" name="time" id="time" value="${time }" placeholder="${time }" />
+
+							<div class="checkout-options">
+<span>
+							<ul class="nav">
+							<li>
+							<label>
+							<input type="checkbox" name="bid" id="bid"><i class="fa fa-gavel" id="bid"></i>Bid
+							</label>
+							</li>
+							<li>
+							<label>
+							<input type="checkbox" name="buy_now" id="buy_now"><i class="fa fa-money" id="buy_now"></i>Buy now
+							</label>
+							</li>
+							</ul>
+		</span>						
+							</div>
+
+							<span>
+								<button class="btn btn-default" id="save_btn" name="save_btn" disabled>Save</button>
+							</span>
 						</form>
 						<div class="description">
 							<p>* You must complete these field to confirm your changes</p>
@@ -241,11 +260,11 @@
 							<p>** You cannot modify your email</p>
 						</div>
 					</div>
-
 				</div>
-				<!--features_items-->
 			</div>
+			<!--features_items-->
 		</div>
+	</div>
 	</div>
 	</section>
 

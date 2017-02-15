@@ -10,7 +10,6 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
@@ -55,5 +54,15 @@
   <servlet-mapping>
     <servlet-name>MailingList</servlet-name>
     <url-pattern>/mailingList</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Sell</display-name>
+    <servlet-name>Sell</servlet-name>
+    <servlet-class>servlets.Sell</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Sell</servlet-name>
+    <url-pattern>/sell</url-pattern>
   </servlet-mapping>
 </web-app>

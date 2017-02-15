@@ -332,11 +332,15 @@ opacity
 
 
 
+
+
 :
 
 
 
+
  
+
 
 
 
@@ -348,7 +352,10 @@ opacity
 
 
 
+
+
 :
+
 
 
 
@@ -356,7 +363,10 @@ opacity
 
 
 
+
 translateY
+
+
 
 
 
@@ -371,7 +381,10 @@ transform
 
 
 
+
+
 :
+
 
 
 
@@ -379,7 +392,10 @@ transform
 
 
 
+
 translateY
+
+
 
 
 
@@ -2562,4 +2578,18 @@ a#error_a.error_a {
 	color: inherit;
 	text-align: inherit;
 	text-decoration: underline;
+}
+
+/*************************
+******* Sell CSS ********
+**************************/
+.fa.fa-angle-right {
+	color: #696763;
+	padding-right: 3px;
+}
+
+i#bid.fa.fa-gavel, i#buy_now.fa.fa-money {
+	background: none;
+	color: #696763;
+	padding-right: 3px;
 }

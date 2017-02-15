@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,10 @@ public class ModifyUser extends HttpServlet {
 			request.getSession().setAttribute("address", user.getAddress());
 			request.getSession().setAttribute("password", user.getPassword());
 			request.getSession().setAttribute("seller", user.isSeller());
-			response.sendRedirect("account.jsp");
+			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("account.jsp");
+			dispatcher.forward(request, response);
+//			response.sendRedirect("account.jsp");
 		}
 	}
 
