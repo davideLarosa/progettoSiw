@@ -44,3 +44,10 @@ function getPreview(number) {
 	});
 };
 
+$(document).ready(function(){
+	
+	for(var i = 1; i != 5 ;i++){
+		getPreview(1);
+	}
+	
+})

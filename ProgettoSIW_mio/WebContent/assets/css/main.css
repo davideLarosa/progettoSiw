@@ -2618,16 +2618,6 @@ select#time, select#category {
 color: #696763;
 }
 
-ul.#item_info {
-	display: block;
-	margin-bottom: 185px;
-	margin-top: 185px;
-	overflow: hidden;
-}
-
-ul.#item_info {
-	display: block;
-	margin-bottom: 50px;
-	margin-top: 10px;
-	overflow: hidden;
+textarea#description{
+	margin-bottom: 20px;
 }

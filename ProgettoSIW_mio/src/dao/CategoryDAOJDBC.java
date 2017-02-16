@@ -16,6 +16,7 @@ public class CategoryDAOJDBC implements CategoryDAO {
 	private DataSource dataSource;
 
 	public CategoryDAOJDBC(DataSource dataSource) {
+		super();
 		this.dataSource = dataSource;
 	}
 

@@ -2,6 +2,8 @@ package model;
 
 import java.sql.Date;
 
+import persistence.DBManager;
+
 public class Item {
 	private int id;
 	private String producer;
@@ -30,6 +32,11 @@ public class Item {
 		this.seller = seller;
 		this.description = description;
 		this.imagePath = imagePath;
+	}
+
+	public Item(User seller, String category) {
+		this.seller = DBManager.getInstance().getUserDAO().findByPrimaryKey(seller.getEmail(), seller.getPassword());
+		this.category = DBManager.getInstance().getCategoryDAO().findByPrimaryKey(category);
 	}
 
 	public int getId() {

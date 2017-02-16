@@ -237,13 +237,21 @@
 
 					<!-- Product info -->
 					<div class="col-sm-4 col-sm-offset-1 signup-form">
-						<form id="modify_form_data" >
-							<i class="fa fa-eye"></i> Product Name <input type="text"
-								name="product_name" id="product_name" value="${product_name }"
-								placeholder="${product_name }" /> <i class="fa fa-eur"></i>
-							Minimum buy price <input type="text" name="minimim_buy_price"
-								id="minimim_buy_price" value="${minimim_buy_price }"
-								placeholder="${minimim_buy_price }" /> <i class="fa fa-eur"></i>
+						<container id="modify_form_data"> </container>
+
+
+
+
+
+						<form method="post" action="sell" enctype="multipart/form-data">
+							<i class="fa fa-product-hunt"></i> Producer<input type="text"
+								name="producer" id="producer" value="${producer }"
+								placeholder="${producer }" /> <i class="fa fa-eye"></i> Model<input
+								type="text" name="model" id="model" value="${model }"
+								placeholder="${model }" /> <i class="fa fa-eur"></i> Minimum
+							buy price <input type="text" name="minimum_buy_price"
+								id="minimum_buy_price" value="${minimum_buy_price }"
+								placeholder="${minimum_buy_price }" /> <i class="fa fa-eur"></i>
 							Current best bid <input type="text" name="best_bid" id="best_bid"
 								value="${best_bid }" placeholder="${best_bid }" disabled /> <i
 								class="fa fa-bars"></i> Category <select name="category"
@@ -276,30 +284,38 @@
 									</ul>
 								</span>
 							</div>
-						</form>
+
+							<i class="fa fa-paperclip"></i> Description (max 1000 chars)
+							<textarea cols="10" rows="10" maxlength="1000" name="description"
+								id="description" placeholder=${description }></textarea>
 
 
 
-
-
-						<form method="post" action="sell" enctype="multipart/form-data">
-
+							<i class="fa fa-picture-o"></i> Upload image
 							<div id="preview1" class="item_preview">
 								<input type="file" id="fileinput1" accept="image/*"
 									onclick="getPreview(1);" name="file" />
 							</div>
+
+							<i class="fa fa-picture-o"></i> Upload image
 							<div id="preview2" class="item_preview">
 								<input type="file" id="fileinput2" accept="image/*"
 									onclick="getPreview(2);" name="file" />
 							</div>
+
+							<i class="fa fa-picture-o"></i> Upload image
 							<div id="preview3" class="item_preview">
 								<input type="file" id="fileinput3" accept="image/*"
 									onclick="getPreview(3);" name="file" />
 							</div>
+
+							<i class="fa fa-picture-o"></i> Upload image
 							<div id="preview4" class="item_preview">
 								<input type="file" id="fileinput4" accept="image/*"
 									onclick="getPreview(4);" name="file" />
 							</div>
+
+							<i class="fa fa-picture-o"></i> Upload image
 							<div id="preview5" class="item_preview">
 								<input type="file" id="fileinput5" accept="image/*"
 									onclick="getPreview(5);" name="file" />

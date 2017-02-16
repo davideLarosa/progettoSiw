@@ -74,21 +74,4 @@
 		<servlet-name>Sell</servlet-name>
 		<url-pattern>/sell</url-pattern>
 	</servlet-mapping>
-
-
-
-
-
-	<servlet>
-		<description></description>
-		<display-name>ImageUploader</display-name>
-		<servlet-name>ImageUploader</servlet-name>
-		<servlet-class>servlets.ImageUploader</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ImageUploader</servlet-name>
-		<url-pattern>/uploadImages</url-pattern>
-	</servlet-mapping>
-
-
 </web-app>
