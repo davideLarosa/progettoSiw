@@ -1,5 +1,7 @@
 package persistence;
 
+import dao.CategoryDAO;
+import dao.ItemDAO;
 import dao.MailingListDAO;
 import dao.UserDAO;
 
@@ -12,6 +14,8 @@ public class DBManager {
 	private static DBManager instance = null;
 	private UserDAO userDAO;
 	private MailingListDAO mailingListDAO;
+	private ItemDAO itemDAO;
+	private CategoryDAO categoryDAO;
 	// ContattoDAO contattoDao;
 	// MessaggioDAO messaggioDao;
 	// TelefonoDAO telefonoDao;
@@ -32,6 +36,8 @@ public class DBManager {
 
 		this.userDAO = daoFactory.getUserDAO();
 		this.mailingListDAO = daoFactory.getMailingListDAO();
+		this.categoryDAO = daoFactory.getCategoryDAO();
+		this.itemDAO = daoFactory.getItemDAO();
 
 		// contattoDao = daoFactory.getContattoDAO();
 		// messaggioDao = daoFactory.getMessaggioDAO();
@@ -47,6 +53,13 @@ public class DBManager {
 		return this.mailingListDAO;
 	}
 
+	public ItemDAO getItemDAO() {
+		return this.itemDAO;
+	}
+
+	public CategoryDAO getCategoryDAO() {
+		return this.categoryDAO;
+	}
 	// public ContattoDAO getContattoDao() {
 	// return contattoDao;
 	// }

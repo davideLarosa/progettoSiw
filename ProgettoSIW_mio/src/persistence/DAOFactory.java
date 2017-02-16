@@ -1,5 +1,7 @@
 package persistence;
 
+import dao.CategoryDAO;
+import dao.ItemDAO;
 import dao.MailingListDAO;
 import dao.UserDAO;
 
@@ -41,6 +43,10 @@ public abstract class DAOFactory {
 	public abstract UserDAO getUserDAO();
 	
 	public abstract MailingListDAO getMailingListDAO();
+	
+	public abstract ItemDAO getItemDAO();
+	
+	public abstract CategoryDAO getCategoryDAO();
 	
 //	public abstract MessaggioDAO getMessaggioDAO();
 //	

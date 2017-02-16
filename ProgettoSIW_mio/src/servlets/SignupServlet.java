@@ -37,9 +37,6 @@ public class SignupServlet extends HttpServlet {
 		registeringUser.setPassword(request.getParameter("password"));
 		registeringUser.setSeller(Boolean.parseBoolean(request.getParameter("seller")));
 
-		
-
-		// TODO togli sessione
 		switch (DBManager.getInstance().getUserDAO().save(registeringUser)) {
 		case 0:
 			request.setAttribute("signupMessage", "Registration successfull");

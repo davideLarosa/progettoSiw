@@ -1,5 +1,9 @@
 package persistence;
 
+import dao.CategoryDAO;
+import dao.CategoryDAOJDBC;
+import dao.ItemDAO;
+import dao.ItemDAOJDBC;
 import dao.MailingListDAO;
 import dao.MailingListDAOJDBC;
 import dao.UserDAO;
@@ -28,6 +32,18 @@ public class MySQLDAOFactory extends DAOFactory {
 	public MailingListDAO getMailingListDAO() {
 		return new MailingListDAOJDBC(this.dataSource);
 	}
+
+	@Override
+	public ItemDAO getItemDAO() {
+		return new ItemDAOJDBC(this.dataSource);
+	}
+
+	@Override
+	public CategoryDAO getCategoryDAO() {
+return new CategoryDAOJDBC(this.dataSource);
+	}
+	
+	
 
 	// @Override
 	// public StudenteDao getStudentDAO() {

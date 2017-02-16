@@ -1,9 +1,27 @@
+
+<%@page import="java.util.Iterator"%>
+<%@page import="org.apache.tomcat.util.http.fileupload.*"%>
+<%@page import="org.apache.tomcat.util.http.fileupload.disk.*"%>
+<%@page import="org.apache.tomcat.util.http.fileupload.servlet.*"%>
+
+<%@page import="org.apache.tomcat.util.*"%>
+<%@page import="java.io.File"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="persistence.DBManager"%>
+<%@page import="model.Category"%>
+
+
+<%@ page import="java.io.*,java.util.*, javax.servlet.*"%>
+<%@ page import="javax.servlet.http.*"%>
+
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page session="true"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -215,57 +233,85 @@
 							</div>
 						</c:if>
 					</div>
+
+
+					<!-- Product info -->
 					<div class="col-sm-4 col-sm-offset-1 signup-form">
-						<form id="modify_form_data">
-							<i class="fa fa-eye"></i> Product Name
-							 <input type="text" name="product_name"	id="product_name" value="${product_name }" placeholder="${product_name }" />
-							<i class="fa fa-eur"></i> Minimum buy price 
-							<input type="text" name="minimim_buy_price" id="minimim_buy_price" value="${minimim_buy_price }" placeholder="${minimim_buy_price }" />
-							<i class="fa fa-eur"></i> Current best bid
-							<input type="text" name="best_bid" id="best_bid" value="${best_bid }" placeholder="${best_bid }" disabled/>
+						<form id="modify_form_data" >
+							<i class="fa fa-eye"></i> Product Name <input type="text"
+								name="product_name" id="product_name" value="${product_name }"
+								placeholder="${product_name }" /> <i class="fa fa-eur"></i>
+							Minimum buy price <input type="text" name="minimim_buy_price"
+								id="minimim_buy_price" value="${minimim_buy_price }"
+								placeholder="${minimim_buy_price }" /> <i class="fa fa-eur"></i>
+							Current best bid <input type="text" name="best_bid" id="best_bid"
+								value="${best_bid }" placeholder="${best_bid }" disabled /> <i
+								class="fa fa-bars"></i> Category <select name="category"
+								id="category">
+								<%
+									List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
+									if (categories != null) {
+										for (Category c : categories) {
+											out.print("<option>" + c.getName() + "</option>");
+										}
+									}
+								%>
 
-							 
-							<i class="fa fa-bars"></i> Category 
-							<select name="category" id="category">
-							
-							<option>//TODO prendi dalla servlet le categorie</option>
-							
+							</select> <i class="fa fa-calendar-check-o"></i> Expiration time <select
+								name="time" id="time">
+								<option>1 Month</option>
+								<option>2 Months</option>
+								<option>3 Months</option>
 							</select>
-
-							<i class="fa fa-calendar-check-o"></i> Expiration time (1/2/3 Months) 
-							<select name="time" id="time" >
-							<option>1 Month</option>
-							<option>2 Months</option>
-							<option>3 Months</option>
-							</select>
-
 							<div class="checkout-options">
-<span>
-							<ul class="nav">
-							<li>
-							<label>
-							<input type="checkbox" name="bid" id="bid"><i class="fa fa-gavel" id="bid"></i>Bid
-							</label>
-							</li>
-							<li>
-							<label>
-							<input type="checkbox" name="buy_now" id="buy_now"><i class="fa fa-money" id="buy_now"></i>Buy now
-							</label>
-							</li>
-							</ul>
-		</span>						
+								<span>
+									<ul class="nav">
+										<li><label> <input type="checkbox" name="bid"
+												id="bid"><i class="fa fa-gavel" id="bid"></i>Bid
+										</label></li>
+										<li><label> <input type="checkbox" name="buy_now"
+												id="buy_now"><i class="fa fa-money" id="buy_now"></i>Buy
+												now
+										</label></li>
+									</ul>
+								</span>
 							</div>
-
-							<span>
-								<button class="btn btn-default" id="save_btn" name="save_btn" disabled>Save</button>
-							</span>
 						</form>
-						<div class="description">
-							<p>* You must complete these field to confirm your changes</p>
-						</div>
-						<div class="description">
-							<p>** You cannot modify your email</p>
-						</div>
+
+
+
+
+
+						<form method="post" action="sell" enctype="multipart/form-data">
+
+							<div id="preview1" class="item_preview">
+								<input type="file" id="fileinput1" accept="image/*"
+									onclick="getPreview(1);" name="file" />
+							</div>
+							<div id="preview2" class="item_preview">
+								<input type="file" id="fileinput2" accept="image/*"
+									onclick="getPreview(2);" name="file" />
+							</div>
+							<div id="preview3" class="item_preview">
+								<input type="file" id="fileinput3" accept="image/*"
+									onclick="getPreview(3);" name="file" />
+							</div>
+							<div id="preview4" class="item_preview">
+								<input type="file" id="fileinput4" accept="image/*"
+									onclick="getPreview(4);" name="file" />
+							</div>
+							<div id="preview5" class="item_preview">
+								<input type="file" id="fileinput5" accept="image/*"
+									onclick="getPreview(5);" name="file" />
+							</div>
+							<br />
+
+							<button type="submit" class="btn btn-default" id="save_btn"
+								name="save_btn">Upload &amp; Save</button>
+						</form>
+
+
+
 					</div>
 				</div>
 			</div>
@@ -462,6 +508,7 @@
 	<script src="assets/js/price-range.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-	<script src="assets/js/account.js"></script>
+
+	<script src="assets/js/gallery.js"></script>
 </body>
 </html>
