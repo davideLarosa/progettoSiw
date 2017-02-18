@@ -35,7 +35,7 @@ public class SignupServlet extends HttpServlet {
 		registeringUser.setAddress(request.getParameter("address"));
 		registeringUser.setEmail(request.getParameter("email"));
 		registeringUser.setPassword(request.getParameter("password"));
-		registeringUser.setSeller(Boolean.parseBoolean(request.getParameter("seller")));
+		//registeringUser.setSeller(Boolean.parseBoolean(request.getParameter("seller")));
 
 		switch (DBManager.getInstance().getUserDAO().save(registeringUser)) {
 		case 0:

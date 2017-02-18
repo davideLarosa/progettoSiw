@@ -61,7 +61,6 @@ public class ModifyUser extends HttpServlet {
 			request.getSession().setAttribute("phone", user.getPhone());
 			request.getSession().setAttribute("address", user.getAddress());
 			request.getSession().setAttribute("password", user.getPassword());
-			request.getSession().setAttribute("seller", user.isSeller());
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("account.jsp");
 			dispatcher.forward(request, response);
@@ -77,7 +76,6 @@ public class ModifyUser extends HttpServlet {
 		session.setAttribute("phone", toModify.getPhone());
 		session.setAttribute("address", toModify.getAddress());
 		session.setAttribute("password", toModify.getPassword());
-		session.setAttribute("seller", toModify.isSeller());
 
 	}
 

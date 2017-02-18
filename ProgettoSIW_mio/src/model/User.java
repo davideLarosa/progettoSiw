@@ -12,15 +12,12 @@ public class User {
 	private String email;
 	private String password;
 	private String confirm;
-	private boolean keepSigned;
-	private boolean seller;
 
 	public User() {
 		super();
 	}
 
-	public User(int id, String name, String surname, String phone, String address, String email, String password,
-			boolean keepSigned, boolean seller) {
+	public User(int id, String name, String surname, String phone, String address, String email, String password) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -29,10 +26,8 @@ public class User {
 		this.address = address;
 		this.email = email;
 		this.password = password;
-		this.keepSigned = keepSigned;
-		this.seller = seller;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -91,22 +86,6 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public boolean isKeepSigned() {
-		return keepSigned;
-	}
-
-	public void setKeepSigned(boolean keepSigned) {
-		this.keepSigned = keepSigned;
-	}
-
-	public boolean isSeller() {
-		return seller;
-	}
-
-	public void setSeller(boolean seller) {
-		this.seller = seller;
 	}
 
 	public String getConfirm() {

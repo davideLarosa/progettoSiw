@@ -1,3 +1,7 @@
+<%@page import="model.CompleteItem"%>
+<%@page import="servlets.Sell"%>
+<%@page import="persistence.DBManager"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -156,188 +160,105 @@
 	<!--/header-bottom--> </header>
 	<!--/header-->
 
-<section>
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-3">
-					<div class="left-sidebar">
-						<h2>Category</h2>
-						<div class="panel-group category-products" id="accordian">
-							<!--category-productsr-->
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordian"
-											href="#sportswear"> <span class="badge pull-right"><i
-												class="fa fa-plus"></i></span> Sportswear
-										</a>
-									</h4>
-								</div>
-								<div id="sportswear" class="panel-collapse collapse">
-									<div class="panel-body">
-										<ul>
-											<li><a href="">Nike </a></li>
-											<li><a href="">Under Armour </a></li>
-											<li><a href="">Adidas </a></li>
-											<li><a href="">Puma</a></li>
-											<li><a href="">ASICS </a></li>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordian"
-											href="#mens"> <span class="badge pull-right"><i
-												class="fa fa-plus"></i></span> Mens
-										</a>
-									</h4>
-								</div>
-								<div id="mens" class="panel-collapse collapse">
-									<div class="panel-body">
-										<ul>
-											<li><a href="">Fendi</a></li>
-											<li><a href="">Guess</a></li>
-											<li><a href="">Valentino</a></li>
-											<li><a href="">Dior</a></li>
-											<li><a href="">Versace</a></li>
-											<li><a href="">Armani</a></li>
-											<li><a href="">Prada</a></li>
-											<li><a href="">Dolce and Gabbana</a></li>
-											<li><a href="">Chanel</a></li>
-											<li><a href="">Gucci</a></li>
-										</ul>
-									</div>
-								</div>
+	<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="left-sidebar">
+					<h2>My account</h2>
+					<div class="panel-group category-products" id="accordian">
+						<!--category-productsr-->
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="modify">Info</a>
+								</h4>
 							</div>
 
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a data-toggle="collapse" data-parent="#accordian"
-											href="#womens"> <span class="badge pull-right"><i
-												class="fa fa-plus"></i></span> Womens
-										</a>
-									</h4>
-								</div>
-								<div id="womens" class="panel-collapse collapse">
-									<div class="panel-body">
-										<ul>
-											<li><a href="">Fendi</a></li>
-											<li><a href="">Guess</a></li>
-											<li><a href="">Valentino</a></li>
-											<li><a href="">Dior</a></li>
-											<li><a href="">Versace</a></li>
-										</ul>
-									</div>
-								</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="mailingList">Notifications</a>
+								</h4>
 							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Kids</a>
-									</h4>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Fashion</a>
-									</h4>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Households</a>
-									</h4>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Interiors</a>
-									</h4>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Clothing</a>
-									</h4>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Bags</a>
-									</h4>
-								</div>
-							</div>
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<a href="#">Shoes</a>
-									</h4>
-								</div>
+
+						</div>
+
+						<div class="panel panel-default">
+
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="sell">Sell</a>
+
+								</h4>
 							</div>
 						</div>
-						<!--/category-productsr-->
-
-						
-
-					</div>
-				</div>
-
-				<div class="col-sm-9 padding-right">
-					<div class="features_items">
-						<!--features_items-->
-						<h2 class="title text-center">Features Items</h2>
-						
-						
-						
-						<div class="col-sm-4">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-									<div class="productinfo text-center">
-										<img src="../images/shop/product12.jpg" alt="" />
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-									<div class="product-overlay">
-										<div class="overlay-content">
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-									</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href=""><i class="fa fa-plus-square"></i>Add
-												to wishlist</a></li>
-										<li><a href=""><i class="fa fa-plus-square"></i>Add
-												to compare</a></li>
-									</ul>
-								</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span><i class="fa fa-angle-right"></i><a
+										href="myItems.jsp">My items</a></span>
+								</h4>
 							</div>
 						</div>
-									
-						<ul class="pagination">
-							<li class="active"><a href="">1</a></li>
-							<li><a href="">2</a></li>
-							<li><a href="">3</a></li>
-							<li><a href="">&raquo;</a></li>
-						</ul>
+
 					</div>
-					<!--features_items-->
+					<!--/category-productsr-->
+
+
+
 				</div>
 			</div>
+
+			<div class="col-sm-9 padding-right">
+				<div class="features_items">
+					<!--features_items-->
+					<h2 class="title text-center">My Items</h2>
+
+					<%
+						ArrayList<CompleteItem> completeItems = DBManager.getInstance().getItemDAO()
+								.findAllUserItems((String) request.getSession().getAttribute("email"));
+
+						if (!completeItems.isEmpty()) {
+							for (CompleteItem item : completeItems) {
+								out.print("<div class=\"col-sm-4\">");
+								out.print("<div class=\"product-image-wrapper\">");
+								out.print("<div class=\"single-products\">");
+								out.print("<div class=\"productinfo text-center\">");
+								if (!item.getPaths().getRelativePaths().isEmpty()) {
+									out.print("<img src=\"" + item.getPaths().getRelativePath(0) + "\" alt=\"\" />");
+								}
+								out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
+								out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+								out.print(
+										"<a href=\"delete?" + item.getItem().getId() + "\" class=\"btn btn-default add-to-cart\">");
+								out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
+								out.print("</div>");
+								out.print("<div class=\"product-overlay\">");
+								out.print("<div class=\"overlay-content\">");
+								out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
+								out.print("<p>" + item.getItem().getDescription() + "</p>");
+								out.print(
+										"<a href=\"delete?" + item.getItem().getId() + "\" class=\"btn btn-default add-to-cart\">");
+								out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
+								out.print("</div>");
+								out.print("</div>");
+								out.print("</div>");
+								out.print("</div>");
+								out.print("</div>");
+
+							}
+						}
+					%>
+
+
+
+				</div>
+				<!--features_items-->
+			</div>
 		</div>
+	</div>
 	</section>
 
 

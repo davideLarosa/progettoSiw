@@ -108,9 +108,9 @@ public class Sell extends HttpServlet {
 
 			List<FileItem> formItems = upload.parseRequest(new ServletRequestContext(request));
 			if (formItems != null && formItems.size() > 0) {
+				// if(true){
 				// iterates over form's fields
 				for (FileItem item : formItems) {
-
 					if (item.isFormField()) {
 						if (item.getFieldName().equals("producer")) {
 							if (!item.getString().equals("")) {
@@ -233,12 +233,16 @@ public class Sell extends HttpServlet {
 			calendar.add(Calendar.MONTH, 3);
 		}
 		Date date = new Date(calendar.getTimeInMillis());
-
+		
+		System.out.println();
+		System.out.println();
 		System.out.println("producer : " + this.producer + " \n model : " + this.model + " \n minimum buy price : "
 				+ this.minimum_buy_price + " \n category :  " + this.category + " \n time : " + this.time + " \n bid : "
 				+ this.bid + " \n buy_now : " + this.buy_now + " \n description :  " + this.description
 				+ " \n last bid :  " + this.lastBid + " \n user : " + user.getId());
-
+		System.out.println();
+		System.out.println();
+		
 		int itemId = DBManager.getInstance().getItemDAO()
 				.save(new Item(this.producer, this.model, this.minimum_buy_price, this.lastBid, date, this.category,
 						user, this.description, this.buy_now, this.bid));
@@ -261,5 +265,4 @@ public class Sell extends HttpServlet {
 	public void setBuy_now(String buy_now) {
 		this.buy_now = buy_now;
 	}
-
 }

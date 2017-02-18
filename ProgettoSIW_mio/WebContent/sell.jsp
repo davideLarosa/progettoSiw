@@ -304,8 +304,8 @@
 										</span>
 									</div>
 
-									<i class="fa fa-paperclip"></i> Description (max 1000 chars)
-									<textarea cols="10" rows="10" maxlength="1000"
+									<i class="fa fa-paperclip"></i> Description (max 250 chars)
+									<textarea cols="10" rows="10" maxlength="250"
 										name="description" id="description"
 										placeholder="${description }"></textarea>
 

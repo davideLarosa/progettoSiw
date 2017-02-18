@@ -960,7 +960,8 @@ h2.title {
 }
 
 .productinfo img {
-	width: 100%;
+	width: 150px;
+	height: auto;
 }
 
 .productinfo {
@@ -2597,7 +2598,7 @@ a#error_a.error_a {
 }
 
 /*************************
-******* Sell CSS ********
+******* Sell CSS *********
 **************************/
 .fa.fa-angle-right {
 	color: #696763;
@@ -2621,3 +2622,9 @@ color: #696763;
 textarea#description{
 	margin-bottom: 20px;
 }
+
+
+
+/*************************
+******* MY ITEMS CSS *****
+**************************/

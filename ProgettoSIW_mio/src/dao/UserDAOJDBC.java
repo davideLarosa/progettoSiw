@@ -8,6 +8,7 @@ import java.util.List;
 
 import model.User;
 import persistence.DataSource;
+import persistence.PersistenceException;
 
 public class UserDAOJDBC implements UserDAO {
 
@@ -20,7 +21,7 @@ public class UserDAOJDBC implements UserDAO {
 	@Override
 	public int save(User user) {
 		Connection connection = this.dataSource.getConnection();
-		String insert = "insert into user(name, surname, email, phone, address, password, seller) values(?,?,?,?,?,?,?)";
+		String insert = "insert into user(name, surname, email, phone, address, password) values(?,?,?,?,?,?)";
 		int status = -1;
 		try {
 			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(insert);
@@ -30,7 +31,6 @@ public class UserDAOJDBC implements UserDAO {
 			statement.setString(4, user.getPhone());
 			statement.setString(5, user.getAddress());
 			statement.setString(6, user.getPassword());
-			statement.setBoolean(7, user.isSeller());
 			statement.executeUpdate();
 			status = 0;
 		} catch (SQLException e) {
@@ -44,7 +44,8 @@ public class UserDAOJDBC implements UserDAO {
 				connection.close();
 			} catch (SQLException e) {
 				status = 2;
-				// throw new RuntimeException(e.getMessage());
+				e.printStackTrace();
+//				 throw new RuntimeException(e.getMessage());
 			}
 		}
 
@@ -72,14 +73,14 @@ public class UserDAOJDBC implements UserDAO {
 			}
 
 		} catch (Exception e) {
-			return null;
-			// throw new PersistenceException(e.getMessage());
+//			 return null;
+			 throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-				return null;
-				// throw new PersistenceException(e.getMessage());
+//				return null;
+				 throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -110,18 +111,17 @@ public class UserDAOJDBC implements UserDAO {
 				user.setPhone(results.getString("phone"));
 				user.setAddress(results.getString("address"));
 				user.setPassword(results.getString("password"));
-				user.setSeller(results.getBoolean("seller"));
 			}
 
 		} catch (Exception e) {
-			return null;
-			// throw new PersistenceException(e.getMessage());
+//			return null;
+			 throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-				return null;
-				// throw new PersistenceException(e.getMessage());
+//				return null;
+				 throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -159,19 +159,18 @@ public class UserDAOJDBC implements UserDAO {
 				user.setPhone(results.getString("phone"));
 				user.setAddress(results.getString("address"));
 				user.setPassword(results.getString("password"));
-				user.setSeller(results.getBoolean("seller"));
 				user.setId(results.getInt("id"));
 			}
 
 		} catch (Exception e) {
 			// TODO
-			// throw new PersistenceException(e.getMessage());
+			 throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
 				// TODO
-				// throw new PersistenceException(e.getMessage());
+				 throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -194,7 +193,6 @@ public class UserDAOJDBC implements UserDAO {
 			statement.setString(3, newData.getPhone());
 			statement.setString(4, newData.getAddress());
 			statement.setString(5, newData.getPassword());
-			statement.setBoolean(6, newData.isSeller());
 			statement.executeUpdate();
 
 		} catch (SQLException e) {
