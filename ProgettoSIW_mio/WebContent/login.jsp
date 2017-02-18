@@ -81,26 +81,28 @@
 					<div class="shop-menu pull-right">
 						<ul class="nav navbar-nav">
 							<li><c:choose>
-										<c:when test="${username == null }">
-											<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
-										</c:when>
-										<c:otherwise>
-											<a href="modify"><i class="fa fa-user"></i> Welcome ${username } </a>
-										</c:otherwise>
-									</c:choose></li>
+									<c:when test="${username == null }">
+										<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
+									</c:when>
+									<c:otherwise>
+										<a href="modify"><i class="fa fa-user"></i> Welcome
+											${username } </a>
+									</c:otherwise>
+								</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
 							<li><a href="html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li> <c:choose>
-										<c:when test="${username == null }">
-											<a href="login.jsp" class="active"><i class="fa fa-unlock"></i> Login</a>
-										</c:when>
-										<c:otherwise>
-											<a href="logout" class="active"><i class="fa fa-lock"></i> Logout</a>
-										</c:otherwise>
-									</c:choose>
-							</li>
+							<li><c:choose>
+									<c:when test="${username == null }">
+										<a href="login.jsp" class="active"><i class="fa fa-unlock"></i>
+											Login</a>
+									</c:when>
+									<c:otherwise>
+										<a href="logout" class="active"><i class="fa fa-lock"></i>
+											Logout</a>
+									</c:otherwise>
+								</c:choose></li>
 						</ul>
 					</div>
 				</div>
@@ -177,9 +179,7 @@
 					<form id="login-form" action="login" method="POST">
 						<input type="email" placeholder="Email Address" name="email"
 							required /> <input type="password" placeholder="Password"
-							name="password" required /> <span> <input id="keepsigned"
-							type="checkbox" class="checkbox"> Keep me signed in
-						</span>
+							name="password" required />
 						<button type="submit" id="login" class="btn btn-default">Login</button>
 					</form>
 
@@ -224,9 +224,7 @@
 							placeholder="Password" id="password" name="password"
 							name="password" required /> <input type="password"
 							placeholder="Confirm Password" id="confirm" name="confirm"
-							required /> <span> <input type="checkbox"
-							class="checkbox" name="seller"> I'm a seller!
-						</span>
+							required />
 						<button type="submit" id="signup_btn" name="signup_btn"
 							class="btn btn-default" disabled>Signup</button>
 					</form>

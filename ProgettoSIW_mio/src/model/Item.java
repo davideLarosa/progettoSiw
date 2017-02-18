@@ -1,7 +1,6 @@
 package model;
 
 import java.sql.Date;
-
 import persistence.DBManager;
 
 public class Item {
@@ -14,14 +13,15 @@ public class Item {
 	private Category category;
 	private User seller;
 	private String description;
-	private String imagePath;
+	private boolean buy_now;
+	private boolean bid;
 
 	public Item() {
 
 	}
 
 	public Item(int id, String producer, String model, float price, float lastBid, Date timeToLive, Category category,
-			User seller, String description, String imagePath) {
+			User seller, String description, boolean buy_now, boolean bid) {
 		this.id = id;
 		this.producer = producer;
 		this.model = model;
@@ -31,12 +31,22 @@ public class Item {
 		this.category = category;
 		this.seller = seller;
 		this.description = description;
-		this.imagePath = imagePath;
+		this.buy_now = buy_now;
+		this.bid = bid;
 	}
 
-	public Item(User seller, String category) {
-		this.seller = DBManager.getInstance().getUserDAO().findByPrimaryKey(seller.getEmail(), seller.getPassword());
+	public Item(String producer, String model, String price, float lastBid, Date timeToLive, String category,
+			User seller, String description, String buy_now, String bid) {
+		this.producer = producer;
+		this.model = model;
+		this.price = Float.valueOf(price);
+		this.lastBid = lastBid;
+		this.timeToLive = timeToLive;
 		this.category = DBManager.getInstance().getCategoryDAO().findByPrimaryKey(category);
+		this.seller = DBManager.getInstance().getUserDAO().findByPrimaryKey(seller.getEmail(), seller.getPassword());
+		this.description = description;
+		this.buy_now = Boolean.valueOf(buy_now);
+		this.bid = Boolean.valueOf(bid);
 	}
 
 	public int getId() {
@@ -111,11 +121,19 @@ public class Item {
 		this.description = description;
 	}
 
-	public String getImagePath() {
-		return imagePath;
+	public boolean isBuy_now() {
+		return buy_now;
 	}
 
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
+	public void setBuy_now(boolean buy_now) {
+		this.buy_now = buy_now;
+	}
+
+	public boolean isBid() {
+		return bid;
+	}
+
+	public void setBid(boolean bid) {
+		this.bid = bid;
 	}
 }

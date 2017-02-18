@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.sql.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,8 @@ import model.User;
 import persistence.DBManager;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Sell extends HttpServlet {
@@ -38,12 +41,16 @@ public class Sell extends HttpServlet {
 	private String buy_now;
 	private String description;
 	private int thumbNumber = 0;
+	private float lastBid;
+	private String path;
+	private ArrayList<String> paths;
+	private int item_id;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String email = (String) request.getSession().getAttribute("email");
 		// TODO elimina syso
-		System.out.println("modifica " + email);
+		System.out.println("sell " + email);
 		if (email == null) {
 			response.sendRedirect("login.jsp");
 		} else {
@@ -54,6 +61,18 @@ public class Sell extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		this.producer = "Producer";
+		this.model = "Model";
+		this.minimum_buy_price = "0.01";
+		this.category = "Category_1";
+		this.time = String.valueOf(System.currentTimeMillis());
+		this.bid = String.valueOf("0");
+		this.buy_now = String.valueOf("0");
+		this.description = "Description";
+		this.lastBid = 0;
+		this.paths = new ArrayList<String>();
+		this.item_id = 0;
 		// configures upload settings
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		// sets memory threshold - beyond which files are stored in disk
@@ -78,11 +97,11 @@ public class Sell extends HttpServlet {
 		String uploadPath = "/Users/davidelarosa/Documents/git/progettoSiw/ProgettoSIW_mio/WebContent/"
 				+ UPLOAD_DIRECTORY;
 
-//		// creates the directory if it does not exist
-//		File uploadDir = new File(uploadPath);
-//		if (!uploadDir.exists()) {
-//			uploadDir.mkdir();
-//		}
+		// // creates the directory if it does not exist
+		// File uploadDir = new File(uploadPath);
+		// if (!uploadDir.exists()) {
+		// uploadDir.mkdir();
+		// }
 
 		try {
 			// parses the request's content to extract file data
@@ -94,36 +113,60 @@ public class Sell extends HttpServlet {
 
 					if (item.isFormField()) {
 						if (item.getFieldName().equals("producer")) {
-							this.producer = item.getString();
+							if (!item.getString().equals("")) {
+								this.producer = item.getString();
+							}
 						} else if (item.getFieldName().equals("model")) {
-							this.model = item.getString();
+							if (!item.getString().equals("")) {
+								this.model = item.getString();
+							}
 						} else if (item.getFieldName().equals("minimum_buy_price")) {
-							this.minimum_buy_price = item.getString();
+							if (!item.getString().equals("")) {
+								this.minimum_buy_price = item.getString();
+								if (this.minimum_buy_price.contains(",")) {
+									this.minimum_buy_price = this.minimum_buy_price.replace(',', '.');
+								}
+							}
 						} else if (item.getFieldName().equals("category")) {
-							this.category = item.getString();
+							if (!item.getString().equals("")) {
+								this.category = item.getString();
+							}
 						} else if (item.getFieldName().equals("time")) {
-							this.time = item.getString();
+							if (!item.getString().equals("")) {
+								this.time = item.getString();
+							}
 						} else if (item.getFieldName().equals("bid")) {
-							this.bid = item.getString();
+							if (!item.getString().equals("")) {
+								this.bid = item.getString();
+								if (this.bid.equals("on")) {
+									this.bid = "true";
+								} else {
+									this.bid = "false";
+								}
+							}
 						} else if (item.getFieldName().equals("buy_now")) {
-							this.buy_now = item.getString();
+							if (!item.getString().equals("")) {
+								this.buy_now = item.getString();
+								if (this.buy_now.equals("on")) {
+									this.buy_now = "true";
+								} else {
+									this.buy_now = "false";
+								}
+							}
 						} else if (item.getFieldName().equals("description")) {
 							this.description = item.getString();
-						} else {
+							if (this.description.equals("")) {
+								this.description = this.producer + " " + this.model;
+							}
+
 						}
 
-						// System.out.println("item " + item.getName() +
-						// "content type" + item.getContentType()
-						// + " string " + item.getString() + " inputStream " +
-						// item.getInputStream()
-						// + " field name" + item.getFieldName());
 					}
 					// processes only fields that are not form fields
 					else {
-
-						String path = createPath(request);
-						//createFolders(path);
-						// System.out.println(path);
+						if (this.path == null) {
+							this.path = createPath(request);
+						}
 						String fileName = new File(item.getName()).getName();
 						String extension = "";
 
@@ -136,34 +179,23 @@ public class Sell extends HttpServlet {
 							String newFileName = File.separator + "thumb" + String.valueOf(this.thumbNumber) + "."
 									+ extension;
 
-							
-							
-							
-							String filePath = uploadPath + path;
-							
+							String filePath = uploadPath + this.path;
+
 							// creates the directory if it does not exist
 							File uploadDir = new File(uploadPath);
 							if (!uploadDir.exists()) {
 								uploadDir.mkdirs();
 							}
-							
+
 							uploadDir = new File(filePath);
 							if (!uploadDir.exists()) {
 								uploadDir.mkdirs();
 							}
-
-							// String filePath = uploadPath + File.separator +
-							// fileName;
-							// File storeFile = new File(filePath);
-
-							
 							File storeFile = new File(filePath + newFileName);
-							System.out.println("Filepath " + storeFile.getPath());
-							System.out.println("new filename " + newFileName);
 
 							// saves the file on disk
 							item.write(storeFile);
-
+							this.paths.add(storeFile.getPath());
 							this.thumbNumber++;
 							request.setAttribute("message", "Upload has been done successfully!");
 						}
@@ -173,25 +205,11 @@ public class Sell extends HttpServlet {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			request.setAttribute("message", "There was an error: " + ex.getMessage());
+			request.setAttribute("message", "There was an error please retry later ");
 		}
+		DBManager.getInstance().getItemDAO().setPath(item_id, paths);
 		// redirects client to message page
 		getServletContext().getRequestDispatcher("/sell.jsp").forward(request, response);
-	}
-
-	private void createFolders(String path) {
-		String[] folders = path.split("/");
-
-		for (int i = 0; i < folders.length; i++) {
-			if(folders[i]!=""){
-				File dir = new File(folders[i]);
-				if(!dir.exists()){
-					dir.mkdir();
-					System.out.println("making directory "+ dir.getPath());
-				}
-			}
-		}
-
 	}
 
 	private String createPath(HttpServletRequest request) {
@@ -201,28 +219,47 @@ public class Sell extends HttpServlet {
 		String itemId = String.valueOf(getItemId(email));
 
 		path = File.separator + this.category + File.separator + user + File.separator + itemId;
-		System.out.println("path " + path);
-		if (path.contains(" ")) {
-			System.out.println("contiete spazio");
-
-			char[] charPath = path.toCharArray();
-			for (int i = 0; i < charPath.length; i++) {
-				if (charPath[i] == ' ') {
-					charPath[i] = ' ';
-				}
-			}
-			path = new String(charPath);
-
-		}
-		System.out.println("path " + path);
 		return path;
 	}
 
 	private String getItemId(String email) {
 		User user = DBManager.getInstance().getUserDAO().findByPrimaryKey(email);
-		System.out.println(user.getEmail());
-		int itemId = DBManager.getInstance().getItemDAO().save(new Item(user, category));
+		Calendar calendar = Calendar.getInstance();
+		if (this.time.equals("1 Month")) {
+			calendar.add(Calendar.MONTH, 1);
+		} else if (this.time.equals("2 Months")) {
+			calendar.add(Calendar.MONTH, 2);
+		} else if (this.time.equals("3 Months")) {
+			calendar.add(Calendar.MONTH, 3);
+		}
+		Date date = new Date(calendar.getTimeInMillis());
+
+		System.out.println("producer : " + this.producer + " \n model : " + this.model + " \n minimum buy price : "
+				+ this.minimum_buy_price + " \n category :  " + this.category + " \n time : " + this.time + " \n bid : "
+				+ this.bid + " \n buy_now : " + this.buy_now + " \n description :  " + this.description
+				+ " \n last bid :  " + this.lastBid + " \n user : " + user.getId());
+
+		int itemId = DBManager.getInstance().getItemDAO()
+				.save(new Item(this.producer, this.model, this.minimum_buy_price, this.lastBid, date, this.category,
+						user, this.description, this.buy_now, this.bid));
+		this.item_id = itemId;
 		return String.valueOf(itemId);
+	}
+
+	public String getBid() {
+		return bid;
+	}
+
+	public void setBid(String bid) {
+		this.bid = bid;
+	}
+
+	public String getBuy_now() {
+		return buy_now;
+	}
+
+	public void setBuy_now(String buy_now) {
+		this.buy_now = buy_now;
 	}
 
 }

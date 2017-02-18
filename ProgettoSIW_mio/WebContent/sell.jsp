@@ -1,4 +1,5 @@
 
+<%@page import="java.util.concurrent.ThreadLocalRandom"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="org.apache.tomcat.util.http.fileupload.*"%>
 <%@page import="org.apache.tomcat.util.http.fileupload.disk.*"%>
@@ -205,135 +206,155 @@
 								</h4>
 							</div>
 						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="myItems.jsp">My items</a>
+								</h4>
+							</div>
+						</div>
 					</div>
 					<!--/category-products-->
 				</div>
 			</div>
 
-			<div class="col-sm-9 padding-right">
-				<div class="features_items">
-					<!--features_items-->
-					<h2 class="title-details text-center">Sell</h2>
+			<c:choose>
+				<c:when test="${message != null && message != '' }">
+
+					<div class="ok_message">
+						<%
+							out.print(request.getAttribute("message"));
+						%>
+					</div>
 					<div class="text-center">
-						<c:if test="${email == null }">
-							<div class="error_message">
-								<p>
-									You must <a id="error_a" class="error_a" href="login.jsp">login</a>
-									first
-								</p>
-							</div>
-						</c:if>
-						<c:if test="${update == null && email != null}">
-							<p>Seller page</p>
-							<p>From here you can sell your products</p>
-						</c:if>
-						<c:if test="${update == 'ok'}">
-							<div class="ok_message">
-								<p>Data update done correctly!!!</p>
-							</div>
-						</c:if>
+						<p>
+							Now you can go back to your <a href="modify">Account</a> or <a
+								href="sell">Sell</a> another item.
+						</p>
 					</div>
 
+				</c:when>
+				<c:otherwise>
 
-					<!-- Product info -->
-					<div class="col-sm-4 col-sm-offset-1 signup-form">
-						<container id="modify_form_data"> </container>
-
-
-
-
-
-						<form method="post" action="sell" enctype="multipart/form-data">
-							<i class="fa fa-product-hunt"></i> Producer<input type="text"
-								name="producer" id="producer" value="${producer }"
-								placeholder="${producer }" /> <i class="fa fa-eye"></i> Model<input
-								type="text" name="model" id="model" value="${model }"
-								placeholder="${model }" /> <i class="fa fa-eur"></i> Minimum
-							buy price <input type="text" name="minimum_buy_price"
-								id="minimum_buy_price" value="${minimum_buy_price }"
-								placeholder="${minimum_buy_price }" /> <i class="fa fa-eur"></i>
-							Current best bid <input type="text" name="best_bid" id="best_bid"
-								value="${best_bid }" placeholder="${best_bid }" disabled /> <i
-								class="fa fa-bars"></i> Category <select name="category"
-								id="category">
-								<%
-									List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
-									if (categories != null) {
-										for (Category c : categories) {
-											out.print("<option>" + c.getName() + "</option>");
-										}
-									}
-								%>
-
-							</select> <i class="fa fa-calendar-check-o"></i> Expiration time <select
-								name="time" id="time">
-								<option>1 Month</option>
-								<option>2 Months</option>
-								<option>3 Months</option>
-							</select>
-							<div class="checkout-options">
-								<span>
-									<ul class="nav">
-										<li><label> <input type="checkbox" name="bid"
-												id="bid"><i class="fa fa-gavel" id="bid"></i>Bid
-										</label></li>
-										<li><label> <input type="checkbox" name="buy_now"
-												id="buy_now"><i class="fa fa-money" id="buy_now"></i>Buy
-												now
-										</label></li>
-									</ul>
-								</span>
+					<div class="col-sm-9 padding-right">
+						<div class="features_items">
+							<!--features_items-->
+							<h2 class="title-details text-center">Sell</h2>
+							<div class="text-center">
+								<c:if test="${email == null }">
+									<div class="error_message">
+										<p>
+											You must <a id="error_a" class="error_a" href="login.jsp">login</a>
+											first
+										</p>
+									</div>
+								</c:if>
+								<c:if test="${message == null && email != null}">
+									<p>Seller page</p>
+									<p>In this page you can sell your products</p>
+								</c:if>
 							</div>
 
-							<i class="fa fa-paperclip"></i> Description (max 1000 chars)
-							<textarea cols="10" rows="10" maxlength="1000" name="description"
-								id="description" placeholder=${description }></textarea>
+
+							<!-- Product info -->
+							<div class="col-sm-8 col-sm-offset-1 signup-form">
+								<container id="modify_form_data"> </container>
+
+								<form id="itemSell" method="post" action="sell"
+									enctype="multipart/form-data">
+									<i class="fa fa-product-hunt"></i> Producer<input type="text"
+										name="producer" id="producer" value="${producer }"
+										placeholder="${producer }" required /> <i class="fa fa-eye"></i>
+									Model<input type="text" name="model" id="model"
+										value="${model }" placeholder="${model }" /> <i
+										class="fa fa-eur"></i> Minimum buy price <input type="number"
+										min="0.01" step="0.01" name="minimum_buy_price"
+										id="minimum_buy_price" value="${minimum_buy_price }"
+										placeholder="${minimum_buy_price }" /> <i class="fa fa-eur"></i>
+									Current best bid <input type="text" name="best_bid"
+										id="best_bid" value="${best_bid }" placeholder="${best_bid }"
+										readonly="readonly" /> <i class="fa fa-bars"></i> Category <select
+										name="category" id="category">
+										<%
+											List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
+													if (categories != null) {
+														for (Category c : categories) {
+															out.print("<option>" + c.getName() + "</option>");
+														}
+													}
+										%>
+
+									</select> <i class="fa fa-calendar-check-o"></i> Expiration time <select
+										name="time" id="time">
+										<option>1 Month</option>
+										<option>2 Months</option>
+										<option>3 Months</option>
+									</select>
+									<div class="checkout-options">
+										<span>
+											<ul class="nav">
+												<li><label> <input type="checkbox" name="bid"
+														id="bid"><i class="fa fa-gavel" id="bid"></i>Bid
+												</label></li>
+												<li><label> <input type="checkbox"
+														name="buy_now" id="buy_now" checked="checked"><i
+														class="fa fa-money" id="buy_now"></i>Buy now
+												</label></li>
+											</ul>
+										</span>
+									</div>
+
+									<i class="fa fa-paperclip"></i> Description (max 1000 chars)
+									<textarea cols="10" rows="10" maxlength="1000"
+										name="description" id="description"
+										placeholder="${description }"></textarea>
 
 
 
-							<i class="fa fa-picture-o"></i> Upload image
-							<div id="preview1" class="item_preview">
-								<input type="file" id="fileinput1" accept="image/*"
-									onclick="getPreview(1);" name="file" />
+									<i class="fa fa-picture-o"></i> Upload image
+									<div id="preview1" class="item_preview">
+										<input type="file" id="fileinput1" accept="image/*"
+											onclick="getPreview(1);" name="file" />
+									</div>
+
+									<i class="fa fa-picture-o"></i> Upload image
+									<div id="preview2" class="item_preview">
+										<input type="file" id="fileinput2" accept="image/*"
+											onclick="getPreview(2);" name="file" />
+									</div>
+
+									<i class="fa fa-picture-o"></i> Upload image
+									<div id="preview3" class="item_preview">
+										<input type="file" id="fileinput3" accept="image/*"
+											onclick="getPreview(3);" name="file" />
+									</div>
+
+									<i class="fa fa-picture-o"></i> Upload image
+									<div id="preview4" class="item_preview">
+										<input type="file" id="fileinput4" accept="image/*"
+											onclick="getPreview(4);" name="file" />
+									</div>
+
+									<i class="fa fa-picture-o"></i> Upload image
+									<div id="preview5" class="item_preview">
+										<input type="file" id="fileinput5" accept="image/*"
+											onclick="getPreview(5);" name="file" />
+									</div>
+									<br />
+
+									<button type="submit" class="btn btn-default" id="save_btn"
+										name="save_btn">Upload &amp; Save</button>
+								</form>
+
+
+
 							</div>
-
-							<i class="fa fa-picture-o"></i> Upload image
-							<div id="preview2" class="item_preview">
-								<input type="file" id="fileinput2" accept="image/*"
-									onclick="getPreview(2);" name="file" />
-							</div>
-
-							<i class="fa fa-picture-o"></i> Upload image
-							<div id="preview3" class="item_preview">
-								<input type="file" id="fileinput3" accept="image/*"
-									onclick="getPreview(3);" name="file" />
-							</div>
-
-							<i class="fa fa-picture-o"></i> Upload image
-							<div id="preview4" class="item_preview">
-								<input type="file" id="fileinput4" accept="image/*"
-									onclick="getPreview(4);" name="file" />
-							</div>
-
-							<i class="fa fa-picture-o"></i> Upload image
-							<div id="preview5" class="item_preview">
-								<input type="file" id="fileinput5" accept="image/*"
-									onclick="getPreview(5);" name="file" />
-							</div>
-							<br />
-
-							<button type="submit" class="btn btn-default" id="save_btn"
-								name="save_btn">Upload &amp; Save</button>
-						</form>
-
-
-
+						</div>
 					</div>
-				</div>
-			</div>
+				</c:otherwise>
+			</c:choose>
 			<!--features_items-->
 		</div>
-	</div>
 	</div>
 	</section>
 
@@ -524,7 +545,9 @@
 	<script src="assets/js/price-range.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-
-	<script src="assets/js/gallery.js"></script>
+	<c:if test="${message == null}">
+		<script src="assets/js/sell.js"></script>
+		<script src="assets/js/gallery.js"></script>
+	</c:if>
 </body>
 </html>

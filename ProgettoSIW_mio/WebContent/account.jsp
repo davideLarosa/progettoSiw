@@ -187,6 +187,13 @@
 								</h4>
 							</div>
 						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="myItems.jsp">My items</a>
+								</h4>
+							</div>
+						</div>
 					</div>
 					<!--/category-products-->
 				</div>
@@ -206,7 +213,7 @@
 							</div>
 						</c:if>
 						<c:if test="${update == null && email != null}">
-							<p>From here you can modify your account informations</p>
+							<p>From this page you can modify your account informations</p>
 						</c:if>
 						<c:if test="${update == 'ok'}">
 							<div class="ok_message">
@@ -214,7 +221,7 @@
 							</div>
 						</c:if>
 					</div>
-					<div class="col-sm-4 col-sm-offset-1 signup-form">
+					<div class="col-sm-8 col-sm-offset-1 signup-form">
 						<form id="modify_form_data">
 							<i class="fa fa-user"></i> Name <input type="text" name="name"
 								id="name" value="${name }" placeholder="${name }" /> <i
@@ -222,8 +229,8 @@
 								name="surname" id="surname" value="${surname }"
 								placeholder="${surname }" /> <i class="fa fa-envelope-o"></i>
 							Email** <input type="email" name="email" id="email"
-								value="${email }" placeholder="${email }" disabled /> <i
-								class="fa fa-phone"></i>/<i class="fa fa-mobile"></i> Phone <input
+								value="${email }" placeholder="${email }" readonly="readonly" />
+							<i class="fa fa-phone"></i>/<i class="fa fa-mobile"></i> Phone <input
 								type="tel" name="phone" id="phone" value="${phone }"
 								placeholder="${phone }" /> <i class="fa fa-map-marker"></i>
 							Address <input type="text" name="address" id="address"
