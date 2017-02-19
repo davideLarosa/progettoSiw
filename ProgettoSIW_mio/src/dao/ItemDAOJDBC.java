@@ -30,29 +30,44 @@ public class ItemDAOJDBC implements ItemDAO {
 		Connection connection = this.dataSource.getConnection();
 		int generatedKey = 0;
 		try {
-			String insert = "insert into item (producer, model, price, lastBid, ttl, description, category, seller, buy_now, bid ) values (?,?,?,?,?,?,?,?,?,?)";
+			String insert = "insert into item (producer, model, price, ttl, description, category, seller, buy_now, bid ) values (?,?,?,?,?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+			System.out.println();
+			System.out.println("item dao jdbc");
+			System.out.println("producer : " + item.getProducer() + " \n model : " + item.getModel()
+					+ " \n minimum buy price : " + item.getPrice() + " \n category :  " + item.getCategory().getId()
+					+ " \n time : " + item.getTimeToLive() + " \n bid : " + item.isBid() + " \n buy_now : "
+					+ item.isBuy_now() + " \n description :  " + item.getDescription() + " \n last bid :  "
+					+ " \n user : " + item.getSeller().getId());
+			System.out.println("-------------------");
+			System.out.println();
+
 			statement.setString(1, item.getProducer());
 			statement.setString(2, item.getModel());
 			statement.setFloat(3, item.getPrice());
-			statement.setFloat(4, item.getLastBid());
-			statement.setDate(5, item.getTimeToLive());
-			statement.setString(6, item.getDescription());
-			statement.setInt(7, item.getCategory().getId());
-			statement.setInt(8, item.getSeller().getId());
-			statement.setBoolean(9, item.isBuy_now());
-			statement.setBoolean(10, item.isBid());
-			statement.executeUpdate();
+			statement.setDate(4, item.getTimeToLive());
+			statement.setString(5, item.getDescription());
+			statement.setInt(6, item.getCategory().getId());
+			statement.setInt(7, item.getSeller().getId());
+			statement.setBoolean(8, item.isBuy_now());
+			statement.setBoolean(9, item.isBid());
+			// statement.executeUpdate();
+			statement.execute();
 
 			ResultSet resultSet = statement.getGeneratedKeys();
 			if (resultSet.next()) {
 				generatedKey = resultSet.getInt(1);
+				System.out.println("chiave generata in item dao jdbc " + generatedKey);
+			} else {
+				System.out.println("error getting id - ItemDAOJDBC");
 			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			String message = e.getMessage();
 			if (message.contains("Duplicate entry")) {
 				status = -2;
+				System.out.println("duplicate");
 			}
 			throw new PersistenceException(e.getMessage());
 		} finally {
@@ -81,14 +96,13 @@ public class ItemDAOJDBC implements ItemDAO {
 	public ArrayList<CompleteItem> findAllUserItems(String email) {
 
 		Connection connection = this.dataSource.getConnection();
-		Connection connection1 = this.dataSource.getConnection();
 		ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
 		ArrayList<Item> items = new ArrayList<>();
 
 		try {
 
 			PreparedStatement statement;
-			String query = "select * from item, user where user.email = ? && item.seller = user.id;";
+			String query = "select * from item, user where user.email = ? && item.seller = user.id";
 			statement = connection.prepareStatement(query);
 			statement.setString(1, email);
 			ResultSet result = statement.executeQuery();
@@ -98,7 +112,6 @@ public class ItemDAOJDBC implements ItemDAO {
 				item.setProducer(result.getString(2));
 				item.setModel(result.getString(3));
 				item.setPrice(result.getFloat(4));
-				item.setLastBid(result.getFloat(5));
 				item.setTimeToLive(result.getDate(6));
 				item.setDescription(result.getString(7));
 				item.setCategory(new Category(result.getString(8)));
@@ -107,14 +120,14 @@ public class ItemDAOJDBC implements ItemDAO {
 				items.add(item);
 			}
 
-			connection.close();
+			//connection.close();
 
 			for (Item currentItem : items) {
 				Paths paths = new Paths();
 				CompleteItem completeItem = new CompleteItem();
 				PreparedStatement statement1;
 				String query1 = "select * from path where path.item_id = ?";
-				statement1 = connection1.prepareStatement(query1);
+				statement1 = connection.prepareStatement(query1);
 				statement1.setInt(1, currentItem.getId());
 				ResultSet result1 = statement1.executeQuery();
 
@@ -132,7 +145,7 @@ public class ItemDAOJDBC implements ItemDAO {
 			throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
-				connection1.close();
+				connection.close();
 			} catch (SQLException e) {
 				throw new PersistenceException(e.getMessage());
 			}
@@ -147,22 +160,44 @@ public class ItemDAOJDBC implements ItemDAO {
 	}
 
 	@Override
-	public void delete(Item item) {
-		// TODO Auto-generated method stub
+	public void delete(int id, String email) {
 
+		// DELETE FROM `progetto_siw`.`user` WHERE `id`='9'
+		// and`email`='mariotorritti@gmail.com';
+
+		Connection connection = this.dataSource.getConnection();
+		try {
+			String delete = "delete i from item i, user u where i.id = ? and i.seller = u.id and u.email = ?";
+			PreparedStatement statement = connection.prepareStatement(delete);
+			statement.setInt(1, id);
+			statement.setString(2, email);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
 	}
 
 	@Override
 	public void setPath(int item_id, ArrayList<String> paths) {
 
-		for (String path : paths) {
-			Connection connection = this.dataSource.getConnection();
-			try {
+		Connection connection = this.dataSource.getConnection();
+		try {
+			for (String path : paths) {
+
 				String insert = "insert into path (item_id, path) values (?,?)";
 				PreparedStatement statement = connection.prepareStatement(insert);
+				System.out.println("item id: " + item_id + "itemDAOJDBC setPath");
+				System.out.println("paths: " + paths.size() + "itemDAOJDBC setPath");
 				statement.setInt(1, item_id);
 				statement.setString(2, path);
-				statement.executeUpdate();
+				statement.execute();
+			}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new PersistenceException(e.getMessage());
@@ -174,6 +209,5 @@ public class ItemDAOJDBC implements ItemDAO {
 					throw new PersistenceException(e.getMessage());
 				}
 			}
-		}
 	}
 }

@@ -960,8 +960,8 @@ h2.title {
 }
 
 .productinfo img {
-	width: 150px;
-	height: auto;
+	/*width: auto;*/
+	height: 150px;
 }
 
 .productinfo {

@@ -11,6 +11,6 @@ public interface ItemDAO{
 	public void setPath(int item_id, ArrayList<String> paths);
 	public ArrayList<CompleteItem> findAllUserItems(String email);  
 	public void update(Item item); //Update
-	public void delete(Item item); //Delete	
+	public void delete(int id, String email); //Delete	
 
 }

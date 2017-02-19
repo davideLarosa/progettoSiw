@@ -220,7 +220,9 @@
 							</div>
 						</c:if>
 					</div>
-					<div class="col-sm-4 col-sm-offset-1 signup-form">
+					<div class="signup-form">
+					<br/>
+					<br/>
 						<form id="notification" method="POST" action="#">
 							<span> <c:if test="${subscribed == 'no' }">
 									<input type="checkbox" />

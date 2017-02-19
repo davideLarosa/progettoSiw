@@ -1,7 +1,9 @@
+<%@page import="java.util.Calendar"%>
 <%@page import="model.CompleteItem"%>
 <%@page import="servlets.Sell"%>
 <%@page import="persistence.DBManager"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -205,9 +207,6 @@
 
 					</div>
 					<!--/category-productsr-->
-
-
-
 				</div>
 			</div>
 
@@ -220,37 +219,112 @@
 						ArrayList<CompleteItem> completeItems = DBManager.getInstance().getItemDAO()
 								.findAllUserItems((String) request.getSession().getAttribute("email"));
 
+						long currentDate = System.currentTimeMillis();
+
 						if (!completeItems.isEmpty()) {
 							for (CompleteItem item : completeItems) {
-								out.print("<div class=\"col-sm-4\">");
-								out.print("<div class=\"product-image-wrapper\">");
-								out.print("<div class=\"single-products\">");
-								out.print("<div class=\"productinfo text-center\">");
-								if (!item.getPaths().getRelativePaths().isEmpty()) {
-									out.print("<img src=\"" + item.getPaths().getRelativePath(0) + "\" alt=\"\" />");
+								if (item.getItem().getTimeToLive().getTime() > currentDate) {
+									out.print("<div class=\"col-sm-4\">");
+									out.print("<div class=\"product-image-wrapper\">");
+									out.print("<div class=\"single-products\">");
+									out.print("<div class=\"productinfo text-center\">");
+									if (!item.getPaths().getRelativePaths().isEmpty()) {
+										out.print("<img src=\"" + item.getPaths().getRelativePath(0) + "\" alt=\"\" />");
+									}
+									out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
+									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
+									out.print("</div>");
+									out.print("<div class=\"product-overlay\">");
+									out.print("<div class=\"overlay-content\">");
+									out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
+									out.print("<p>" + item.getItem().getDescription() + "</p>");
+									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
 								}
-								out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
-								out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
-								out.print(
-										"<a href=\"delete?" + item.getItem().getId() + "\" class=\"btn btn-default add-to-cart\">");
-								out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
-								out.print("</div>");
-								out.print("<div class=\"product-overlay\">");
-								out.print("<div class=\"overlay-content\">");
-								out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
-								out.print("<p>" + item.getItem().getDescription() + "</p>");
-								out.print(
-										"<a href=\"delete?" + item.getItem().getId() + "\" class=\"btn btn-default add-to-cart\">");
-								out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
-								out.print("</div>");
-								out.print("</div>");
-								out.print("</div>");
-								out.print("</div>");
-								out.print("</div>");
+							}
+						} else {
+							out.print(
+									"<div class=\"text-center\"> No items to sell yet! <a href=\"sell\">Start your selling experiece!</a></div>");
+						}
+					%>
 
+
+
+				</div>
+				<!--features_items-->
+			</div>
+		</div>
+	</div>
+	</section>
+
+	<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="left-sidebar">
+
+
+					<!--/category-productsr-->
+				</div>
+			</div>
+
+			<div class="col-sm-9 padding-right">
+				<div class="features_items">
+					<!--features_items-->
+
+					<%
+						boolean writeMessage = true;
+						if (!completeItems.isEmpty()) {
+							out.print("<h2 class=\"title text-center\">Expired Items</h2>");
+							for (CompleteItem item : completeItems) {
+								if (item.getItem().getTimeToLive().getTime() < currentDate) {
+									out.print("<div class=\"col-sm-4\">");
+									out.print("<div class=\"product-image-wrapper\">");
+									out.print("<div class=\"single-products\">");
+									out.print("<div class=\"productinfo text-center\">");
+									if (!item.getPaths().getRelativePaths().isEmpty()) {
+										out.print("<img src=\"" + item.getPaths().getRelativePath(0) + "\" alt=\"\" />");
+									}
+									out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
+									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
+									out.print("</div>");
+									out.print("<div class=\"product-overlay\">");
+									out.print("<div class=\"overlay-content\">");
+									out.print("<h2>€" + item.getItem().getPrice() + "</h2>");
+									out.print("<p>" + item.getItem().getDescription() + "</p>");
+									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+								} else {
+									if (writeMessage) {
+										out.print(noItemExipedMessage());
+										writeMessage = false;
+									}
+
+								}
 							}
 						}
 					%>
+					<%!String noItemExipedMessage() {
+		return "<div class=\"text-center\"> Perfect! No items has expired!</div>";
+	}%>
 
 
 

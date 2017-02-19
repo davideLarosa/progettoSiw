@@ -41,7 +41,6 @@ public class Sell extends HttpServlet {
 	private String buy_now;
 	private String description;
 	private int thumbNumber = 0;
-	private float lastBid;
 	private String path;
 	private ArrayList<String> paths;
 	private int item_id;
@@ -64,13 +63,12 @@ public class Sell extends HttpServlet {
 
 		this.producer = "Producer";
 		this.model = "Model";
-		this.minimum_buy_price = "0.01";
+		this.minimum_buy_price = "0.50";
 		this.category = "Category_1";
 		this.time = String.valueOf(System.currentTimeMillis());
 		this.bid = String.valueOf("0");
 		this.buy_now = String.valueOf("0");
 		this.description = "Description";
-		this.lastBid = 0;
 		this.paths = new ArrayList<String>();
 		this.item_id = 0;
 		// configures upload settings
@@ -197,6 +195,7 @@ public class Sell extends HttpServlet {
 							item.write(storeFile);
 							this.paths.add(storeFile.getPath());
 							this.thumbNumber++;
+
 							request.setAttribute("message", "Upload has been done successfully!");
 						}
 					}
@@ -207,7 +206,16 @@ public class Sell extends HttpServlet {
 			ex.printStackTrace();
 			request.setAttribute("message", "There was an error please retry later ");
 		}
+
+		System.out.println("itemid = " + item_id);
+		System.out.println("paths");
+		for (String s : paths) {
+			System.out.println(s);
+		}
+		System.out.println();
+
 		DBManager.getInstance().getItemDAO().setPath(item_id, paths);
+		this.path = null;
 		// redirects client to message page
 		getServletContext().getRequestDispatcher("/sell.jsp").forward(request, response);
 	}
@@ -233,19 +241,19 @@ public class Sell extends HttpServlet {
 			calendar.add(Calendar.MONTH, 3);
 		}
 		Date date = new Date(calendar.getTimeInMillis());
-		
+
 		System.out.println();
-		System.out.println();
+		System.out.println("Sell .java");
 		System.out.println("producer : " + this.producer + " \n model : " + this.model + " \n minimum buy price : "
 				+ this.minimum_buy_price + " \n category :  " + this.category + " \n time : " + this.time + " \n bid : "
 				+ this.bid + " \n buy_now : " + this.buy_now + " \n description :  " + this.description
-				+ " \n last bid :  " + this.lastBid + " \n user : " + user.getId());
+				+ " \n last bid :  " + " \n user : " + user.getId());
 		System.out.println();
-		System.out.println();
-		
-		int itemId = DBManager.getInstance().getItemDAO()
-				.save(new Item(this.producer, this.model, this.minimum_buy_price, this.lastBid, date, this.category,
-						user, this.description, this.buy_now, this.bid));
+		System.out.println("-------------");
+
+		int itemId = DBManager.getInstance().getItemDAO().save(new Item(this.producer, this.model,
+				this.minimum_buy_price, date, this.category, user, this.description, this.buy_now, this.bid));
+
 		this.item_id = itemId;
 		return String.valueOf(itemId);
 	}

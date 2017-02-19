@@ -228,8 +228,8 @@
 					</div>
 					<div class="text-center">
 						<p>
-							Now you can go back to your <a href="modify">Account</a> or <a
-								href="sell">Sell</a> another item.
+							Now you can go back to your <a href="modify">Account</a>, <a
+								href="sell">Sell</a> another item or check you <a href="myItems.jsp">items</a>.
 						</p>
 					</div>
 
@@ -268,13 +268,10 @@
 									Model<input type="text" name="model" id="model"
 										value="${model }" placeholder="${model }" /> <i
 										class="fa fa-eur"></i> Minimum buy price <input type="number"
-										min="0.01" step="0.01" name="minimum_buy_price"
+										min="0.5" step="0.5" name="minimum_buy_price"
 										id="minimum_buy_price" value="${minimum_buy_price }"
-										placeholder="${minimum_buy_price }" /> <i class="fa fa-eur"></i>
-									Current best bid <input type="text" name="best_bid"
-										id="best_bid" value="${best_bid }" placeholder="${best_bid }"
-										readonly="readonly" /> <i class="fa fa-bars"></i> Category <select
-										name="category" id="category">
+										placeholder="${minimum_buy_price }" /><i class="fa fa-bars"></i>
+									Category <select name="category" id="category">
 										<%
 											List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
 													if (categories != null) {
@@ -345,8 +342,6 @@
 									<button type="submit" class="btn btn-default" id="save_btn"
 										name="save_btn">Upload &amp; Save</button>
 								</form>
-
-
 
 							</div>
 						</div>

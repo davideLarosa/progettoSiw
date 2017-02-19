@@ -20,13 +20,12 @@ public class Item {
 
 	}
 
-	public Item(int id, String producer, String model, float price, float lastBid, Date timeToLive, Category category,
-			User seller, String description, boolean buy_now, boolean bid) {
+	public Item(int id, String producer, String model, float price, Date timeToLive, Category category, User seller,
+			String description, boolean buy_now, boolean bid) {
 		this.id = id;
 		this.producer = producer;
 		this.model = model;
 		this.price = price;
-		this.lastBid = lastBid;
 		this.timeToLive = timeToLive;
 		this.category = category;
 		this.seller = seller;
@@ -35,12 +34,11 @@ public class Item {
 		this.bid = bid;
 	}
 
-	public Item(String producer, String model, String price, float lastBid, Date timeToLive, String category,
-			User seller, String description, String buy_now, String bid) {
+	public Item(String producer, String model, String price, Date timeToLive, String category, User seller,
+			String description, String buy_now, String bid) {
 		this.producer = producer;
 		this.model = model;
 		this.price = Float.valueOf(price);
-		this.lastBid = lastBid;
 		this.timeToLive = timeToLive;
 		this.category = DBManager.getInstance().getCategoryDAO().findByPrimaryKey(category);
 		this.seller = DBManager.getInstance().getUserDAO().findByPrimaryKey(seller.getEmail(), seller.getPassword());
