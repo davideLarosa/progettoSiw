@@ -1,3 +1,9 @@
+<%@page import="java.util.Calendar"%>
+<%@page import="model.CompleteItem"%>
+<%@page import="servlets.Sell"%>
+<%@page import="persistence.DBManager"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -11,7 +17,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Account | E-Shopper</title>
+<title>My Cart | E-Shopper</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/prettyPhoto.css" rel="stylesheet">
@@ -161,17 +167,16 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<div class="left-sidebar">
-					<h2>MY ACCOUNT</h2>
+					<h2>My account</h2>
 					<div class="panel-group category-products" id="accordian">
 						<!--category-productsr-->
-
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span> <i class="fa fa-angle-right"></i> <a
-										href="modify">Info</a></span>
+									<a href="modify">Info</a>
 								</h4>
 							</div>
+
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
@@ -179,82 +184,47 @@
 									<a href="mailingList">Notifications</a>
 								</h4>
 							</div>
+
 						</div>
+
 						<div class="panel panel-default">
+
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<a href="sell">Sell</a>
+
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="myItems.jsp">My items</a>
+									<span><a href="myItems.jsp">My items</a></span>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span><a href="cart.jsp">Cart</a></span>
+									<span><i class="fa fa-angle-right"></i><a
+										href="cart.jsp">Cart</a></span>
 								</h4>
 							</div>
 						</div>
 					</div>
-					<!--/category-products-->
+					<!--/category-productsr-->
 				</div>
 			</div>
 
 			<div class="col-sm-9 padding-right">
 				<div class="features_items">
 					<!--features_items-->
-					<h2 class="title-details text-center">Info</h2>
-					<div class="text-center">
-						<c:if test="${email == null }">
-							<div class="error_message">
-								<p>
-									You must <a id="error_a" class="error_a" href="login.jsp">login</a>
-									first
-								</p>
-							</div>
-						</c:if>
-						<c:if test="${update == null && email != null}">
-							<p>From this page you can modify your account informations</p>
-						</c:if>
-						<c:if test="${update == 'ok'}">
-							<div class="ok_message">
-								<p>Data update done correctly!!!</p>
-							</div>
-						</c:if>
-					</div>
-					<div class="col-sm-8 col-sm-offset-1 signup-form">
-						<form id="modify_form_data">
-							<i class="fa fa-user"></i> Name <input type="text" name="name"
-								id="name" value="${name }" placeholder="${name }" /> <i
-								class="fa fa-user"></i> Surname <input type="text"
-								name="surname" id="surname" value="${surname }"
-								placeholder="${surname }" /> <i class="fa fa-envelope-o"></i>
-							Email** <input type="email" name="email" id="email"
-								value="${email }" placeholder="${email }" readonly="readonly" />
-							<i class="fa fa-phone"></i>/<i class="fa fa-mobile"></i> Phone <input
-								type="tel" name="phone" id="phone" value="${phone }"
-								placeholder="${phone }" /> <i class="fa fa-map-marker"></i>
-							Address <input type="text" name="address" id="address"
-								value="${address }" placeholder="${address }" /> <i
-								class="fa fa-key"></i> Password* <input type="password"
-								name="password" id="password" placeholder="New password" /> <i
-								class="fa fa-key"></i> Password* <input type="password"
-								name="confirm" id="confirm" placeholder="Confirm" /> <span><button
-									class="btn btn-default" id="save_btn" name="save_btn" disabled>Save</button></span>
-						</form>
-						<div class="description">
-							<p>* You must complete these field to confirm your changes</p>
-						</div>
-						<div class="description">
-							<p>** You cannot modify your email</p>
-						</div>
-					</div>
+					<h2 class="title text-center">My Items</h2>
+
+
+					<a href="getCart">carrello</a>
+
+
 
 				</div>
 				<!--features_items-->
@@ -262,6 +232,8 @@
 		</div>
 	</div>
 	</section>
+
+
 
 
 	<footer id="footer"> <!--Footer-->
@@ -439,7 +411,6 @@
 			</div>
 		</div>
 	</div>
-
 	</footer>
 	<!--/Footer-->
 
@@ -450,6 +421,5 @@
 	<script src="assets/js/price-range.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-	<script src="assets/js/account.js"></script>
 </body>
 </html>

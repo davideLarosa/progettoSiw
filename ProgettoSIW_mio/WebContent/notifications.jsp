@@ -193,6 +193,13 @@
 								</h4>
 							</div>
 						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span><a href="cart.jsp">Cart</a></span>
+								</h4>
+							</div>
+						</div>
 					</div>
 					<!--/category-products-->
 				</div>
@@ -221,8 +228,7 @@
 						</c:if>
 					</div>
 					<div class="signup-form">
-					<br/>
-					<br/>
+						<br /> <br />
 						<form id="notification" method="POST" action="#">
 							<span> <c:if test="${subscribed == 'no' }">
 									<input type="checkbox" />

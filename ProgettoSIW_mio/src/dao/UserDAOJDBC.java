@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.List;
 
+import com.mysql.cj.api.jdbc.Statement;
+
+import model.Cart;
 import model.User;
 import persistence.DataSource;
 import persistence.PersistenceException;
@@ -45,7 +48,7 @@ public class UserDAOJDBC implements UserDAO {
 			} catch (SQLException e) {
 				status = 2;
 				e.printStackTrace();
-//				 throw new RuntimeException(e.getMessage());
+				// throw new RuntimeException(e.getMessage());
 			}
 		}
 
@@ -73,14 +76,14 @@ public class UserDAOJDBC implements UserDAO {
 			}
 
 		} catch (Exception e) {
-//			 return null;
-			 throw new PersistenceException(e.getMessage());
+			// return null;
+			throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-//				return null;
-				 throw new PersistenceException(e.getMessage());
+				// return null;
+				throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -114,14 +117,14 @@ public class UserDAOJDBC implements UserDAO {
 			}
 
 		} catch (Exception e) {
-//			return null;
-			 throw new PersistenceException(e.getMessage());
+			// return null;
+			throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
-//				return null;
-				 throw new PersistenceException(e.getMessage());
+				// return null;
+				throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -164,13 +167,13 @@ public class UserDAOJDBC implements UserDAO {
 
 		} catch (Exception e) {
 			// TODO
-			 throw new PersistenceException(e.getMessage());
+			throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
 				// TODO
-				 throw new PersistenceException(e.getMessage());
+				throw new PersistenceException(e.getMessage());
 			}
 		}
 		try {
@@ -183,8 +186,7 @@ public class UserDAOJDBC implements UserDAO {
 
 		Connection newConnection = this.dataSource.getConnection();
 
-		String update = "UPDATE user SET name=?, surname=?, phone=?, address=?, password=?, seller=? WHERE email=\""
-				+ newData.getEmail() + "\"";
+		String update = "UPDATE user SET name=?, surname=?, phone=?, address=?, password=? WHERE email=?";
 
 		try {
 			PreparedStatement statement = (PreparedStatement) newConnection.prepareStatement(update);
@@ -193,6 +195,7 @@ public class UserDAOJDBC implements UserDAO {
 			statement.setString(3, newData.getPhone());
 			statement.setString(4, newData.getAddress());
 			statement.setString(5, newData.getPassword());
+			statement.setString(6, newData.getEmail());
 			statement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -218,5 +221,119 @@ public class UserDAOJDBC implements UserDAO {
 	public void delete(User user) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Cart getCart(String email) {
+		System.out.println(email);
+		Connection connection = this.dataSource.getConnection();
+		Cart cart = new Cart();
+
+		try {
+			PreparedStatement statement;
+			String getCart = "select cartItemsList.item_id from cartItemsList, cart, user "
+					+ "where user.email = ? && user.id = cart.user_id && cartItemsList.cart_id = cart.id";
+			statement = connection.prepareStatement(getCart);
+			statement.setString(1, email);
+			ResultSet result = statement.executeQuery();
+
+			while (result.next()) {
+				cart.addItem(result.getInt("item_id"));
+			}
+
+			// result.close();
+
+			System.out.println("cartId " + cart.getId());
+			System.out.println("userId " + cart.getUserId());
+			for (Integer i : cart.getItems()) {
+				System.out.println("item id: " + i);
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return cart;
+	}
+
+	@Override
+	public int getCartId(String email) {
+		Connection connection = this.dataSource.getConnection();
+		int cartId = 0;
+		try {
+			PreparedStatement statement;
+			String query = "select cart.id from cart where cart.user_id = user.id && user.email = ?";
+			statement = connection.prepareStatement(query);
+			statement.setString(1, email);
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				cartId = result.getInt("id");
+			}
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return cartId;
+	}
+
+	@Override
+	public int addToCart(String email, int item_id) {
+		Connection connection = this.dataSource.getConnection();
+		int user_id = 0;
+		int cart_id = 0;
+		int status = -1;
+		try {
+			String getUserId = "select id from user where email=?";
+			PreparedStatement getUser_id = connection.prepareStatement(getUserId);
+			getUser_id.setString(1, email);
+			ResultSet resultSet = getUser_id.executeQuery();
+			if (resultSet.next()) {
+				user_id = resultSet.getInt(1);
+			}
+
+			String getCartId = "select id from cart where user_id = ?";
+			PreparedStatement statement = connection.prepareStatement(getCartId);
+			statement.setInt(1, user_id);
+
+			ResultSet resultSet2 = statement.executeQuery();
+			if (resultSet2.next()) {
+				cart_id = resultSet2.getInt(1);
+			}
+
+			String addItem = "insert into cartItemsList (cart_id, item_id) values (?,?)";
+			PreparedStatement statement3 = connection.prepareStatement(addItem, Statement.RETURN_GENERATED_KEYS);
+			statement3.setInt(1, cart_id);
+			statement3.setInt(2, item_id);
+			statement3.execute();
+			ResultSet resultSet3 = statement3.getGeneratedKeys();
+
+			int generatedKey = 0;
+			if (resultSet3.next()) {
+				generatedKey = resultSet3.getInt(1);
+				System.out.println("generated key is " + generatedKey);
+			}
+			status = 0;
+		} catch (SQLException e) {
+			status = 1;
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				status = 2;
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return status;
 	}
 }

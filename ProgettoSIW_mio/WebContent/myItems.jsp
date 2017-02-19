@@ -204,7 +204,13 @@
 								</h4>
 							</div>
 						</div>
-
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span><a href="cart.jsp">Cart</a></span>
+								</h4>
+							</div>
+						</div>
 					</div>
 					<!--/category-productsr-->
 				</div>
@@ -287,6 +293,7 @@
 							out.print("<h2 class=\"title text-center\">Expired Items</h2>");
 							for (CompleteItem item : completeItems) {
 								if (item.getItem().getTimeToLive().getTime() < currentDate) {
+									writeMessage = false;
 									out.print("<div class=\"col-sm-4\">");
 									out.print("<div class=\"product-image-wrapper\">");
 									out.print("<div class=\"single-products\">");
@@ -323,7 +330,7 @@
 						}
 					%>
 					<%!String noItemExipedMessage() {
-		return "<div class=\"text-center\"> Perfect! No items has expired!</div>";
+		return "<div class=\"text-center\"> Perfect! No items has expired!</div><br/><br/>";
 	}%>
 
 

@@ -213,6 +213,13 @@
 								</h4>
 							</div>
 						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span><a href="cart.jsp">Cart</a></span>
+								</h4>
+							</div>
+						</div>
 					</div>
 					<!--/category-products-->
 				</div>
@@ -229,7 +236,8 @@
 					<div class="text-center">
 						<p>
 							Now you can go back to your <a href="modify">Account</a>, <a
-								href="sell">Sell</a> another item or check you <a href="myItems.jsp">items</a>.
+								href="sell">Sell</a> another item or check you <a
+								href="myItems.jsp">items</a>.
 						</p>
 					</div>
 

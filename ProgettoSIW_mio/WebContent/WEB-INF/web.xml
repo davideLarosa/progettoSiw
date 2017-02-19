@@ -80,4 +80,14 @@
     <servlet-name>DeleteItem</servlet-name>
     <url-pattern>/delete</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>GetCart</display-name>
+    <servlet-name>GetCart</servlet-name>
+    <servlet-class>servlets.GetCart</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetCart</servlet-name>
+    <url-pattern>/getCart</url-pattern>
+  </servlet-mapping>
 </web-app>
