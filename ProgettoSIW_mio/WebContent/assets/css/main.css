@@ -2623,8 +2623,24 @@ textarea#description{
 	margin-bottom: 20px;
 }
 
+button.searchButton{
+	height: 35px;
+    /*color: #333;*/
+    background-color: #f0f0e9;
+    /*border-color: #f0f0e9;*/
+    padding: 5px;
+    margin-left: -30px;
+    /*font-style: inherit;
+    font-family: inherit;
+    text-decoration: none;*/
+    border: none;
+    position: inherit;
+    padding-top: 3px;
+}
 
-
+div.search_box.pull-right{
+	
+}
 /*************************
 ******* MY ITEMS CSS *****
 **************************/

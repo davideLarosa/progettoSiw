@@ -120,10 +120,10 @@
 		<!--header-bottom-->
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-9">
+				<div class="col-sm-8">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
-							data-target=".navbar-collapse">
+							data-target=".navbar-collapse"style="float: left;">
 							<span class="sr-only">Toggle navigation</span> <span
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
@@ -151,9 +151,15 @@
 						</ul>
 					</div>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-lg-1">
 					<div class="search_box pull-right">
-						<input type="text" placeholder="Search" />
+						<form action="search" method="post">
+							<span> <input type="text" placeholder="Search" name="search" />
+								<button type="submit" class="searchButton">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</form>
 					</div>
 				</div>
 			</div>

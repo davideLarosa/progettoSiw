@@ -120,7 +120,7 @@ public class ItemDAOJDBC implements ItemDAO {
 				items.add(item);
 			}
 
-			//connection.close();
+			// connection.close();
 
 			for (Item currentItem : items) {
 				Paths paths = new Paths();
@@ -198,16 +198,48 @@ public class ItemDAOJDBC implements ItemDAO {
 				statement.setString(2, path);
 				statement.execute();
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				throw new PersistenceException(e.getMessage());
-			} finally {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-					throw new PersistenceException(e.getMessage());
-				}
 			}
+		}
+	}
+
+	@Override
+	public ArrayList<Paths> getPaths(ArrayList<Integer> itemsIDs) {
+
+		Connection connection = this.dataSource.getConnection();
+		ArrayList<Paths> itemPaths = new ArrayList<Paths>();
+		ArrayList<String> paths = new ArrayList<String>();
+		try {
+			PreparedStatement statement;
+			for (Integer currentItemId : itemsIDs) {
+				String query = "select path.path from path where item_id = ?";
+				statement = connection.prepareStatement(query);
+				statement.setInt(1, currentItemId);
+				ResultSet result = statement.executeQuery();
+				while (result.next()) {
+					String newPath = result.getString(1);
+					paths.add(newPath);
+				}
+				itemPaths.add(new Paths(currentItemId, paths));
+			}
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return itemPaths;
+
 	}
 }

@@ -14,6 +14,11 @@ public class Paths {
 		this.paths = new ArrayList<String>();
 	}
 
+	public Paths(int itemId, ArrayList<String> paths) {
+		this.itemId = itemId;
+		this.paths = paths;
+	}
+
 	public void addPath(String path) {
 		this.paths.add(path);
 	}
@@ -46,6 +51,26 @@ public class Paths {
 		this.paths = paths;
 	}
 
+	public ArrayList<String> getRelativePaths(ArrayList<Paths> paths) {
+		ArrayList<String> toReturn = new ArrayList<String>();
+
+		for (Paths patsToModify : paths) {
+			for (String pathToModify : patsToModify.getPaths()) {
+
+				String[] tempPhat = pathToModify.split("/");
+				String relativePath = "";
+				for (int i = 8; i < tempPhat.length; i++) {
+					if (i < tempPhat.length - 1)
+						relativePath += tempPhat[i] + "/";
+					else
+						relativePath += tempPhat[i];
+				}
+				toReturn.add(relativePath);
+			}
+		}
+		return toReturn;
+	}
+
 	public ArrayList<String> getRelativePaths() {
 		ArrayList<String> toReturn = new ArrayList<String>();
 
@@ -64,8 +89,8 @@ public class Paths {
 		return toReturn;
 	}
 
-	public String getRelativePath(int index){
+	public String getRelativePath(int index) {
 		return getRelativePaths().get(index);
 	}
-	
+
 }
