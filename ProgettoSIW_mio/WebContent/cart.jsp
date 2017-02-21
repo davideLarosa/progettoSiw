@@ -1,3 +1,5 @@
+<%@page import="model.Paths"%>
+<%@page import="model.Cart"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="model.CompleteItem"%>
 <%@page import="servlets.Sell"%>
@@ -96,8 +98,16 @@
 								</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
-							<li><a href="html/cart.html"><i
-									class="fa fa-shopping-cart"></i> Cart</a></li>
+							<li>
+								<%
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals(""))
+										out.print("<a href=\"cart.jsp\">");
+									else {
+										out.print("<a href=\"login.jsp\">");
+									}
+								%> <i class="fa fa-shopping-cart"></i> Cart </a>
+							</li>
 							<li><c:choose>
 									<c:when test="${username == null }">
 										<a href="login.jsp" class="active"><i class="fa fa-unlock"></i>
@@ -123,7 +133,7 @@
 				<div class="col-sm-8">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
-							data-target=".navbar-collapse"style="float: left;">
+							data-target=".navbar-collapse" style="float: left;">
 							<span class="sr-only">Toggle navigation</span> <span
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
@@ -138,23 +148,28 @@
 									<li><a href="shop.html">Products</a></li>
 									<li><a href="product-details.html">Product Details</a></li>
 									<li><a href="checkout.html">Checkout</a></li>
-									<li><a href="cart.html">Cart</a></li>
-									<li><a href="login.html" class="active">Login</a></li>
+									<li>
+										<%
+											if (request.getSession().getAttribute("email") != null
+													&& !request.getSession().getAttribute("email").equals("")) {
+												out.print("<a href=\"cart.jsp\">Cart</a>");
+											} else {
+												out.print("<a href=\"login.jsp\">Cart</a>");
+											}
+										%>
+									</li>
+									<li><a href="login.jsp" class="active">Login</a></li>
 								</ul></li>
-							<li class="dropdown"><a href="#">Blog<i
-									class="fa fa-angle-down"></i></a>
-								<ul role="menu" class="sub-menu">
-									<li><a href="html/blog.html">Blog List</a></li>
-									<li><a href="html/blog-single.html">Blog Single</a></li>
-								</ul></li>
+
 							<li><a href="html/contact-us.html">Contact</a></li>
 						</ul>
 					</div>
 				</div>
-				<div class="col-lg-1">
+				<div class="col-lg-2">
 					<div class="search_box pull-right">
 						<form action="search" method="post">
-							<span> <input type="text" placeholder="Search" name="search" />
+							<span> <input type="text" placeholder="Search"
+								name="search" class="search" />
 								<button type="submit" class="searchButton">
 									<i class="fa fa-search"></i>
 								</button>
@@ -205,15 +220,29 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span><a href="myItems.jsp">My items</a></span>
+									<span> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"myItems.jsp\">My items</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">My items</a>");
+ 	}
+ %>
+									</span>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span><i class="fa fa-angle-right"></i><a
-										href="cart.jsp">Cart</a></span>
+									<span><i class="fa fa-angle-right"></i> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"cart.jsp\">Cart</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">Cart</a>");
+ 	}
+ %> </span>
 								</h4>
 							</div>
 						</div>
@@ -228,7 +257,50 @@
 					<h2 class="title text-center">My Items</h2>
 
 
-					<a href="getCart">carrello</a>
+					<%
+						ArrayList<CompleteItem> cartItems = DBManager.getInstance().getUserDAO()
+								.getCartPaths((String) request.getSession().getAttribute("email"));
+
+						long currentDate = System.currentTimeMillis();
+
+						if (!cartItems.isEmpty()) {
+							for (CompleteItem item : cartItems) {
+
+								if (item.getItem().getTimeToLive().getTime() > currentDate) {
+									out.print("<div class=\"col-sm-4\">");
+									out.print("<div class=\"product-image-wrapper\">");
+									out.print("<div class=\"single-products\">");
+									out.print("<div class=\"productinfo text-center\">");
+									if (!item.getPaths().getRelativePaths().isEmpty()) {
+										out.print("<img src=\"" + item.getPaths().getRelativePath(0) + "\" alt=\"\" />");
+									}
+									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
+									out.print("</div>");
+									out.print("<div class=\"product-overlay\">");
+									out.print("<div class=\"overlay-content\">");
+									out.print("<p>" + item.getItem().getDescription() + "</p>");
+									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+								}
+							}
+						} else {
+							out.print("<div class=\"text-center\"> Your cart is empty!</a></div>");
+						}
+					%>
+
+
+
 
 
 

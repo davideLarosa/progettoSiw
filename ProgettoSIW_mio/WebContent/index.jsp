@@ -1,8 +1,14 @@
+<%@page import="java.io.InputStream"%>
+<%@page import="persistence.DBManager"%>
+<%@page import="com.mysql.cj.mysqlx.protobuf.MysqlxCrud.Find"%>
+<%@page import="java.util.Scanner"%>
+<%@page import="java.io.File"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="true"%>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -79,26 +85,28 @@
 					<div class="shop-menu pull-right">
 						<ul class="nav navbar-nav">
 							<li><c:choose>
-										<c:when test="${username == null }">
-											<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
-										</c:when>
-										<c:otherwise>
-											<a href="modify"><i class="fa fa-user"></i> Welcome ${username } </a>
-										</c:otherwise>
-									</c:choose></li>
+									<c:when test="${username == null }">
+										<a href="login.jsp"><i class="fa fa-user"></i> Account</a>
+									</c:when>
+									<c:otherwise>
+										<a href="modify"><i class="fa fa-user"></i> Welcome
+											${username } </a>
+									</c:otherwise>
+								</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
 							<li><a href="html/cart.html"><i
 									class="fa fa-shopping-cart"></i> Cart</a></li>
-							<li> <c:choose>
-										<c:when test="${username == null }">
-											<a href="login.jsp" class="active"><i class="fa fa-unlock"></i> Login</a>
-										</c:when>
-										<c:otherwise>
-											<a href="logout" class="active"><i class="fa fa-lock"></i> Logout</a>
-										</c:otherwise>
-									</c:choose>
-							</li>
+							<li><c:choose>
+									<c:when test="${username == null }">
+										<a href="login.jsp" class="active"><i class="fa fa-unlock"></i>
+											Login</a>
+									</c:when>
+									<c:otherwise>
+										<a href="logout" class="active"><i class="fa fa-lock"></i>
+											Logout</a>
+									</c:otherwise>
+								</c:choose></li>
 						</ul>
 					</div>
 				</div>

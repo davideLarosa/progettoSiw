@@ -11,16 +11,20 @@ public class Search extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		request.getRequestDispatcher("login.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		String searchQuery = request.getParameter("search");
-		System.out.println();
-		System.out.println(request.getParameter("search"));
-		doGet(request, response);
+
+		if (searchQuery != null && !searchQuery.equals("")) {
+			request.setAttribute("search", searchQuery);
+			request.getRequestDispatcher("search.jsp").forward(request, response);
+		} else {
+			doGet(request, response);
+		}
 	}
 
 }

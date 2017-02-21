@@ -1,3 +1,9 @@
+<%@page import="java.util.Calendar"%>
+<%@page import="model.CompleteItem"%>
+<%@page import="servlets.Sell"%>
+<%@page import="persistence.DBManager"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -6,14 +12,12 @@
 <%@ page session="true"%>
 <html lang="en">
 <head>
-<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Login | E-Shopper</title>
+<title>Search | E-Shopper</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/prettyPhoto.css" rel="stylesheet">
@@ -22,8 +26,8 @@
 <link href="assets/css/main.css" rel="stylesheet">
 <link href="assets/css/responsive.css" rel="stylesheet">
 <!--[if lt IE 9]>
-    <script src="../assets/js/html5shiv.js"></script>
-    <script src="../assets/js/respond.min.js"></script>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
     <![endif]-->
 <link rel="shortcut icon" href="favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="144x144"
@@ -36,6 +40,7 @@
 	href="images/ico/apple-touch-icon-57-precomposed.png">
 </head>
 <!--/head-->
+
 <body>
 	<header id="header"> <!--header-->
 	<div class="header_top">
@@ -160,7 +165,7 @@
 				</div>
 				<div class="col-lg-2">
 					<div class="search_box pull-right">
-						<form action="search" method="post" class="searchForm">
+						<form action="search" method="post">
 							<span> <input type="text" placeholder="Search"
 								name="search" class="search" />
 								<button type="submit" class="searchButton">
@@ -177,84 +182,148 @@
 
 	<!--/header-->
 
-	<section id="login-form"> <!--form-->
+	<section>
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-4 col-sm-offset-1">
-				<div class="login-form">
-					<!--login form-->
-					<h2>Login to your account</h2>
-					<div class="servletMessage" id="servletMessage">
-						<c:if test="${loginMessage!=null }">
-							<div class="error_message">
-								<c:out value="${loginMessage}"></c:out>
+			<div class="col-sm-3">
+				<div class="left-sidebar">
+					<h2>My account</h2>
+					<div class="panel-group category-products" id="accordian">
+						<!--category-productsr-->
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="modify">Info</a>
+								</h4>
 							</div>
-						</c:if>
-						<c:if test="${loginMessge==null }">
-							<%
-								request.getSession().removeAttribute("loginMessage");
-							%>
-						</c:if>
+
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="mailingList">Notifications</a>
+								</h4>
+							</div>
+
+						</div>
+
+						<div class="panel panel-default">
+
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href="sell">Sell</a>
+
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"myItems.jsp\">My items</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">My items</a>");
+ 	}
+ %>
+									</span>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<span><i class="fa fa-angle-right"></i> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"cart.jsp\">Cart</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">Cart</a>");
+ 	}
+ %> </span>
+								</h4>
+							</div>
+						</div>
 					</div>
-					<form id="login-form" action="login" method="POST">
-						<input type="email" placeholder="Email Address" name="email"
-							required /> <input type="password" placeholder="Password"
-							name="password" required />
-						<button type="submit" id="login" class="btn btn-default">Login</button>
-					</form>
+					<!--/category-productsr-->
 
 				</div>
-				<!--/login form-->
 			</div>
-			<div class="col-sm-1">
-				<h2 class="or">OR</h2>
-			</div>
-			<div class="col-sm-4">
-				<div class="signup-form">
-					<!--sign up form-->
-					<h2>New User Signup!</h2>
-					<div class="servlet_message">
-						<p>
-							<c:if test="${signupMessage != null }">
-								<c:set var="signupMessage" value="${signupMessage }"></c:set>
-								<c:if test="${!fn:contains(signupMessage, 'successfull')}">
-									<div class="error_message">
-										<c:out value="${signupMessage }"></c:out>
-									</div>
-								</c:if>
 
-								<c:if test="${fn:contains(signupMessage, 'successfull')}">
-									<div class="ok_message">
-										<c:out value="${signupMessage }"></c:out>
-									</div>
-								</c:if>
+			<div class="col-sm-9 padding-right">
+				<div class="features_items">
+					<!--features_items-->
+					<h2 class="title text-center">Search Results</h2>
 
-							</c:if>
-						</p>
-					</div>
-					<form id="signup_form_data" name="signup_form_data" method="POST"
-						action="signup">
-						<input type="text" placeholder="Name" id="name" name="name"
-							required /> <input type="text" placeholder="Surname"
-							id="surname" name="surname" required /> <input type="email"
-							placeholder="Email Address" id="email" name="email" required />
-						<input type="text" placeholder="Phone" id="phone" name="phone"
-							required /> <input type="text" placeholder="Address"
-							id="address" name="address" required /> <input type="password"
-							placeholder="Password" id="password" name="password"
-							name="password" required /> <input type="password"
-							placeholder="Confirm Password" id="confirm" name="confirm"
-							required />
-						<button type="submit" id="signup_btn" name="signup_btn"
-							class="btn btn-default" disabled>Signup</button>
-					</form>
+					<%
+						String search = (String) request.getAttribute("search");
+						ArrayList<CompleteItem> completeItems = DBManager.getInstance().getItemDAO().findItems(search);
+
+						long currentDate = System.currentTimeMillis();
+
+						if (!completeItems.isEmpty()) {
+							for (CompleteItem item : completeItems) {
+								if (item.getItem().getTimeToLive().getTime() > currentDate) {
+									out.print("<div class=\"col-sm-4\">");
+									out.print("<div class=\"product-image-wrapper\">");
+									out.print("<div class=\"single-products\">");
+									out.print("<div class=\"productinfo text-center\">");
+									out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
+									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals("")) {
+										out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
+												+ search + "\" class=\"btn btn-default add-to-cart\">");
+										out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+									} else {
+										out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
+										out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
+									}
+
+									out.print("</div>");
+									out.print("<div class=\"product-overlay\">");
+									out.print("<div class=\"overlay-content\">");
+									out.print("<p>" + item.getItem().getDescription() + "</p>");
+									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals("")) {
+										if (item.getItem().isBuy_now()) {
+											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
+													+ search + "\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+										} else if (item.getItem().isBid()) {
+											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
+													+ search + "\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+										}
+									} else {
+										out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
+										out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
+									}
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+								}
+							}
+						} else {
+							out.print("<div class=\"text-center\"> No items found :( </div>");
+						}
+					%>
+
+
+
 				</div>
-				<!--/sign up form-->
+				<!--features_items-->
 			</div>
 		</div>
 	</div>
 	</section>
-	<!--/form-->
 
 
 	<footer id="footer"> <!--Footer-->
@@ -432,18 +501,15 @@
 			</div>
 		</div>
 	</div>
-
 	</footer>
 	<!--/Footer-->
 
 
-
 	<script src="assets/js/jquery.js"></script>
-	<script src="assets/js/price-range.js"></script>
-	<script src="assets/js/jquery.scrollUp.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.scrollUp.min.js"></script>
+	<script src="assets/js/price-range.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-	<script src="assets/js/login.js"></script>
 </body>
 </html>

@@ -100,4 +100,34 @@
     <servlet-name>Search</servlet-name>
     <url-pattern>/search</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AddToCart</display-name>
+    <servlet-name>AddToCart</servlet-name>
+    <servlet-class>servlets.AddToCart</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddToCart</servlet-name>
+    <url-pattern>/addToCart</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UploadImage</display-name>
+    <servlet-name>UploadImage</servlet-name>
+    <servlet-class>servlets.UploadImage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UploadImage</servlet-name>
+    <url-pattern>/getImage</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DisplayImage</display-name>
+    <servlet-name>DisplayImage</servlet-name>
+    <servlet-class>servlets.DisplayImage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DisplayImage</servlet-name>
+    <url-pattern>/displayImage</url-pattern>
+  </servlet-mapping>
 </web-app>

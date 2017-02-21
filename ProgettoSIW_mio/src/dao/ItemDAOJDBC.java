@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.mysql.cj.api.jdbc.Statement;
-
 import model.Category;
 import model.CompleteItem;
 import model.Item;
@@ -162,9 +161,6 @@ public class ItemDAOJDBC implements ItemDAO {
 	@Override
 	public void delete(int id, String email) {
 
-		// DELETE FROM `progetto_siw`.`user` WHERE `id`='9'
-		// and`email`='mariotorritti@gmail.com';
-
 		Connection connection = this.dataSource.getConnection();
 		try {
 			String delete = "delete i from item i, user u where i.id = ? and i.seller = u.id and u.email = ?";
@@ -212,24 +208,55 @@ public class ItemDAOJDBC implements ItemDAO {
 	}
 
 	@Override
-	public ArrayList<Paths> getPaths(ArrayList<Integer> itemsIDs) {
+	public ArrayList<CompleteItem> getCartPaths(String email) {
 
 		Connection connection = this.dataSource.getConnection();
-		ArrayList<Paths> itemPaths = new ArrayList<Paths>();
-		ArrayList<String> paths = new ArrayList<String>();
+		ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
+		ArrayList<Item> items = new ArrayList<>();
+
 		try {
+
 			PreparedStatement statement;
-			for (Integer currentItemId : itemsIDs) {
-				String query = "select path.path from path where item_id = ?";
-				statement = connection.prepareStatement(query);
-				statement.setInt(1, currentItemId);
-				ResultSet result = statement.executeQuery();
-				while (result.next()) {
-					String newPath = result.getString(1);
-					paths.add(newPath);
-				}
-				itemPaths.add(new Paths(currentItemId, paths));
+			String query = "select item.* from user, cart, cartItemsList, item "
+					+ "where user.email = ? && user.id = cart.user_id && cartItemsList.cart_id = cart.id && cartItemsList.item_id = item.id";
+			statement = connection.prepareStatement(query);
+			statement.setString(1, email);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				Item item = new Item();
+				item.setId(result.getInt(1));
+				item.setProducer(result.getString(2));
+				item.setModel(result.getString(3));
+				item.setPrice(result.getFloat(4));
+				item.setTimeToLive(result.getDate(6));
+				item.setDescription(result.getString(7));
+				item.setCategory(new Category(result.getString(8)));
+				item.setBuy_now(result.getBoolean(10));
+				item.setBid(result.getBoolean(11));
+				items.add(item);
 			}
+
+			// connection.close();
+
+			for (Item currentItem : items) {
+				Paths paths = new Paths();
+				CompleteItem completeItem = new CompleteItem();
+				PreparedStatement statement1;
+				String query1 = "select * from path where path.item_id = ?";
+				statement1 = connection.prepareStatement(query1);
+				statement1.setInt(1, currentItem.getId());
+				ResultSet result1 = statement1.executeQuery();
+
+				while (result1.next()) {
+					paths.setId(result1.getInt(1));
+					paths.setItemId(result1.getInt(2));
+					paths.addPath(result1.getString(3));
+				}
+				completeItem.setItem(currentItem);
+				completeItem.setPaths(paths);
+				completeItems.add(completeItem);
+			}
+
 		} catch (SQLException e) {
 			throw new PersistenceException(e.getMessage());
 		} finally {
@@ -239,7 +266,78 @@ public class ItemDAOJDBC implements ItemDAO {
 				throw new PersistenceException(e.getMessage());
 			}
 		}
-		return itemPaths;
+		return completeItems;
+	}
 
+	@Override
+	public ArrayList<CompleteItem> findItems(String searchQuery) {
+		Connection connection = this.dataSource.getConnection();
+		ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
+		ArrayList<Item> items = new ArrayList<>();
+		String[] someQueries = searchQuery.split(" ");
+		ArrayList<String> queries = new ArrayList<String>();
+		for (String s : someQueries) {
+			queries.add(s);
+		}
+		queries.add(searchQuery);
+		try {
+			for (String search : queries) {
+				PreparedStatement statement;
+				String query = "select * from item where locate(?, producer) or locate(?, model) or locate(?, description)";
+
+				statement = connection.prepareStatement(query);
+				statement.setString(1, search);
+				statement.setString(2, search);
+				statement.setString(3, search);
+				ResultSet result = statement.executeQuery();
+				while (result.next()) {
+					Item item = new Item();
+					item.setId(result.getInt(1));
+					item.setProducer(result.getString(2));
+					item.setModel(result.getString(3));
+					item.setPrice(result.getFloat(4));
+					item.setTimeToLive(result.getDate(6));
+					item.setDescription(result.getString(7));
+					item.setCategory(new Category(result.getString(8)));
+					item.setBuy_now(result.getBoolean(10));
+					item.setBid(result.getBoolean(11));
+
+					if (!items.contains(item)) {
+						items.add(item);
+					}
+				}
+			}
+
+			// connection.close();
+
+			for (Item currentItem : items) {
+				Paths paths = new Paths();
+				CompleteItem completeItem = new CompleteItem();
+				PreparedStatement statement1;
+				String query1 = "select * from path where path.item_id = ?";
+				statement1 = connection.prepareStatement(query1);
+				statement1.setInt(1, currentItem.getId());
+				ResultSet result1 = statement1.executeQuery();
+
+				while (result1.next()) {
+					paths.setId(result1.getInt(1));
+					paths.setItemId(result1.getInt(2));
+					paths.addPath(result1.getString(3));
+				}
+				completeItem.setItem(currentItem);
+				completeItem.setPaths(paths);
+				completeItems.add(completeItem);
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return completeItems;
 	}
 }

@@ -256,7 +256,6 @@ a#scrollUp i {
 	outline: medium none;
 	padding-left: 10px;
 	width: 155px;
-	background-image: url(../../images/home/searchicon.png);
 	background-repeat: no-repeat;
 	background-position: 130px;
 }
@@ -336,13 +335,17 @@ opacity
 
 
 
+
+
 :
 
 
 
 
 
+
  
+
 
 
 
@@ -360,7 +363,10 @@ opacity
 
 
 
+
+
 :
+
 
 
 
@@ -372,7 +378,10 @@ opacity
 
 
 
+
 translateY
+
+
 
 
 
@@ -395,7 +404,10 @@ transform
 
 
 
+
+
 :
+
 
 
 
@@ -407,7 +419,10 @@ transform
 
 
 
+
 translateY
+
+
 
 
 
@@ -594,7 +609,7 @@ translateY
 	color: #FE980F;
 }
 
-.searchform input{
+.searchform input {
 	border: 1px solid #DDDDDD;
 	color: #CCCCC6;
 	font-family: 'Roboto', sans-serif;
@@ -2616,31 +2631,24 @@ select#time, select#category {
 	margin-bottom: 10px;
 	padding: 1px;
 	padding-left: 10px;
-color: #696763;
+	color: #696763;
 }
 
-textarea#description{
+textarea#description {
 	margin-bottom: 20px;
 }
 
-button.searchButton{
+button.searchButton {
 	height: 35px;
-    /*color: #333;*/
-    background-color: #f0f0e9;
-    /*border-color: #f0f0e9;*/
-    padding: 5px;
-    margin-left: -30px;
-    /*font-style: inherit;
+	/*color: #333;*/
+	background-color: #f0f0e9;
+	/*border-color: #f0f0e9;*/
+	padding: 5px;
+	margin-left: -30px;
+	/*font-style: inherit;
     font-family: inherit;
     text-decoration: none;*/
-    border: none;
-    position: inherit;
-    padding-top: 3px;
+	border: none;
+	position: inherit;
+	padding-top: 3px;
 }
-
-div.search_box.pull-right{
-	
-}
-/*************************
-******* MY ITEMS CSS *****
-**************************/

@@ -134,4 +134,15 @@ public class Item {
 	public void setBid(boolean bid) {
 		this.bid = bid;
 	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object != null) {
+			if (object instanceof Item) {
+				if (this.id == ((Item) object).getId())
+					return true;
+			}
+		}
+		return false;
+	}
 }

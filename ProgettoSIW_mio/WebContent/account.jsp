@@ -68,7 +68,7 @@
 	<!--/header_top-->
 
 	<div class="header-middle">
-		<!--header-middle-->
+<!--header-middle-->
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4">
@@ -90,8 +90,16 @@
 								</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
-							<li><a href="html/cart.html"><i
-									class="fa fa-shopping-cart"></i> Cart</a></li>
+							<li>
+								<%
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals(""))
+										out.print("<a href=\"cart.jsp\">");
+									else {
+										out.print("<a href=\"login.jsp\">");
+									}
+								%> <i class="fa fa-shopping-cart"></i> Cart </a>
+							</li>
 							<li><c:choose>
 									<c:when test="${username == null }">
 										<a href="login.jsp" class="active"><i class="fa fa-unlock"></i>
@@ -114,10 +122,10 @@
 		<!--header-bottom-->
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-9">
+				<div class="col-sm-8">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
-							data-target=".navbar-collapse">
+							data-target=".navbar-collapse" style="float: left;">
 							<span class="sr-only">Toggle navigation</span> <span
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
@@ -132,28 +140,40 @@
 									<li><a href="shop.html">Products</a></li>
 									<li><a href="product-details.html">Product Details</a></li>
 									<li><a href="checkout.html">Checkout</a></li>
-									<li><a href="cart.html">Cart</a></li>
-									<li><a href="login.html" class="active">Login</a></li>
+									<li>
+										<%
+											if (request.getSession().getAttribute("email") != null
+													&& !request.getSession().getAttribute("email").equals("")) {
+												out.print("<a href=\"cart.jsp\">Cart</a>");
+											} else {
+												out.print("<a href=\"login.jsp\">Cart</a>");
+											}
+										%>
+									</li>
+									<li><a href="login.jsp" class="active">Login</a></li>
 								</ul></li>
-							<li class="dropdown"><a href="#">Blog<i
-									class="fa fa-angle-down"></i></a>
-								<ul role="menu" class="sub-menu">
-									<li><a href="html/blog.html">Blog List</a></li>
-									<li><a href="html/blog-single.html">Blog Single</a></li>
-								</ul></li>
+
 							<li><a href="html/contact-us.html">Contact</a></li>
 						</ul>
 					</div>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-lg-2">
 					<div class="search_box pull-right">
-						<input type="text" placeholder="Search" />
+						<form action="search" method="post">
+							<span> <input type="text" placeholder="Search"
+								name="search" class="search" />
+								<button type="submit" class="searchButton">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!--/header-bottom--> </header>
+
 	<!--/header-->
 
 	<section>
@@ -161,17 +181,16 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<div class="left-sidebar">
-					<h2>MY ACCOUNT</h2>
+					<h2>My account</h2>
 					<div class="panel-group category-products" id="accordian">
 						<!--category-productsr-->
-
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h4 class="panel-title">
-									<span> <i class="fa fa-angle-right"></i> <a
-										href="modify">Info</a></span>
+								<h4 class="panel-title"><i class="fa fa-angle-right"></i>
+									<a href="modify">Info</a>
 								</h4>
 							</div>
+
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
@@ -179,30 +198,49 @@
 									<a href="mailingList">Notifications</a>
 								</h4>
 							</div>
+
 						</div>
+
 						<div class="panel panel-default">
+
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<a href="sell">Sell</a>
+
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="myItems.jsp">My items</a>
+									<span> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"myItems.jsp\">My items</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">My items</a>");
+ 	}
+ %>
+									</span>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span><a href="cart.jsp">Cart</a></span>
+									<span> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"cart.jsp\">Cart</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">Cart</a>");
+ 	}
+ %> </span>
 								</h4>
 							</div>
 						</div>
 					</div>
-					<!--/category-products-->
+					<!--/category-productsr-->
 				</div>
 			</div>
 

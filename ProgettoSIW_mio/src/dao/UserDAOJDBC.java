@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mysql.cj.api.jdbc.Statement;
 
-import model.Cart;
+import model.CompleteItem;
 import model.User;
+import persistence.DBManager;
 import persistence.DataSource;
 import persistence.PersistenceException;
 
@@ -27,14 +29,20 @@ public class UserDAOJDBC implements UserDAO {
 		String insert = "insert into user(name, surname, email, phone, address, password) values(?,?,?,?,?,?)";
 		int status = -1;
 		try {
-			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(insert);
+			PreparedStatement statement = (PreparedStatement) connection.prepareStatement(insert,
+					Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, user.getName());
 			statement.setString(2, user.getSurname());
 			statement.setString(3, user.getEmail());
 			statement.setString(4, user.getPhone());
 			statement.setString(5, user.getAddress());
 			statement.setString(6, user.getPassword());
-			statement.executeUpdate();
+			statement.execute();
+
+			ResultSet resultSet = statement.getGeneratedKeys();
+			while (resultSet.next()) {
+				user.setId(resultSet.getInt(1));
+			}
 			status = 0;
 		} catch (SQLException e) {
 			String message = e.getMessage();
@@ -223,68 +231,71 @@ public class UserDAOJDBC implements UserDAO {
 
 	}
 
-	@Override
-	public Cart getCart(String email) {
-		System.out.println(email);
-		Connection connection = this.dataSource.getConnection();
-		Cart cart = new Cart();
+	// @Override
+	// public Cart getCart(String email) {
+	// System.out.println(email);
+	// Connection connection = this.dataSource.getConnection();
+	// Cart cart = new Cart();
+	//
+	// try {
+	// PreparedStatement statement;
+	// String getCart = "select cartItemsList.item_id from cartItemsList, cart,
+	// user "
+	// + "where user.email = ? && user.id = cart.user_id &&
+	// cartItemsList.cart_id = cart.id";
+	// statement = connection.prepareStatement(getCart);
+	// statement.setString(1, email);
+	// ResultSet result = statement.executeQuery();
+	//
+	// while (result.next()) {
+	// cart.addItem(result.getInt("item_id"));
+	// }
+	//
+	// // result.close();
+	//
+	// System.out.println("cartId " + cart.getId());
+	// System.out.println("userId " + cart.getUserId());
+	// for (Integer i : cart.getItems()) {
+	// System.out.println("item id: " + i);
+	// }
+	//
+	// } catch (SQLException e) {
+	// throw new PersistenceException(e.getMessage());
+	// } finally {
+	// try {
+	// connection.close();
+	// } catch (SQLException e) {
+	// throw new PersistenceException(e.getMessage());
+	// }
+	// }
+	// return cart;
+	// }
 
-		try {
-			PreparedStatement statement;
-			String getCart = "select cartItemsList.item_id from cartItemsList, cart, user "
-					+ "where user.email = ? && user.id = cart.user_id && cartItemsList.cart_id = cart.id";
-			statement = connection.prepareStatement(getCart);
-			statement.setString(1, email);
-			ResultSet result = statement.executeQuery();
-
-			while (result.next()) {
-				cart.addItem(result.getInt("item_id"));
-			}
-
-			// result.close();
-
-			System.out.println("cartId " + cart.getId());
-			System.out.println("userId " + cart.getUserId());
-			for (Integer i : cart.getItems()) {
-				System.out.println("item id: " + i);
-			}
-
-		} catch (SQLException e) {
-			throw new PersistenceException(e.getMessage());
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				throw new PersistenceException(e.getMessage());
-			}
-		}
-		return cart;
-	}
-
-	@Override
-	public int getCartId(String email) {
-		Connection connection = this.dataSource.getConnection();
-		int cartId = 0;
-		try {
-			PreparedStatement statement;
-			String query = "select cart.id from cart where cart.user_id = user.id && user.email = ?";
-			statement = connection.prepareStatement(query);
-			statement.setString(1, email);
-			ResultSet result = statement.executeQuery();
-			if (result.next()) {
-				cartId = result.getInt("id");
-			}
-		} catch (SQLException e) {
-			throw new PersistenceException(e.getMessage());
-		} finally {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				throw new PersistenceException(e.getMessage());
-			}
-		}
-		return cartId;
-	}
+	// @Override
+	// public int getCartId(String email) {
+	// Connection connection = this.dataSource.getConnection();
+	// int cartId = 0;
+	// try {
+	// PreparedStatement statement;
+	// String query = "select cart.id from cart where cart.user_id = user.id &&
+	// user.email = ?";
+	// statement = connection.prepareStatement(query);
+	// statement.setString(1, email);
+	// ResultSet result = statement.executeQuery();
+	// if (result.next()) {
+	// cartId = result.getInt("id");
+	// }
+	// } catch (SQLException e) {
+	// throw new PersistenceException(e.getMessage());
+	// } finally {
+	// try {
+	// connection.close();
+	// } catch (SQLException e) {
+	// throw new PersistenceException(e.getMessage());
+	// }
+	// }
+	// return cartId;
+	// }
 
 	@Override
 	public int addToCart(String email, int item_id) {
@@ -310,30 +321,87 @@ public class UserDAOJDBC implements UserDAO {
 				cart_id = resultSet2.getInt(1);
 			}
 
-			String addItem = "insert into cartItemsList (cart_id, item_id) values (?,?)";
-			PreparedStatement statement3 = connection.prepareStatement(addItem, Statement.RETURN_GENERATED_KEYS);
+			String getAmount = "insert into cartItemsList (cart_id, item_id) values(?,?)";
+			PreparedStatement statement3 = connection.prepareStatement(getAmount);
 			statement3.setInt(1, cart_id);
 			statement3.setInt(2, item_id);
-			statement3.execute();
-			ResultSet resultSet3 = statement3.getGeneratedKeys();
+			statement3.executeUpdate();
 
-			int generatedKey = 0;
-			if (resultSet3.next()) {
-				generatedKey = resultSet3.getInt(1);
-				System.out.println("generated key is " + generatedKey);
-			}
+			System.out.println("aggiunto");
 			status = 0;
 		} catch (SQLException e) {
-			status = 1;
-			throw new PersistenceException(e.getMessage());
+			String message = e.getMessage();
+			if (message.contains("Duplicate entry")) {
+				status = 1;
+				System.out.println("doppio");
+			}
+			// throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
 				status = 2;
-				throw new PersistenceException(e.getMessage());
+				// throw new PersistenceException(e.getMessage());
 			}
 		}
 		return status;
+	}
+
+	@Override
+	public ArrayList<CompleteItem> getCartPaths(String email) {
+		return DBManager.getInstance().getItemDAO().getCartPaths(email);
+	}
+
+	@Override
+	public void removeFromCart(String email, int item_id) {
+
+		Connection connection = this.dataSource.getConnection();
+		try {
+			String select = "delete cartItemsList from user, cart, cartItemsList "
+					+ "where user.email = ? && cart.user_id = user.id && cartItemsList.cart_id = cart.id && cartItemsList.item_id = ?";
+
+			PreparedStatement statement = connection.prepareStatement(select);
+			statement.setString(1, email);
+			statement.setInt(2, item_id);
+			statement.execute();
+
+			System.out.println("eliminato");
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+	}
+
+	@Override
+	public int getUserID(String email) {
+
+		int id = 0;
+		Connection connection = this.dataSource.getConnection();
+		try {
+			String select = "select id from user where email=?";
+
+			PreparedStatement statement = connection.prepareStatement(select);
+			statement.setString(1, email);
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				resultSet.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return id;
 	}
 }

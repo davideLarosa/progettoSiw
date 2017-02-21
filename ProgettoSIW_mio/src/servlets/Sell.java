@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
@@ -30,7 +31,7 @@ public class Sell extends HttpServlet {
 	// upload settings
 	private static final int MEMORY_THRESHOLD = 1024 * 1024 * 3; // 3MB
 	private static final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
-	private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 50; // 50MB
+	private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 120; // 50MB
 
 	private String producer;
 	private String model;
@@ -89,17 +90,24 @@ public class Sell extends HttpServlet {
 		// constructs the directory path to store upload file
 		// this path is relative to application's directory
 
-		// String uploadPath = getServletContext().getRealPath("") +
-		// File.separator + UPLOAD_DIRECTORY;
+		System.out.println("request uri " + request.getRequestURI());
+		System.out.println("request uri " + request.getRequestURL());
+		System.out.println("servlet real path " + getServletContext().getRealPath(request.getRequestURI()));
 
-		String uploadPath = "/Users/davidelarosa/Documents/git/progettoSiw/ProgettoSIW_mio/WebContent/"
-				+ UPLOAD_DIRECTORY;
+		String uploadPath = getServletContext().getRealPath(UPLOAD_DIRECTORY) + File.separator;
+		System.out.println("upload path " + uploadPath);
+		if (!factory.getRepository().exists()) {
+			factory.getRepository().mkdirs();
+		}
+
+		// String uploadPath = "~" + File.separator + UPLOAD_DIRECTORY;
 
 		// // creates the directory if it does not exist
-		// File uploadDir = new File(uploadPath);
-		// if (!uploadDir.exists()) {
-		// uploadDir.mkdir();
+		// File aa = new File(uploadPath);
+		// if (!aa.exists()) {
+		// aa.mkdirs();
 		// }
+		// System.out.println("absolute path --------" + aa.getAbsolutePath());
 
 		try {
 			// parses the request's content to extract file data
@@ -192,7 +200,9 @@ public class Sell extends HttpServlet {
 							File storeFile = new File(filePath + newFileName);
 
 							// saves the file on disk
+
 							item.write(storeFile);
+
 							this.paths.add(storeFile.getPath());
 							this.thumbNumber++;
 
@@ -207,14 +217,32 @@ public class Sell extends HttpServlet {
 			request.setAttribute("message", "There was an error please retry later ");
 		}
 
-		System.out.println("itemid = " + item_id);
-		System.out.println("paths");
-		for (String s : paths) {
-			System.out.println(s);
-		}
-		System.out.println();
+		// System.out.println("itemid = " + item_id);
+		// System.out.println("paths");
+		// for (String s : paths) {
+		// System.out.println(s);
+		// }
+		// System.out.println();
 
-		DBManager.getInstance().getItemDAO().setPath(item_id, paths);
+		for (int i = 0; i < this.paths.size(); i++) {
+			this.paths.set(i, this.paths.get(i).replace(uploadPath, UPLOAD_DIRECTORY + File.separator));
+		}
+
+		// for (String path : this.paths) {
+		// String tmpPath = path.replace(uploadPath, UPLOAD_DIRECTORY +
+		// File.separator);
+		// System.out.println("new path " + tmpPath);
+		// path = tmpPath;
+		// }
+		//
+		
+		System.out.println("new paths are:");
+		 for (String path : this.paths) {
+		 System.out.println(path);
+		 }
+		 System.out.println("----------------");
+
+		DBManager.getInstance().getItemDAO().setPath(this.item_id, this.paths);
 		this.path = null;
 		// redirects client to message page
 		getServletContext().getRequestDispatcher("/sell.jsp").forward(request, response);
