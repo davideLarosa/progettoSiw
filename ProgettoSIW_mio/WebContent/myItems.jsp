@@ -218,15 +218,14 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span> <i class="fa fa-angle-right"></i>
-										<%
-											if (request.getSession().getAttribute("email") != null
-													&& !request.getSession().getAttribute("email").equals(""))
-												out.print("<a href=\"myItems.jsp\">My items</a>");
-											else {
-												out.print("<a href=\"login.jsp\">My items</a>");
-											}
-										%>
+									<span> <i class="fa fa-angle-right"></i> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"myItems.jsp\">My items</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">My items</a>");
+ 	}
+ %>
 									</span>
 								</h4>
 							</div>
@@ -234,15 +233,14 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span>
-										<%
-											if (request.getSession().getAttribute("email") != null
-													&& !request.getSession().getAttribute("email").equals(""))
-												out.print("<a href=\"cart.jsp\">Cart</a>");
-											else {
-												out.print("<a href=\"login.jsp\">Cart</a>");
-											}
-										%>
+									<span> <%
+ 	if (request.getSession().getAttribute("email") != null
+ 			&& !request.getSession().getAttribute("email").equals(""))
+ 		out.print("<a href=\"cart.jsp\">Cart</a>");
+ 	else {
+ 		out.print("<a href=\"login.jsp\">Cart</a>");
+ 	}
+ %>
 									</span>
 								</h4>
 							</div>
@@ -273,7 +271,26 @@
 									if (!item.getPaths().getPaths().isEmpty()) {
 										out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
 									}
-									out.print("<h2>&euro;  " + item.getItem().getPrice() + "</h2>");
+									
+
+									System.out.println("attribute " + session.getAttribute("userId"));System.out.println("sotto is empty");System.out.println("sellser " + item.getItem().getSeller());
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
 									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
 									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
 											+ "\" class=\"btn btn-default add-to-cart\">");
@@ -282,7 +299,28 @@
 									out.print("<div class=\"product-overlay\">");
 									out.print("<div class=\"overlay-content\">");
 									out.print("<p>" + item.getItem().getDescription() + "</p>");
-									out.print("<h2>&euro; " + item.getItem().getPrice() + "</h2>");
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>Last bid</p>");
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>No bid yet</p>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
 									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
 											+ "\" class=\"btn btn-default add-to-cart\">");
 									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
@@ -335,16 +373,59 @@
 									if (!item.getPaths().getPaths().isEmpty()) {
 										out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
 									}
+
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
+
 									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
-									out.print("<h2>&euro; " + item.getItem().getPrice() + "</h2>");
+
 									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
 											+ "\" class=\"btn btn-default add-to-cart\">");
 									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");
 									out.print("</div>");
 									out.print("<div class=\"product-overlay\">");
 									out.print("<div class=\"overlay-content\">");
+
 									out.print("<p>" + item.getItem().getDescription() + "</p>");
-									out.print("<h2>&euro; " + item.getItem().getPrice() + "</h2>");
+
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>Last bid</p>");
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>No bid yet</p>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
+
 									out.print("<a href=\"delete?id=" + (item.getItem().getId() + 1029384756)
 											+ "\" class=\"btn btn-default add-to-cart\">");
 									out.print("<i class=\"fa fa-trash-o\"></i>Delete</a>");

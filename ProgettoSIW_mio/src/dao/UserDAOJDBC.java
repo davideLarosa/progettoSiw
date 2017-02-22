@@ -77,6 +77,7 @@ public class UserDAOJDBC implements UserDAO {
 			while (results.next()) {
 				user = new User();
 				user.setId(results.getInt("id"));
+				System.out.println("in user dao jd id è " + user.getId());
 				user.setName(results.getString("name"));
 				user.setSurname(results.getString("surname"));
 				user.setEmail(results.getString("email"));
@@ -116,6 +117,7 @@ public class UserDAOJDBC implements UserDAO {
 			ResultSet results = statement.executeQuery();
 			while (results.next()) {
 				user = new User();
+				user.setId(results.getInt("id"));
 				user.setName(results.getString("name"));
 				user.setSurname(results.getString("surname"));
 				user.setEmail(results.getString("email"));

@@ -22,7 +22,7 @@ public class ModifyUser extends HttpServlet {
 			throws ServletException, IOException {
 		String email = (String) request.getSession().getAttribute("email");
 		// TODO elimina syso
-		System.out.println("modifica " + email);
+		System.out.println("account " + email);
 		if (email == null) {
 			response.sendRedirect("login.jsp");
 		} else {
@@ -46,12 +46,14 @@ public class ModifyUser extends HttpServlet {
 				Enumeration<String> attributes = request.getSession().getAttributeNames();
 
 				removeAttributes(attributes, request.getSession());
-				addNewAttributes(toModify, request.getSession());
+				request.getSession().invalidate();
+				//addNewAttributes(toModify, request.getSession());
 
-				mapper.writeValue(response.getOutputStream(), toModify);
+				//mapper.writeValue(response.getOutputStream(), toModify);
 
 				// TODO controlla commento
 				// response.sendRedirect("login.jsp");
+				request.getRequestDispatcher("login.jsp").forward(request, response);
 			}
 		} else {
 			request.getSession().removeAttribute("update");
@@ -61,23 +63,23 @@ public class ModifyUser extends HttpServlet {
 			request.getSession().setAttribute("phone", user.getPhone());
 			request.getSession().setAttribute("address", user.getAddress());
 			request.getSession().setAttribute("password", user.getPassword());
-			
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("account.jsp");
 			dispatcher.forward(request, response);
-//			response.sendRedirect("account.jsp");
+			// response.sendRedirect("account.jsp");
 		}
 	}
 
-	private void addNewAttributes(User toModify, HttpSession session) {
-		session.setAttribute("update", "ok");
-		session.setAttribute("name", toModify.getName());
-		session.setAttribute("surname", toModify.getSurname());
-		session.setAttribute("email", toModify.getEmail());
-		session.setAttribute("phone", toModify.getPhone());
-		session.setAttribute("address", toModify.getAddress());
-		session.setAttribute("password", toModify.getPassword());
-
-	}
+	// private void addNewAttributes(User toModify, HttpSession session) {
+	// session.setAttribute("update", "ok");
+	// session.setAttribute("name", toModify.getName());
+	// session.setAttribute("surname", toModify.getSurname());
+	// session.setAttribute("email", toModify.getEmail());
+	// session.setAttribute("phone", toModify.getPhone());
+	// session.setAttribute("address", toModify.getAddress());
+	// session.setAttribute("password", toModify.getPassword());
+	//
+	// }
 
 	private void removeAttributes(Enumeration<String> attributes, HttpSession session) {
 		session.removeAttribute("update");

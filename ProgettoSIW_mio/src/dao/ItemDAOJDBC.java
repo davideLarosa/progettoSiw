@@ -11,6 +11,7 @@ import model.Category;
 import model.CompleteItem;
 import model.Item;
 import model.Paths;
+import model.User;
 import persistence.DataSource;
 import persistence.PersistenceException;
 
@@ -29,38 +30,43 @@ public class ItemDAOJDBC implements ItemDAO {
 		Connection connection = this.dataSource.getConnection();
 		int generatedKey = 0;
 		try {
-			String insert = "insert into item (producer, model, price, ttl, description, category, seller, buy_now, bid ) values (?,?,?,?,?,?,?,?,?)";
+			String insert = "insert into item (producer, model, price, lastBid, ttl, description, category, seller, buy_now, bid ) values (?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement statement = connection.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
-			System.out.println();
-			System.out.println("item dao jdbc");
-			System.out.println("producer : " + item.getProducer() + " \n model : " + item.getModel()
-					+ " \n minimum buy price : " + item.getPrice() + " \n category :  " + item.getCategory().getId()
-					+ " \n time : " + item.getTimeToLive() + " \n bid : " + item.isBid() + " \n buy_now : "
-					+ item.isBuy_now() + " \n description :  " + item.getDescription() + " \n last bid :  "
-					+ " \n user : " + item.getSeller().getId());
-			System.out.println("-------------------");
-			System.out.println();
 
 			statement.setString(1, item.getProducer());
 			statement.setString(2, item.getModel());
 			statement.setFloat(3, item.getPrice());
-			statement.setDate(4, item.getTimeToLive());
-			statement.setString(5, item.getDescription());
-			statement.setInt(6, item.getCategory().getId());
-			statement.setInt(7, item.getSeller().getId());
-			statement.setBoolean(8, item.isBuy_now());
-			statement.setBoolean(9, item.isBid());
+			statement.setFloat(4, 0);
+			statement.setDate(5, item.getTimeToLive());
+			statement.setString(6, item.getDescription());
+			statement.setInt(7, item.getCategory().getId());
+			statement.setInt(8, item.getSeller());
+			statement.setBoolean(9, item.isBuy_now());
+			statement.setBoolean(10, item.isBid());
 			// statement.executeUpdate();
 			statement.execute();
 
 			ResultSet resultSet = statement.getGeneratedKeys();
 			if (resultSet.next()) {
 				generatedKey = resultSet.getInt(1);
+				item.setId(generatedKey);
 				System.out.println("chiave generata in item dao jdbc " + generatedKey);
 			} else {
 				System.out.println("error getting id - ItemDAOJDBC");
 			}
 
+			System.out.println();
+			System.out.println("item dao jdbc");
+			System.out.println("id : " + item.getId() + "\n producer : " + item.getProducer() + " \n model : "
+					+ item.getModel() + " \n minimum buy price : " + item.getPrice() + " \n category :  "
+					+ item.getCategory().getId() + " \n time : " + item.getTimeToLive() + " \n bid : " + item.isBid()
+					+ " \n buy_now : " + item.isBuy_now() + " \n description :  " + item.getDescription()
+					+ " \n last bid :  " + " \n user : " + item.getSeller());
+			System.out.println("-------------------");
+			System.out.println();
+
+			resultSet.close();
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			String message = e.getMessage();
@@ -101,22 +107,43 @@ public class ItemDAOJDBC implements ItemDAO {
 		try {
 
 			PreparedStatement statement;
-			String query = "select * from item, user where user.email = ? && item.seller = user.id";
+			String query = "select item.* from item, user where user.email = ? && item.seller = user.id";
 			statement = connection.prepareStatement(query);
 			statement.setString(1, email);
 			ResultSet result = statement.executeQuery();
+
 			while (result.next()) {
 				Item item = new Item();
 				item.setId(result.getInt(1));
 				item.setProducer(result.getString(2));
 				item.setModel(result.getString(3));
 				item.setPrice(result.getFloat(4));
+				item.setLastBid(result.getFloat(5));
 				item.setTimeToLive(result.getDate(6));
 				item.setDescription(result.getString(7));
+
+				// TODO
+				// System.out.println();
+				// System.out.println("item dao jdbc");
+				// System.out.println("id : " + item.getId() + "\n producer : "
+				// + item.getProducer() + " \n model : "
+				// + item.getModel() + " \n minimum buy price : " +
+				// item.getPrice() + " \n category : "
+				// + item.getCategory().getId() + " \n time : " +
+				// item.getTimeToLive() + " \n bid : " + item.isBid()
+				// + " \n buy_now : " + item.isBuy_now() + " \n description : "
+				// + item.getDescription()
+				// + " \n last bid : " + " \n user : " +
+				// item.getSeller().getId());
+				// System.out.println("-------------------");
+				// System.out.println();
+				//
 				item.setCategory(new Category(result.getString(8)));
+				item.setSeller(result.getInt(9));
 				item.setBuy_now(result.getBoolean(10));
 				item.setBid(result.getBoolean(11));
 				items.add(item);
+
 			}
 
 			// connection.close();
@@ -217,23 +244,38 @@ public class ItemDAOJDBC implements ItemDAO {
 		try {
 
 			PreparedStatement statement;
-			String query = "select item.* from user, cart, cartItemsList, item "
+			String query = "select item.* from item, user, cart, cartItemsList "
 					+ "where user.email = ? && user.id = cart.user_id && cartItemsList.cart_id = cart.id && cartItemsList.item_id = item.id";
 			statement = connection.prepareStatement(query);
 			statement.setString(1, email);
 			ResultSet result = statement.executeQuery();
 			while (result.next()) {
+				// Item item = new Item();
+				// item.setId(result.getInt(1));
+				// item.setProducer(result.getString(2));
+				// item.setModel(result.getString(3));
+				// item.setPrice(result.getFloat(4));
+				// item.setTimeToLive(result.getDate(6));
+				// item.setDescription(result.getString(7));
+				// item.setCategory(new Category(result.getString(8)));
+				// item.setBuy_now(result.getBoolean(10));
+				// item.setBid(result.getBoolean(11));
+				// items.add(item);
+
 				Item item = new Item();
 				item.setId(result.getInt(1));
 				item.setProducer(result.getString(2));
 				item.setModel(result.getString(3));
 				item.setPrice(result.getFloat(4));
+				item.setLastBid(result.getFloat(5));
 				item.setTimeToLive(result.getDate(6));
 				item.setDescription(result.getString(7));
 				item.setCategory(new Category(result.getString(8)));
+				item.setSeller(result.getInt(9));
 				item.setBuy_now(result.getBoolean(10));
 				item.setBid(result.getBoolean(11));
 				items.add(item);
+
 			}
 
 			// connection.close();

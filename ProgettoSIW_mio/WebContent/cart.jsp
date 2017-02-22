@@ -265,16 +265,33 @@
 
 						if (!cartItems.isEmpty()) {
 							for (CompleteItem item : cartItems) {
-
 								if (item.getItem().getTimeToLive().getTime() > currentDate) {
 									out.print("<div class=\"col-sm-4\">");
 									out.print("<div class=\"product-image-wrapper\">");
 									out.print("<div class=\"single-products\">");
 									out.print("<div class=\"productinfo text-center\">");
-									if (!item.getPaths().getRelativePaths().isEmpty()) {
-										out.print("<img src=\"" + item.getPaths().getRelativePath(0) + "\" alt=\"\" />");
+									if (!item.getPaths().getPaths().isEmpty()) {
+										out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
 									}
-									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									
+									if ((Integer)session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
+
 									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
 									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
 											+ "\" class=\"btn btn-default add-to-cart\">");
@@ -283,7 +300,30 @@
 									out.print("<div class=\"product-overlay\">");
 									out.print("<div class=\"overlay-content\">");
 									out.print("<p>" + item.getItem().getDescription() + "</p>");
-									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+
+									if ((Integer)session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>Last bid</p>");
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>No bid yet</p>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
+
 									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
 											+ "\" class=\"btn btn-default add-to-cart\">");
 									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");

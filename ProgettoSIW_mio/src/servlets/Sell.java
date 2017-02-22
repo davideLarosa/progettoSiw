@@ -280,7 +280,7 @@ public class Sell extends HttpServlet {
 		System.out.println("-------------");
 
 		int itemId = DBManager.getInstance().getItemDAO().save(new Item(this.producer, this.model,
-				this.minimum_buy_price, date, this.category, user, this.description, this.buy_now, this.bid));
+				this.minimum_buy_price, date, this.category, user.getId(), this.description, this.buy_now, this.bid));
 
 		this.item_id = itemId;
 		return String.valueOf(itemId);
