@@ -14,12 +14,15 @@ public class DeleteItem extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		String backTo = request.getParameter("from");
+
+		System.out.println(backTo);
 		if (request.getParameter("id") != null && !request.getParameter("id").equals("")) {
 			int id = Integer.valueOf(request.getParameter("id"));
-			System.out.println("get an id " + id);
+
 			DBManager.getInstance().getItemDAO().delete((id - 1029384756),
 					(String) request.getSession().getAttribute("email"));
-			request.getRequestDispatcher("myItems.jsp").forward(request, response);
+			request.getRequestDispatcher("/" + backTo).forward(request, response);
 		}
 
 		else if (request.getParameter("cartItemId") != null && !request.getParameter("cartItemId").equals("")) {
@@ -28,7 +31,7 @@ public class DeleteItem extends HttpServlet {
 			DBManager.getInstance().getUserDAO().removeFromCart((String) request.getSession().getAttribute("email"),
 					(itemToDeleteFromCart - 1029384756));
 
-			request.getRequestDispatcher("cart.jsp").forward(request, response);
+			request.getRequestDispatcher("/" + backTo).forward(request, response);
 		}
 	}
 

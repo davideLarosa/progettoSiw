@@ -18,7 +18,15 @@ public interface ItemDAO {
 
 	public ArrayList<CompleteItem> findItems(String searchQuery);
 
+	public ArrayList<CompleteItem> findItemsPerCategory(String searchQuery);
+
+	public ArrayList<CompleteItem> findItemsPerProducer(String searchQuery);
+
+	public ArrayList<String> findAllProducers();
+
 	public void update(Item item); // Update
 
 	public void delete(int id, String email); // Delete
+
+	public void makeBid(int itemToBid);
 }

@@ -68,7 +68,7 @@
 	<!--/header_top-->
 
 	<div class="header-middle">
-<!--header-middle-->
+		<!--header-middle-->
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4">
@@ -187,15 +187,33 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="modify">Info</a>
+
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"modify\">Info</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Info</a>");
+										}
+									%>
+
 								</h4>
 							</div>
 
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h4 class="panel-title"><i class="fa fa-angle-right"></i>
-									<a href="mailingList">Notifications</a>
+								<h4 class="panel-title">
+									<i class="fa fa-angle-right"></i>
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"mailingList\">Notifications</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Notifications</a>");
+										}
+									%>
+
 								</h4>
 							</div>
 
@@ -205,7 +223,29 @@
 
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="sell">Sell</a>
+
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"sell\">Sell</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Sell</a>");
+										}
+									%>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"myItems.jsp\">My items</a>");
+										else {
+											out.print("<a href=\"login.jsp\">My items</a>");
+										}
+									%>
 
 								</h4>
 							</div>
@@ -213,29 +253,29 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span> <%
- 	if (request.getSession().getAttribute("email") != null
- 			&& !request.getSession().getAttribute("email").equals(""))
- 		out.print("<a href=\"myItems.jsp\">My items</a>");
- 	else {
- 		out.print("<a href=\"login.jsp\">My items</a>");
- 	}
- %>
-									</span>
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"cart.jsp\">Cart</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Cart</a>");
+										}
+									%>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span> <%
- 	if (request.getSession().getAttribute("email") != null
- 			&& !request.getSession().getAttribute("email").equals(""))
- 		out.print("<a href=\"cart.jsp\">Cart</a>");
- 	else {
- 		out.print("<a href=\"login.jsp\">Cart</a>");
- 	}
- %> </span>
+
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"checkout.jsp\">Checkout</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Checkout</a>");
+										}
+									%>
 								</h4>
 							</div>
 						</div>

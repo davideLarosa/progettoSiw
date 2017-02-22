@@ -11,7 +11,6 @@ import model.Category;
 import model.CompleteItem;
 import model.Item;
 import model.Paths;
-import model.User;
 import persistence.DataSource;
 import persistence.PersistenceException;
 
@@ -50,13 +49,12 @@ public class ItemDAOJDBC implements ItemDAO {
 			if (resultSet.next()) {
 				generatedKey = resultSet.getInt(1);
 				item.setId(generatedKey);
-				System.out.println("chiave generata in item dao jdbc " + generatedKey);
 			} else {
 				System.out.println("error getting id - ItemDAOJDBC");
 			}
 
 			System.out.println();
-			System.out.println("item dao jdbc");
+			System.out.println("Adding item to db");
 			System.out.println("id : " + item.getId() + "\n producer : " + item.getProducer() + " \n model : "
 					+ item.getModel() + " \n minimum buy price : " + item.getPrice() + " \n category :  "
 					+ item.getCategory().getId() + " \n time : " + item.getTimeToLive() + " \n bid : " + item.isBid()
@@ -72,7 +70,7 @@ public class ItemDAOJDBC implements ItemDAO {
 			String message = e.getMessage();
 			if (message.contains("Duplicate entry")) {
 				status = -2;
-				System.out.println("duplicate");
+				System.out.println("Duplicate entry");
 			}
 			throw new PersistenceException(e.getMessage());
 		} finally {
@@ -121,7 +119,11 @@ public class ItemDAOJDBC implements ItemDAO {
 				item.setLastBid(result.getFloat(5));
 				item.setTimeToLive(result.getDate(6));
 				item.setDescription(result.getString(7));
-
+				item.setCategory(new Category(result.getString(8)));
+				item.setSeller(result.getInt(9));
+				item.setBuy_now(result.getBoolean(10));
+				item.setBid(result.getBoolean(11));
+				items.add(item);
 				// TODO
 				// System.out.println();
 				// System.out.println("item dao jdbc");
@@ -138,11 +140,6 @@ public class ItemDAOJDBC implements ItemDAO {
 				// System.out.println("-------------------");
 				// System.out.println();
 				//
-				item.setCategory(new Category(result.getString(8)));
-				item.setSeller(result.getInt(9));
-				item.setBuy_now(result.getBoolean(10));
-				item.setBid(result.getBoolean(11));
-				items.add(item);
 
 			}
 
@@ -215,8 +212,6 @@ public class ItemDAOJDBC implements ItemDAO {
 
 				String insert = "insert into path (item_id, path) values (?,?)";
 				PreparedStatement statement = connection.prepareStatement(insert);
-				System.out.println("item id: " + item_id + "itemDAOJDBC setPath");
-				System.out.println("paths: " + paths.size() + "itemDAOJDBC setPath");
 				statement.setInt(1, item_id);
 				statement.setString(2, path);
 				statement.execute();
@@ -338,9 +333,11 @@ public class ItemDAOJDBC implements ItemDAO {
 					item.setProducer(result.getString(2));
 					item.setModel(result.getString(3));
 					item.setPrice(result.getFloat(4));
+					item.setLastBid(result.getFloat(5));
 					item.setTimeToLive(result.getDate(6));
 					item.setDescription(result.getString(7));
 					item.setCategory(new Category(result.getString(8)));
+					item.setSeller(result.getInt(9));
 					item.setBuy_now(result.getBoolean(10));
 					item.setBid(result.getBoolean(11));
 
@@ -381,5 +378,211 @@ public class ItemDAOJDBC implements ItemDAO {
 			}
 		}
 		return completeItems;
+	}
+
+	@Override
+	public void makeBid(int itemToBid) {
+		Connection connection = this.dataSource.getConnection();
+		try {
+			float itemPrice = 0;
+			float itemLastBid = 0;
+			String select = "select * from item where id = ?";
+			PreparedStatement statement = connection.prepareStatement(select);
+			statement.setInt(1, itemToBid);
+			ResultSet resultSet = statement.executeQuery();
+
+			while (resultSet.next()) {
+				itemPrice = resultSet.getFloat("price");
+				itemLastBid = resultSet.getFloat("lastBid");
+			}
+			resultSet.close();
+			statement.close();
+
+			if (itemLastBid == 0) {
+
+				String update = "update item SET lastBid = ? WHERE id = ?";
+				PreparedStatement updateStatement = connection.prepareStatement(update);
+				updateStatement.setFloat(1, itemPrice);
+				updateStatement.setInt(2, itemToBid);
+				updateStatement.executeUpdate();
+				updateStatement.close();
+			} else if (itemLastBid >= itemPrice) {
+				float newBid = (float) (itemLastBid + 0.5);
+				String update = "update item SET lastBid = ? WHERE id = ?";
+				PreparedStatement updateStatement = connection.prepareStatement(update);
+				updateStatement.setFloat(1, newBid);
+				updateStatement.setInt(2, itemToBid);
+				updateStatement.executeUpdate();
+				updateStatement.close();
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+
+	}
+
+	@Override
+	public ArrayList<CompleteItem> findItemsPerCategory(String searchQuery) {
+
+		Connection connection = this.dataSource.getConnection();
+		ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
+		ArrayList<Item> items = new ArrayList<>();
+
+		try {
+			PreparedStatement statement;
+			String query = "select item.* from item, category where category.name = ? && category.id = item.category";
+
+			statement = connection.prepareStatement(query);
+			statement.setString(1, searchQuery);
+
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				Item item = new Item();
+				item.setId(result.getInt(1));
+				item.setProducer(result.getString(2));
+				item.setModel(result.getString(3));
+				item.setPrice(result.getFloat(4));
+				item.setLastBid(result.getFloat(5));
+				item.setTimeToLive(result.getDate(6));
+				item.setDescription(result.getString(7));
+				item.setCategory(new Category(result.getString(8)));
+				item.setSeller(result.getInt(9));
+				item.setBuy_now(result.getBoolean(10));
+				item.setBid(result.getBoolean(11));
+
+				if (!items.contains(item)) {
+					items.add(item);
+				}
+			}
+
+			// connection.close();
+
+			for (Item currentItem : items) {
+				Paths paths = new Paths();
+				CompleteItem completeItem = new CompleteItem();
+				PreparedStatement statement1;
+				String query1 = "select * from path where path.item_id = ?";
+				statement1 = connection.prepareStatement(query1);
+				statement1.setInt(1, currentItem.getId());
+				ResultSet result1 = statement1.executeQuery();
+
+				while (result1.next()) {
+					paths.setId(result1.getInt(1));
+					paths.setItemId(result1.getInt(2));
+					paths.addPath(result1.getString(3));
+				}
+				completeItem.setItem(currentItem);
+				completeItem.setPaths(paths);
+				completeItems.add(completeItem);
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return completeItems;
+	}
+
+	@Override
+	public ArrayList<CompleteItem> findItemsPerProducer(String searchQuery) {
+		Connection connection = this.dataSource.getConnection();
+		ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
+		ArrayList<Item> items = new ArrayList<>();
+
+		try {
+			PreparedStatement statement;
+			String query = "select item.* from item where producer = ?";
+
+			statement = connection.prepareStatement(query);
+			statement.setString(1, searchQuery);
+
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				Item item = new Item();
+				item.setId(result.getInt(1));
+				item.setProducer(result.getString(2));
+				item.setModel(result.getString(3));
+				item.setPrice(result.getFloat(4));
+				item.setLastBid(result.getFloat(5));
+				item.setTimeToLive(result.getDate(6));
+				item.setDescription(result.getString(7));
+				item.setCategory(new Category(result.getString(8)));
+				item.setSeller(result.getInt(9));
+				item.setBuy_now(result.getBoolean(10));
+				item.setBid(result.getBoolean(11));
+
+				if (!items.contains(item)) {
+					items.add(item);
+				}
+			}
+
+			// connection.close();
+
+			for (Item currentItem : items) {
+				Paths paths = new Paths();
+				CompleteItem completeItem = new CompleteItem();
+				PreparedStatement statement1;
+				String query1 = "select * from path where path.item_id = ?";
+				statement1 = connection.prepareStatement(query1);
+				statement1.setInt(1, currentItem.getId());
+				ResultSet result1 = statement1.executeQuery();
+
+				while (result1.next()) {
+					paths.setId(result1.getInt(1));
+					paths.setItemId(result1.getInt(2));
+					paths.addPath(result1.getString(3));
+				}
+				completeItem.setItem(currentItem);
+				completeItem.setPaths(paths);
+				completeItems.add(completeItem);
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return completeItems;
+	}
+
+	@Override
+	public ArrayList<String> findAllProducers() {
+
+		Connection connection = this.dataSource.getConnection();
+		ArrayList<String> producers = new ArrayList<String>();
+		try {
+			PreparedStatement statement;
+			String query = "select producer from item";
+			statement = connection.prepareStatement(query);
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				producers.add(result.getString(1));
+			}
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return producers;
 	}
 }

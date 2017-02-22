@@ -1,3 +1,5 @@
+<%@page import="java.util.List"%>
+<%@page import="model.Category"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="model.CompleteItem"%>
 <%@page import="servlets.Sell"%>
@@ -187,65 +189,46 @@
 		<div class="row">
 			<div class="col-sm-3">
 				<div class="left-sidebar">
-					<h2>My account</h2>
+					<h2>Category</h2>
 					<div class="panel-group category-products" id="accordian">
 						<!--category-productsr-->
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="modify">Info</a>
-								</h4>
-							</div>
 
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="mailingList">Notifications</a>
-								</h4>
-							</div>
+						<%
+							List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
+							for (Category category : categories) {
 
-						</div>
+								out.println("<div class=\"panel panel-default\">");
+								out.println("<div class=\"panel-heading\">");
+								out.println("<h4 class=\"panel-title\">");
+								out.print("<a href=\"search?category=" + category.getName() + "\">" + category.getName() + "</a>");
+								out.println("</h4>");
+								out.println("</div>");
+								out.println("</div>");
+							}
+						%>
 
-						<div class="panel panel-default">
-
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="sell">Sell</a>
-
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<span> <%
- 	if (request.getSession().getAttribute("email") != null
- 			&& !request.getSession().getAttribute("email").equals(""))
- 		out.print("<a href=\"myItems.jsp\">My items</a>");
- 	else {
- 		out.print("<a href=\"login.jsp\">My items</a>");
- 	}
- %>
-									</span>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<span><i class="fa fa-angle-right"></i> <%
- 	if (request.getSession().getAttribute("email") != null
- 			&& !request.getSession().getAttribute("email").equals(""))
- 		out.print("<a href=\"cart.jsp\">Cart</a>");
- 	else {
- 		out.print("<a href=\"login.jsp\">Cart</a>");
- 	}
- %> </span>
-								</h4>
-							</div>
-						</div>
 					</div>
+
+					<h2>Producer</h2>
+					<div class="panel-group category-products" id="accordian">
+						<!--category-productsr-->
+
+						<%
+							ArrayList<String> producers = DBManager.getInstance().getItemDAO().findAllProducers();
+							for (String producer : producers) {
+
+								out.println("<div class=\"panel panel-default\">");
+								out.println("<div class=\"panel-heading\">");
+								out.println("<h4 class=\"panel-title\">");
+								out.print("<a href=\"search?producer=" + producer + "\">" + producer + "</a>");
+								out.println("</h4>");
+								out.println("</div>");
+								out.println("</div>");
+							}
+						%>
+
+					</div>
+
 					<!--/category-productsr-->
 
 				</div>
@@ -257,12 +240,24 @@
 					<h2 class="title text-center">Search Results</h2>
 
 					<%
-						String search = (String) request.getAttribute("search");
-						ArrayList<CompleteItem> completeItems = DBManager.getInstance().getItemDAO().findItems(search);
+						String searchItem = (String) request.getAttribute("search");
+						String searchCategory = (String) request.getAttribute("category");
+						String searchProducer = (String) request.getAttribute("producer");
+
+						ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
+
+						if (searchItem != null && !searchItem.equals("")) {
+							completeItems = DBManager.getInstance().getItemDAO().findItems(searchItem);
+						} else if (searchProducer != null && !searchProducer.equals("")) {
+							completeItems = DBManager.getInstance().getItemDAO().findItemsPerProducer(searchProducer);
+						} else if (searchCategory != null && !searchCategory.equals("")) {
+							completeItems = DBManager.getInstance().getItemDAO().findItemsPerCategory(searchCategory);
+						}
 
 						long currentDate = System.currentTimeMillis();
 
 						if (!completeItems.isEmpty()) {
+
 							for (CompleteItem item : completeItems) {
 								if (item.getItem().getTimeToLive().getTime() > currentDate) {
 									out.print("<div class=\"col-sm-4\">");
@@ -270,14 +265,26 @@
 									out.print("<div class=\"single-products\">");
 									out.print("<div class=\"productinfo text-center\">");
 									out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
-									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+
+									if (item.getItem().getPrice() > item.getItem().getLastBid()) {
+										out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									} else {
+										out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+									}
+
 									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
 
 									if (request.getSession().getAttribute("email") != null
 											&& !request.getSession().getAttribute("email").equals("")) {
-										out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
-												+ search + "\" class=\"btn btn-default add-to-cart\">");
-										out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+										if (item.getItem().isBuy_now()) {
+											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
+													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+										} else if (item.getItem().isBid()) {
+											out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756) + "&search="
+													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
+										}
 									} else {
 										out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
 										out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
@@ -287,18 +294,23 @@
 									out.print("<div class=\"product-overlay\">");
 									out.print("<div class=\"overlay-content\">");
 									out.print("<p>" + item.getItem().getDescription() + "</p>");
-									out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+
+									if (item.getItem().getPrice() > item.getItem().getLastBid()) {
+										out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									} else {
+										out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+									}
 
 									if (request.getSession().getAttribute("email") != null
 											&& !request.getSession().getAttribute("email").equals("")) {
 										if (item.getItem().isBuy_now()) {
 											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
-													+ search + "\" class=\"btn btn-default add-to-cart\">");
+													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
 											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
 										} else if (item.getItem().isBid()) {
-											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
-													+ search + "\" class=\"btn btn-default add-to-cart\">");
-											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+											out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756) + "&search="
+													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
 										}
 									} else {
 										out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");

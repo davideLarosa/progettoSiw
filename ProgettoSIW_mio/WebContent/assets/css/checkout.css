@@ -1,0 +1,16 @@
+img.checkoutPreview {
+	width: 100px;
+	margin-right: 80px;
+}
+
+td.cart_delete {
+	width: 100px;
+}
+
+.text-right{
+	text-align: right;
+}
+
+.payment-options{
+	margin-top: 50px;
+}

@@ -319,15 +319,24 @@ public class UserDAOJDBC implements UserDAO {
 			statement.setInt(1, user_id);
 
 			ResultSet resultSet2 = statement.executeQuery();
+
 			if (resultSet2.next()) {
 				cart_id = resultSet2.getInt(1);
 			}
 
-			String getAmount = "insert into cartItemsList (cart_id, item_id) values(?,?)";
-			PreparedStatement statement3 = connection.prepareStatement(getAmount);
-			statement3.setInt(1, cart_id);
-			statement3.setInt(2, item_id);
-			statement3.executeUpdate();
+			String getCartItemsList = "select * from cartItemsList where cart_id = ? && item_id =?";
+			PreparedStatement getCartItemsListStatement = connection.prepareStatement(getCartItemsList);
+			getCartItemsListStatement.setInt(1, cart_id);
+			getCartItemsListStatement.setInt(2, item_id);
+			ResultSet resultSet3 = getCartItemsListStatement.executeQuery();
+
+			int cartItemsListID = 0;
+			while (resultSet3.next()) {
+				cartItemsListID = resultSet.getInt(1);
+			}
+			if (cartItemsListID == 0) {
+				addInCart(cart_id, item_id);
+			} 
 
 			System.out.println("aggiunto");
 			status = 0;
@@ -337,13 +346,13 @@ public class UserDAOJDBC implements UserDAO {
 				status = 1;
 				System.out.println("doppio");
 			}
-			// throw new PersistenceException(e.getMessage());
+			throw new PersistenceException(e.getMessage());
 		} finally {
 			try {
 				connection.close();
 			} catch (SQLException e) {
 				status = 2;
-				// throw new PersistenceException(e.getMessage());
+				throw new PersistenceException(e.getMessage());
 			}
 		}
 		return status;
@@ -405,5 +414,20 @@ public class UserDAOJDBC implements UserDAO {
 			}
 		}
 		return id;
+	}
+
+	private void addInCart(int cart_id, int item_id) {
+		Connection connection = this.dataSource.getConnection();
+
+		try {
+			String insert = "insert into cartItemsList (cart_id, item_id) values(?,?)";
+			PreparedStatement statement4 = connection.prepareStatement(insert);
+			statement4.setInt(1, cart_id);
+			statement4.setInt(2, item_id);
+			statement4.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

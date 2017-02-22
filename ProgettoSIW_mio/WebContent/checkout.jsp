@@ -1,28 +1,18 @@
-
-<%@page import="java.util.concurrent.ThreadLocalRandom"%>
-<%@page import="java.util.Iterator"%>
-<%@page import="org.apache.tomcat.util.http.fileupload.*"%>
-<%@page import="org.apache.tomcat.util.http.fileupload.disk.*"%>
-<%@page import="org.apache.tomcat.util.http.fileupload.servlet.*"%>
-
-<%@page import="org.apache.tomcat.util.*"%>
-<%@page import="java.io.File"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.List"%>
+<%@page import="model.Item"%>
+<%@page import="model.Paths"%>
+<%@page import="model.Cart"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="model.CompleteItem"%>
+<%@page import="servlets.Sell"%>
 <%@page import="persistence.DBManager"%>
-<%@page import="model.Category"%>
-
-
-<%@ page import="java.io.*,java.util.*, javax.servlet.*"%>
-<%@ page import="javax.servlet.http.*"%>
-
-
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page session="true"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -30,7 +20,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Sell | E-Shopper</title>
+<title>Checkout | E-Shopper</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/prettyPhoto.css" rel="stylesheet">
@@ -38,6 +28,7 @@
 <link href="assets/css/animate.css" rel="stylesheet">
 <link href="assets/css/main.css" rel="stylesheet">
 <link href="assets/css/responsive.css" rel="stylesheet">
+<link href="assets/css/checkout.css" rel="stylesheet">
 <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -192,7 +183,6 @@
 		</div>
 	</div>
 	<!--/header-bottom--> </header>
-
 	<!--/header-->
 
 	<section>
@@ -242,7 +232,7 @@
 
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<i class="fa fa-angle-right"></i>
+
 									<%
 										if (request.getSession().getAttribute("email") != null
 												&& !request.getSession().getAttribute("email").equals(""))
@@ -286,6 +276,7 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
+									<i class="fa fa-angle-right"></i>
 									<%
 										if (request.getSession().getAttribute("email") != null
 												&& !request.getSession().getAttribute("email").equals(""))
@@ -302,142 +293,216 @@
 				</div>
 			</div>
 
-			<c:choose>
-				<c:when test="${message != null && message != '' }">
-
-					<div class="ok_message">
-						<%
-							out.print(request.getAttribute("message"));
-						%>
-					</div>
-					<div class="text-center">
-						<p>
-							Now you can go back to your <a href="modify">Account</a>, <a
-								href="sell">Sell</a> another item or check you <a
-								href="myItems.jsp">items</a>.
-						</p>
-					</div>
-
-				</c:when>
-				<c:otherwise>
-
-					<div class="col-sm-9 padding-right">
-						<div class="features_items">
-							<!--features_items-->
-							<h2 class="title-details text-center">Sell</h2>
-							<div class="text-center">
-								<c:if test="${email == null }">
-									<div class="error_message">
-										<p>
-											You must <a id="error_a" class="error_a" href="login.jsp">login</a>
-											first
-										</p>
-									</div>
-								</c:if>
-								<c:if test="${message == null && email != null}">
-									<p>Seller page</p>
-									<p>In this page you can sell your products</p>
-								</c:if>
-							</div>
+			<div class="col-sm-9 padding-right">
+				<div class="features_items">
+					<!--features_items-->
+					<h2 class="title text-center">My Items</h2>
 
 
-							<!-- Product info -->
-							<div class="col-sm-8 col-sm-offset-1 signup-form">
-								<container id="modify_form_data"> </container>
+					<%
+						ArrayList<CompleteItem> cartItems = DBManager.getInstance().getUserDAO()
+								.getCartPaths((String) request.getSession().getAttribute("email"));
 
-								<form id="itemSell" method="post" action="sell"
-									enctype="multipart/form-data">
-									<i class="fa fa-product-hunt"></i> Producer<input type="text"
-										name="producer" id="producer" value="${producer }"
-										placeholder="${producer }" required /> <i class="fa fa-eye"></i>
-									Model<input type="text" name="model" id="model"
-										value="${model }" placeholder="${model }" /> <i
-										class="fa fa-eur"></i> Minimum buy price <input type="number"
-										min="0.5" step="0.5" name="minimum_buy_price"
-										id="minimum_buy_price" value="${minimum_buy_price }"
-										placeholder="${minimum_buy_price }" /><i class="fa fa-bars"></i>
-									Category <select name="category" id="category">
-										<%
-											List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
-													if (categories != null) {
-														for (Category c : categories) {
-															out.print("<option>" + c.getName() + "</option>");
-														}
-													}
-										%>
+						long currentDate = System.currentTimeMillis();
 
-									</select> <i class="fa fa-calendar-check-o"></i> Expiration time <select
-										name="time" id="time">
-										<option>1 Month</option>
-										<option>2 Months</option>
-										<option>3 Months</option>
-									</select>
-									<div class="checkout-options">
-										<span>
-											<ul class="nav">
-												<li><label> <input type="checkbox" name="bid"
-														id="bid"><i class="fa fa-gavel" id="bid"></i>Bid
-												</label></li>
-												<li><label> <input type="checkbox"
-														name="buy_now" id="buy_now" checked="checked"><i
-														class="fa fa-money" id="buy_now"></i>Buy now
-												</label></li>
-											</ul>
-										</span>
-									</div>
+						if (!cartItems.isEmpty()) {
+							for (CompleteItem item : cartItems) {
+								if (item.getItem().getTimeToLive().getTime() > currentDate) {
+									out.print("<div class=\"col-sm-4\">");
+									out.print("<div class=\"product-image-wrapper\">");
+									out.print("<div class=\"single-products\">");
+									out.print("<div class=\"productinfo text-center\">");
+									if (!item.getPaths().getPaths().isEmpty()) {
+										out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
+									}
 
-									<i class="fa fa-paperclip"></i> Description (max 250 chars)
-									<textarea cols="10" rows="10" maxlength="250"
-										name="description" id="description"
-										placeholder="${description }"></textarea>
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
 
+									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
+									out.print("</div>");
+									out.print("<div class=\"product-overlay\">");
+									out.print("<div class=\"overlay-content\">");
+									out.print("<p>" + item.getItem().getDescription() + "</p>");
 
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
+										if (item.getItem().isBid()) {
+											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>Last bid</p>");
+												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+											} else {
+												out.print("<p>Original Price</p>");
+												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												out.print("<p>No bid yet</p>");
+											}
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									} else {
+										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
+											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+										} else {
+											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+										}
+									}
 
-									<i class="fa fa-picture-o"></i> Upload image
-									<div id="preview1" class="item_preview">
-										<input type="file" id="fileinput1" accept="image/*"
-											onclick="getPreview(1);" name="file" />
-									</div>
+									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
+											+ "\" class=\"btn btn-default add-to-cart\">");
+									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+								}
+							}
+						} else {
+							out.print("<div class=\"text-center\"> Your cart is empty!</a></div>");
+						}
+					%>
 
-									<i class="fa fa-picture-o"></i> Upload image
-									<div id="preview2" class="item_preview">
-										<input type="file" id="fileinput2" accept="image/*"
-											onclick="getPreview(2);" name="file" />
-									</div>
+				</div>
+				<!--features_items-->
 
-									<i class="fa fa-picture-o"></i> Upload image
-									<div id="preview3" class="item_preview">
-										<input type="file" id="fileinput3" accept="image/*"
-											onclick="getPreview(3);" name="file" />
-									</div>
+				<!-- review and payment -->
+				<%
+					if (!cartItems.isEmpty()) {
 
-									<i class="fa fa-picture-o"></i> Upload image
-									<div id="preview4" class="item_preview">
-										<input type="file" id="fileinput4" accept="image/*"
-											onclick="getPreview(4);" name="file" />
-									</div>
+						out.println("<div class=\"review-payment\">");
+						out.println("<h2>Review &amp; Payment</h2>");
+						out.println("</div>");
+						out.println("<div class=\"cart_info\">");
 
-									<i class="fa fa-picture-o"></i> Upload image
-									<div id="preview5" class="item_preview">
-										<input type="file" id="fileinput5" accept="image/*"
-											onclick="getPreview(5);" name="file" />
-									</div>
-									<br />
+						out.println("<table class=\"table table-condensed\">");
+						out.println("<thead>");
+						out.println("<tr class=\"cart_menu\">");
+						out.println("<td class=\"image\">Item</td>");
+						out.println("<td class=\"description\">Description</td>");
+						out.println("<td class=\"price\">Price</td>");
+						out.println("<td class=\"cart_delete\"></td>");
+						out.println("</tr>");
 
-									<button type="submit" class="btn btn-default" id="save_btn"
-										name="save_btn">Upload &amp; Save</button>
-								</form>
+						out.println("</thead>");
+						out.println("<tbody>");
 
-							</div>
-						</div>
-					</div>
-				</c:otherwise>
-			</c:choose>
-			<!--features_items-->
+						for (CompleteItem item : cartItems) {
+
+							out.println("<tr>");
+							out.println("<td class=\"cart_product\">");
+
+							out.println(
+									"<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" class=\"checkoutPreview\"></td>");
+
+							out.println("<td class=\"cart_description\">");
+							out.println("<h4 class=\"text-center\">");
+							out.println("<a>" + item.getItem().getDescription() + "</a>");
+							out.println("</h4>");
+							out.println("</td>");
+							out.println("<td class=\"cart_price\">");
+
+							if (item.getItem().isBid()) {
+								if (item.getItem().getLastBid() > item.getItem().getPrice()) {
+									out.println("<p>" + item.getItem().getLastBid() + "</p>");
+								} else {
+									out.println("<p>" + item.getItem().getPrice() + "</p>");
+								}
+							} else if (item.getItem().isBuy_now()) {
+								out.println("<p>" + item.getItem().getPrice() + "</p>");
+							}
+
+							out.println("</td>");
+							out.println("<td class=\"cart_delete\">");
+							out.println("<a class=\"cart_quantity_delete\" href=\"delete?cartItemId="
+									+ (item.getItem().getId() + 1029384756) + "&from=checkout.jsp\">");
+
+							out.println("<i class=\"fa fa-times\">");
+							out.println("</i>");
+							out.println("</a>");
+							out.println("</td>");
+							out.println("</tr>");
+
+						}
+
+						out.println("</tbody>");
+						out.println("<tfoot>");
+						out.println("<tr>");
+						out.println("<td>&nbsp;</td>");
+						out.println("<td class=\"text-right\">Cart Sub Total</td>");
+
+						float subTotal = 0;
+						for (CompleteItem item : cartItems) {
+							if (item.getItem().isBid()) {
+								if (item.getItem().getLastBid() > item.getItem().getPrice()) {
+									subTotal += item.getItem().getLastBid();
+								} else {
+									subTotal += item.getItem().getPrice();
+								}
+							} else {
+								subTotal += item.getItem().getPrice();
+							}
+						}
+						out.println("<td>" + subTotal + "&euro;</td>");
+						out.println("<td></td>");
+						out.println("</tr>");
+						out.println("<tr>");
+						out.println("<td>&nbsp;</td>");
+						out.println("<td class=\"text-right\">Tax</td>");
+
+						out.println("<td>22%</td>");
+						out.println("<td></td>");
+						out.println("</tr>");
+						out.println("<tr>");
+						out.println("<td>&nbsp;</td>");
+						out.println("<td class=\"text-right\">Total</td>");
+
+						float tax = 22 / 100;
+						float total = 0;
+						total = subTotal + (subTotal * tax);
+
+						out.println("<td>" + total + "&euro;</td>");
+						out.println("<td></td>");
+						out.println("</tr>");
+						out.println("<tr>");
+						out.println("<td></td>");
+						out.println("<td></td>");
+						out.println("<td></td>");
+						out.println("<td><button class=\"btn btn-default\" value=\"Confirm\"</button>Confirm</td>");
+						out.println("</tr>");
+						out.println("</tfoot>");
+						out.println("</table>");
+						out.println("</div>");
+						out.println("<div class=\"payment-options\">");
+						out.println("<span> <label>Only cash payments</label>");
+						out.println("</span>");
+						out.println("</div>");
+					}
+				%>
+
+				<!-- /review and payment -->
+			</div>
 		</div>
 	</div>
 	</section>
-
 
 	<footer id="footer"> <!--Footer-->
 	<div class="footer-top">
@@ -614,7 +679,6 @@
 			</div>
 		</div>
 	</div>
-
 	</footer>
 	<!--/Footer-->
 
@@ -625,9 +689,5 @@
 	<script src="assets/js/price-range.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-	<c:if test="${message == null}">
-		<script src="assets/js/sell.js"></script>
-		<script src="assets/js/gallery.js"></script>
-	</c:if>
 </body>
 </html>

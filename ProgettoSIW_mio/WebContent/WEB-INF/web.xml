@@ -130,4 +130,14 @@
     <servlet-name>DisplayImage</servlet-name>
     <url-pattern>/displayImage</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>MakeBid</display-name>
+    <servlet-name>MakeBid</servlet-name>
+    <servlet-class>servlets.MakeBid</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MakeBid</servlet-name>
+    <url-pattern>/makeBid</url-pattern>
+  </servlet-mapping>
 </web-app>

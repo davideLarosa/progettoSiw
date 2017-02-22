@@ -194,7 +194,16 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="modify">Info</a>
+
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"modify\">Info</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Info</a>");
+										}
+									%>
+
 								</h4>
 							</div>
 
@@ -202,7 +211,16 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="mailingList">Notifications</a>
+
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"mailingList\">Notifications</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Notifications</a>");
+										}
+									%>
+
 								</h4>
 							</div>
 
@@ -212,7 +230,29 @@
 
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a href="sell">Sell</a>
+
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"sell\">Sell</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Sell</a>");
+										}
+									%>
+								</h4>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"myItems.jsp\">My items</a>");
+										else {
+											out.print("<a href=\"login.jsp\">My items</a>");
+										}
+									%>
 
 								</h4>
 							</div>
@@ -220,29 +260,30 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span> <%
- 	if (request.getSession().getAttribute("email") != null
- 			&& !request.getSession().getAttribute("email").equals(""))
- 		out.print("<a href=\"myItems.jsp\">My items</a>");
- 	else {
- 		out.print("<a href=\"login.jsp\">My items</a>");
- 	}
- %>
-									</span>
+								<i class="fa fa-angle-right"></i>
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"cart.jsp\">Cart</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Cart</a>");
+										}
+									%>
 								</h4>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<span><i class="fa fa-angle-right"></i> <%
- 	if (request.getSession().getAttribute("email") != null
- 			&& !request.getSession().getAttribute("email").equals(""))
- 		out.print("<a href=\"cart.jsp\">Cart</a>");
- 	else {
- 		out.print("<a href=\"login.jsp\">Cart</a>");
- 	}
- %> </span>
+									
+									<%
+										if (request.getSession().getAttribute("email") != null
+												&& !request.getSession().getAttribute("email").equals(""))
+											out.print("<a href=\"checkout.jsp\">Checkout</a>");
+										else {
+											out.print("<a href=\"login.jsp\">Checkout</a>");
+										}
+									%>
 								</h4>
 							</div>
 						</div>
@@ -273,8 +314,8 @@
 									if (!item.getPaths().getPaths().isEmpty()) {
 										out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
 									}
-									
-									if ((Integer)session.getAttribute("userId") == item.getItem().getSeller()) {
+
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
 										if (item.getItem().isBid()) {
 											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
 												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
@@ -294,14 +335,14 @@
 
 									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
 									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
-											+ "\" class=\"btn btn-default add-to-cart\">");
+											+ "&from=cart.jsp\" class=\"btn btn-default add-to-cart\">");
 									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
 									out.print("</div>");
 									out.print("<div class=\"product-overlay\">");
 									out.print("<div class=\"overlay-content\">");
 									out.print("<p>" + item.getItem().getDescription() + "</p>");
 
-									if ((Integer)session.getAttribute("userId") == item.getItem().getSeller()) {
+									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
 										if (item.getItem().isBid()) {
 											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
 												out.print("<p>Original Price</p>");
@@ -325,7 +366,7 @@
 									}
 
 									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
-											+ "\" class=\"btn btn-default add-to-cart\">");
+											+ "&from=cart.jsp\" class=\"btn btn-default add-to-cart\">");
 									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
 									out.print("</div>");
 									out.print("</div>");

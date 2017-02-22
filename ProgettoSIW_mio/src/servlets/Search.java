@@ -11,7 +11,21 @@ public class Search extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("login.jsp").forward(request, response);
+
+		String searchCategory = request.getParameter("category");
+		String searchProducer = request.getParameter("producer");
+
+		if (searchCategory != null && !searchCategory.equals("")) {
+			request.setAttribute("category", searchCategory);
+			request.getRequestDispatcher("search.jsp").forward(request, response);
+		} else if (searchProducer != null && !searchProducer.equals("")) {
+			request.setAttribute("producer", searchProducer);
+			request.getRequestDispatcher("search.jsp").forward(request, response);
+		}
+
+		else {
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
