@@ -29,36 +29,44 @@ public class MailingList extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		Email guestEmail = new Email((String) request.getParameter("email"));
 		Email userEmail = new Email((String) request.getSession().getAttribute("email"));
+		String referer = request.getParameter("from");
 
-		Email email = DBManager.getInstance().getMailingListDAO().findByPrimaryKey(userEmail);
+		if (guestEmail != null && !guestEmail.equals("") && (referer != null && !referer.equals(""))) {
+			DBManager.getInstance().getMailingListDAO().save(guestEmail);
+			request.getRequestDispatcher(referer).forward(request, response);
+		} else if (userEmail != null && !userEmail.equals("")) {
 
-		if (request.getParameterNames().hasMoreElements()) {
-			String jsonString = request.getParameter("check");
-			if (jsonString != null) {
-				boolean valueToSet = false;
-				ObjectMapper mapper = new ObjectMapper();
-				valueToSet = mapper.readValue(jsonString, Boolean.class);
-				if (valueToSet) {
-					if (email == null) {
-						DBManager.getInstance().getMailingListDAO().save(userEmail);
-					} else {
-						if (email != null) {
-							DBManager.getInstance().getMailingListDAO().delete(userEmail);
+			Email email = DBManager.getInstance().getMailingListDAO().findByPrimaryKey(userEmail);
+			if (request.getParameterNames().hasMoreElements()) {
+				String jsonString = request.getParameter("check");
+				if (jsonString != null) {
+					boolean valueToSet = false;
+					ObjectMapper mapper = new ObjectMapper();
+					valueToSet = mapper.readValue(jsonString, Boolean.class);
+					if (valueToSet) {
+						if (email == null) {
+							DBManager.getInstance().getMailingListDAO().save(userEmail);
+						} else {
+							if (email != null) {
+								DBManager.getInstance().getMailingListDAO().delete(userEmail);
+							}
 						}
 					}
 				}
-			}
-
-		} else {
-			if (email == null) {
-				request.getSession().setAttribute("subscribed", "no");
 			} else {
-				request.getSession().setAttribute("subscribed", "yes");
-			}
+				if (email == null) {
+					request.getSession().setAttribute("subscribed", "no");
+				} else {
+					request.getSession().setAttribute("subscribed", "yes");
+				}
 
-			RequestDispatcher dispatcher = request.getRequestDispatcher("notifications.jsp");
-			dispatcher.forward(request, response);
+				RequestDispatcher dispatcher = request.getRequestDispatcher("notifications.jsp");
+				dispatcher.forward(request, response);
+			}
+		} else {
+			request.getRequestDispatcher("index.jsp").forward(request, response);
 		}
 	}
 

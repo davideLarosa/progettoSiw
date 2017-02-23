@@ -260,6 +260,14 @@ a#scrollUp i {
 	background-position: 130px;
 }
 
+.lblCartCount {
+	font-size: 12px;
+	/*background: #f5f5ed;*/
+	color: #696763;
+	/*padding: 0 5px;*/
+	vertical-align: top;
+}
+
 /*  Dropdown menu*/
 .navbar-header 
 .navbar-toggle .icon-bar {
@@ -337,6 +345,8 @@ opacity
 
 
 
+
+
 :
 
 
@@ -344,7 +354,9 @@ opacity
 
 
 
+
  
+
 
 
 
@@ -365,7 +377,10 @@ opacity
 
 
 
+
+
 :
+
 
 
 
@@ -379,7 +394,10 @@ opacity
 
 
 
+
 translateY
+
+
 
 
 
@@ -406,7 +424,10 @@ transform
 
 
 
+
+
 :
+
 
 
 
@@ -420,7 +441,10 @@ transform
 
 
 
+
 translateY
+
+
 
 
 
@@ -571,9 +595,21 @@ translateY
 }
 
 .footer-widget {
-	margin-bottom: 68px;
+	margin-bottom: 0px;
+	text-align: center;
 }
 
+input.mailingList{
+	padding-top: 6px;
+}
+button#mailingList{
+	margin-top: 0px;
+	margin-right: 3px;
+	float: right;
+}
+input#mailingList{
+	
+}
 .footer-widget .container {
 	border-top: 1px solid #FFFFFF;
 	padding-top: 15px;

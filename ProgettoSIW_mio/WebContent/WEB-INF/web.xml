@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-  <display-name>ProgettoSIW_mio</display-name>
+  <display-name>ProgettoSIW</display-name>
   <context-param>
     <description>Items images location</description>
     <param-name>file-upload</param-name>
@@ -17,25 +17,22 @@
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
-  
-  
   <error-page>
     <error-code>404</error-code>
     <location>/html/404.html</location>
-</error-page>
+  </error-page>
   <error-page>
     <error-code>500</error-code>
     <location>/html/404.html</location>
-</error-page>
-<error-page>
+  </error-page>
+  <error-page>
     <exception-type>java.lang.Exception</exception-type>
     <location>/html/404.html</location>
-</error-page>
-<error-page>
-   <exception-type>java.lang.Throwable</exception-type>
-   <location>/html/404.html</location>
- </error-page>
-
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/html/404.html</location>
+  </error-page>
   <servlet>
     <description></description>
     <display-name>SignupServlet</display-name>
@@ -159,6 +156,4 @@
     <servlet-name>MakeBid</servlet-name>
     <url-pattern>/makeBid</url-pattern>
   </servlet-mapping>
-  
-  
 </web-app>

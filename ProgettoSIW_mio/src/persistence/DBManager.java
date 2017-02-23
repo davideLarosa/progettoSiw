@@ -32,7 +32,7 @@ public class DBManager {
 		// MySQLDAOFactory("sql8.freesqldatabase.com", "sql8154408", "3306",
 		// "sql8154408", "SeJ9HdcTZJ");
 
-		DAOFactory daoFactory = new MySQLDAOFactory("10.0.0.2", "progetto_siw", "3306", "root", "root");
+		DAOFactory daoFactory = new MySQLDAOFactory("davideraspberry.ddns.net", "progetto_siw", "3306", "root", "root");
 
 		this.userDAO = daoFactory.getUserDAO();
 		this.mailingListDAO = daoFactory.getMailingListDAO();

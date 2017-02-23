@@ -1,13 +1,6 @@
 <%@page import="model.Category"%>
 <%@page import="java.util.List"%>
-<%@page import="model.Paths"%>
-<%@page import="model.Cart"%>
-<%@page import="java.util.Calendar"%>
-<%@page import="model.CompleteItem"%>
-<%@page import="servlets.Sell"%>
 <%@page import="persistence.DBManager"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -20,8 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
 <meta name="author" content="">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>My Cart | E-Shopper</title>
+<title>Contact | E-Shopper</title>
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/css/font-awesome.min.css" rel="stylesheet">
 <link href="assets/css/prettyPhoto.css" rel="stylesheet">
@@ -30,10 +22,10 @@
 <link href="assets/css/main.css" rel="stylesheet">
 <link href="assets/css/responsive.css" rel="stylesheet">
 <!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-    <script src="js/respond.min.js"></script>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
     <![endif]-->
-<link rel="shortcut icon" href="favicon.ico">
+<link rel="shortcut icon" href="images/ico/favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="144x144"
 	href="images/ico/apple-touch-icon-144-precomposed.png">
 <link rel="apple-touch-icon-precomposed" sizes="114x114"
@@ -224,217 +216,73 @@
 	</div>
 	<!--/header-bottom--> </header>
 	<!--/header-->
-	<section>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-3">
-				<div class="left-sidebar">
-					<h2>My account</h2>
-					<div class="panel-group category-products" id="accordian">
-						<!--category-productsr-->
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
 
-									<%
-										if (request.getSession().getAttribute("email") != null
-												&& !request.getSession().getAttribute("email").equals(""))
-											out.print("<a href=\"modify\">Info</a>");
-										else {
-											out.print("<a href=\"login.jsp\">Info</a>");
-										}
-									%>
-
-								</h4>
-							</div>
-
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-
-									<%
-										if (request.getSession().getAttribute("email") != null
-												&& !request.getSession().getAttribute("email").equals(""))
-											out.print("<a href=\"mailingList\">Notifications</a>");
-										else {
-											out.print("<a href=\"login.jsp\">Notifications</a>");
-										}
-									%>
-
-								</h4>
-							</div>
-
-						</div>
-
-						<div class="panel panel-default">
-
-							<div class="panel-heading">
-								<h4 class="panel-title">
-
-									<%
-										if (request.getSession().getAttribute("email") != null
-												&& !request.getSession().getAttribute("email").equals(""))
-											out.print("<a href=\"sell\">Sell</a>");
-										else {
-											out.print("<a href=\"login.jsp\">Sell</a>");
-										}
-									%>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<%
-										if (request.getSession().getAttribute("email") != null
-												&& !request.getSession().getAttribute("email").equals(""))
-											out.print("<a href=\"myItems.jsp\">My items</a>");
-										else {
-											out.print("<a href=\"login.jsp\">My items</a>");
-										}
-									%>
-
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<i class="fa fa-angle-right"></i>
-									<%
-										if (request.getSession().getAttribute("email") != null
-												&& !request.getSession().getAttribute("email").equals(""))
-											out.print("<a href=\"cart.jsp\">Cart</a>");
-										else {
-											out.print("<a href=\"login.jsp\">Cart</a>");
-										}
-									%>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-
-									<%
-										if (request.getSession().getAttribute("email") != null
-												&& !request.getSession().getAttribute("email").equals(""))
-											out.print("<a href=\"checkout.jsp\">Checkout</a>");
-										else {
-											out.print("<a href=\"login.jsp\">Checkout</a>");
-										}
-									%>
-								</h4>
-							</div>
-						</div>
-					</div>
-					<!--/category-productsr-->
+	<div id="contact-page" class="container">
+		<div class="bg">
+			<div class="row">
+				<div class="col-sm-12">
+					<h2 class="title text-center">
+						Contact <strong>Us</strong>
+					</h2>
+					<div id="gmap" class="contact-map"></div>
 				</div>
 			</div>
-
-			<div class="col-sm-9 padding-right">
-				<div class="features_items">
-					<!--features_items-->
-					<h2 class="title text-center">My Items</h2>
-
-
-					<%
-						ArrayList<CompleteItem> cartItems = DBManager.getInstance().getUserDAO()
-								.getCartPaths((String) request.getSession().getAttribute("email"));
-
-						long currentDate = System.currentTimeMillis();
-
-						if (!cartItems.isEmpty()) {
-							for (CompleteItem item : cartItems) {
-								if (item.getItem().getTimeToLive().getTime() > currentDate) {
-									out.print("<div class=\"col-sm-4\">");
-									out.print("<div class=\"product-image-wrapper\">");
-									out.print("<div class=\"single-products\">");
-									out.print("<div class=\"productinfo text-center\">");
-									if (!item.getPaths().getPaths().isEmpty()) {
-										out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
-									}
-
-									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
-										if (item.getItem().isBid()) {
-											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
-												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
-											} else {
-												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-											}
-										} else {
-											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-										}
-									} else {
-										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
-											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
-										} else {
-											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-										}
-									}
-
-									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
-									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
-											+ "&from=cart.jsp\" class=\"btn btn-default add-to-cart\">");
-									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
-									out.print("</div>");
-									out.print("<div class=\"product-overlay\">");
-									out.print("<div class=\"overlay-content\">");
-									out.print("<p>" + item.getItem().getDescription() + "</p>");
-
-									if ((Integer) session.getAttribute("userId") == item.getItem().getSeller()) {
-										if (item.getItem().isBid()) {
-											if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
-												out.print("<p>Original Price</p>");
-												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-												out.print("<p>Last bid</p>");
-												out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
-											} else {
-												out.print("<p>Original Price</p>");
-												out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-												out.print("<p>No bid yet</p>");
-											}
-										} else {
-											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-										}
-									} else {
-										if (item.getItem().getLastBid() >= item.getItem().getPrice()) {
-											out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
-										} else {
-											out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
-										}
-									}
-
-									out.print("<a href=\"delete?cartItemId=" + (item.getItem().getId() + 1029384756)
-											+ "&from=cart.jsp\" class=\"btn btn-default add-to-cart\">");
-									out.print("<i class=\"fa fa-trash-o\"></i>Remove from cart</a>");
-									out.print("</div>");
-									out.print("</div>");
-									out.print("</div>");
-									out.print("</div>");
-									out.print("</div>");
-								}
-							}
-						} else {
-							out.print("<div class=\"text-center\"> Your cart is empty!</a></div>");
-						}
-					%>
-
-
-
-
-
-
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="contact-form">
+						<h2 class="title text-center">Get In Touch</h2>
+						<div class="status alert alert-success" style="display: none"></div>
+						<form id="main-contact-form" class="contact-form row"
+							name="contact-form" method="post">
+							<div class="form-group col-md-6">
+								<input type="text" name="name" class="form-control"
+									required="required" placeholder="Name">
+							</div>
+							<div class="form-group col-md-6">
+								<input type="email" name="email" class="form-control"
+									required="required" placeholder="Email">
+							</div>
+							<div class="form-group col-md-12">
+								<input type="text" name="subject" class="form-control"
+									required="required" placeholder="Subject">
+							</div>
+							<div class="form-group col-md-12">
+								<textarea name="message" id="message" required="required"
+									class="form-control" rows="8" placeholder="Your Message Here"></textarea>
+							</div>
+							<div class="form-group col-md-12">
+								<input type="submit" name="submit"
+									class="btn btn-primary pull-right" value="Submit">
+							</div>
+						</form>
+					</div>
 				</div>
-				<!--features_items-->
+				<div class="col-sm-4">
+					<div class="contact-info">
+						<h2 class="title text-center">Contact Info</h2>
+						<address>
+							<p>E-Shopper Inc.</p>
+							<p>935 W. Webster Ave New Streets Chicago, IL 60614, NY</p>
+							<p>Newyork USA</p>
+							<p>Mobile: +2346 17 38 93</p>
+							<p>Fax: 1-714-252-0026</p>
+							<p>Email: info@e-shopper.com</p>
+						</address>
+						<div class="social-networks">
+							<h2 class="title text-center">Social Networking</h2>
+							<ul>
+								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+								<li><a href="#"><i class="fa fa-youtube"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	</section>
-
-
-
+	<!--/#contact-page-->
 
 	<footer id="footer"> <!--Footer-->
 
@@ -508,13 +356,17 @@
 	<!--/Footer-->
 
 
+
 	<script src="assets/js/jquery.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/jquery.scrollUp.min.js"></script>
+	<script type="text/javascript"
+		src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript" src="assets/js/gmaps.js"></script>
+	<script src="assets/js/contact.js"></script>
 	<script src="assets/js/price-range.js"></script>
+	<script src="assets/js/jquery.scrollUp.min.js"></script>
 	<script src="assets/js/jquery.prettyPhoto.js"></script>
 	<script src="assets/js/main.js"></script>
-
 
 </body>
 </html>
