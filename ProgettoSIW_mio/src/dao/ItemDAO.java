@@ -22,6 +22,8 @@ public interface ItemDAO {
 
 	public ArrayList<CompleteItem> findItemsPerProducer(String searchQuery);
 
+	public ArrayList<CompleteItem> findSomeItems(int nofItems);
+
 	public ArrayList<String> findAllProducers();
 
 	public void update(Item item); // Update

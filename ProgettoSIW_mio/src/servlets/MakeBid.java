@@ -26,6 +26,8 @@ public class MakeBid extends HttpServlet {
 			throws ServletException, IOException {
 
 		int itemToBid = 0;
+		String referer = request.getParameter("from");
+		
 		String search = request.getParameter("search");
 		if (request.getParameter("id") != null && !request.getParameter("id").equals("")) {
 			itemToBid = Integer.valueOf(request.getParameter("id")) - 1029384756;
@@ -34,7 +36,7 @@ public class MakeBid extends HttpServlet {
 					itemToBid);
 		}
 		request.setAttribute("search", search);
-		request.getRequestDispatcher("search.jsp").forward(request, response);
+		request.getRequestDispatcher(referer).forward(request, response);
 	}
 
 }

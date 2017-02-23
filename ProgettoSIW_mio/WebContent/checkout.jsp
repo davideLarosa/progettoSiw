@@ -415,7 +415,7 @@
 
 							out.println("<td class=\"cart_description\">");
 							out.println("<h4 class=\"text-center\">");
-							out.println("<a>" + item.getItem().getDescription() + "</a>");
+							out.println("<a>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</a>");
 							out.println("</h4>");
 							out.println("</td>");
 							out.println("<td class=\"cart_price\">");
@@ -475,9 +475,7 @@
 						out.println("<td>&nbsp;</td>");
 						out.println("<td class=\"text-right\">Total</td>");
 
-						float tax = 22 / 100;
-						float total = 0;
-						total = subTotal + (subTotal * tax);
+						float total = subTotal + (subTotal * 22 / 100);
 
 						out.println("<td>" + total + "&euro;</td>");
 						out.println("<td></td>");

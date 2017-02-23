@@ -351,11 +351,11 @@
 										name="producer" id="producer" value="${producer }"
 										placeholder="${producer }" required /> <i class="fa fa-eye"></i>
 									Model<input type="text" name="model" id="model"
-										value="${model }" placeholder="${model }" /> <i
+										value="${model }" placeholder="${model }"required /> <i
 										class="fa fa-eur"></i> Minimum buy price <input type="number"
 										min="0.5" step="0.5" name="minimum_buy_price"
 										id="minimum_buy_price" value="${minimum_buy_price }"
-										placeholder="${minimum_buy_price }" /><i class="fa fa-bars"></i>
+										placeholder="${minimum_buy_price }" required /><i class="fa fa-bars"></i>
 									Category <select name="category" id="category">
 										<%
 											List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
@@ -386,29 +386,29 @@
 										</span>
 									</div>
 
-									<i class="fa fa-paperclip"></i> Description (max 250 chars)
-									<textarea cols="10" rows="10" maxlength="250"
+									<i class="fa fa-paperclip"></i> Description (max 200 chars)
+									<textarea cols="10" rows="10" maxlength="200"
 										name="description" id="description"
-										placeholder="${description }"></textarea>
+										placeholder="${description }" required></textarea>
 
 
 
 									<i class="fa fa-picture-o"></i> Upload image
 									<div id="preview1" class="item_preview">
 										<input type="file" id="fileinput1" accept="image/*"
-											onclick="getPreview(1);" name="file" />
+											onclick="getPreview(1);" name="file" required/>
 									</div>
 
 									<i class="fa fa-picture-o"></i> Upload image
 									<div id="preview2" class="item_preview">
 										<input type="file" id="fileinput2" accept="image/*"
-											onclick="getPreview(2);" name="file" />
+											onclick="getPreview(2);" name="file" required/>
 									</div>
 
 									<i class="fa fa-picture-o"></i> Upload image
 									<div id="preview3" class="item_preview">
 										<input type="file" id="fileinput3" accept="image/*"
-											onclick="getPreview(3);" name="file" />
+											onclick="getPreview(3);" name="file" required/>
 									</div>
 
 									<i class="fa fa-picture-o"></i> Upload image

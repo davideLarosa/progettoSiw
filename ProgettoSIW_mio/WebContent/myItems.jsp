@@ -273,7 +273,7 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									
+
 									<%
 										if (request.getSession().getAttribute("email") != null
 												&& !request.getSession().getAttribute("email").equals(""))
@@ -374,7 +374,7 @@
 							}
 						} else {
 							out.print(
-									"<div class=\"text-center\"> No items to sell yet! <a href=\"sell\">Start your selling experiece!</a></div>");
+									"<div class=\"text-center\"> No items in sell yet! <a href=\"sell\">Start your selling experiece!</a></div>");
 						}
 					%>
 

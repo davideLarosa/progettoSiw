@@ -32,7 +32,6 @@ public class Search extends HttpServlet {
 			throws ServletException, IOException {
 
 		String searchQuery = request.getParameter("search");
-
 		if (searchQuery != null && !searchQuery.equals("")) {
 			request.setAttribute("search", searchQuery);
 			request.getRequestDispatcher("search.jsp").forward(request, response);

@@ -43,24 +43,11 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6">
-					<div class="contactinfo">
-						<ul class="nav nav-pills">
-							<li><a href="tel:+393427375290"><i class="fa fa-phone"></i>
-									+39 342 73 74 290</a></li>
-							<li><a href="mailto:davide.larosa90@gmail.com"><i
-									class="fa fa-envelope"></i> info@e-shopper.com</a></li>
-						</ul>
-					</div>
+					<div></div>
 				</div>
 				<div class="col-sm-6">
-					<div class="social-icons pull-right">
-						<ul class="nav navbar-nav">
-							<li><a href=""><i class="fa fa-facebook"></i></a></li>
-							<li><a href=""><i class="fa fa-twitter"></i></a></li>
-							<li><a href=""><i class="fa fa-linkedin"></i></a></li>
-							<li><a href=""><i class="fa fa-dribbble"></i></a></li>
-							<li><a href=""><i class="fa fa-google-plus"></i></a></li>
-						</ul>
+					<div>
+						<br />
 					</div>
 				</div>
 			</div>

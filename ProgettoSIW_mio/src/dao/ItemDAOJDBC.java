@@ -320,12 +320,13 @@ public class ItemDAOJDBC implements ItemDAO {
 		try {
 			for (String search : queries) {
 				PreparedStatement statement;
-				String query = "select * from item where locate(?, producer) or locate(?, model) or locate(?, description)";
+				String query = "select * from item, category where locate(?, item.producer) or locate(?, item.model) or locate(?, item.description) or locate(?, category.name) ";
 
 				statement = connection.prepareStatement(query);
 				statement.setString(1, search);
 				statement.setString(2, search);
 				statement.setString(3, search);
+				statement.setString(4, search);
 				ResultSet result = statement.executeQuery();
 				while (result.next()) {
 					Item item = new Item();
@@ -584,5 +585,71 @@ public class ItemDAOJDBC implements ItemDAO {
 			}
 		}
 		return producers;
+	}
+
+	@Override
+	public ArrayList<CompleteItem> findSomeItems(int nofItems) {
+		Connection connection = this.dataSource.getConnection();
+		ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
+		ArrayList<Item> items = new ArrayList<>();
+
+		try {
+			PreparedStatement statement;
+			String query = "select * from item LIMIT ? ";
+
+			statement = connection.prepareStatement(query);
+			statement.setInt(1, nofItems);
+
+			ResultSet result = statement.executeQuery();
+			while (result.next()) {
+				Item item = new Item();
+				item.setId(result.getInt(1));
+				item.setProducer(result.getString(2));
+				item.setModel(result.getString(3));
+				item.setPrice(result.getFloat(4));
+				item.setLastBid(result.getFloat(5));
+				item.setTimeToLive(result.getDate(6));
+				item.setDescription(result.getString(7));
+				item.setCategory(new Category(result.getString(8)));
+				item.setSeller(result.getInt(9));
+				item.setBuy_now(result.getBoolean(10));
+				item.setBid(result.getBoolean(11));
+
+				if (!items.contains(item)) {
+					items.add(item);
+				}
+			}
+
+			// connection.close();
+
+			for (Item currentItem : items) {
+				Paths paths = new Paths();
+				CompleteItem completeItem = new CompleteItem();
+				PreparedStatement statement1;
+				String query1 = "select * from path where path.item_id = ?";
+				statement1 = connection.prepareStatement(query1);
+				statement1.setInt(1, currentItem.getId());
+				ResultSet result1 = statement1.executeQuery();
+
+				while (result1.next()) {
+					paths.setId(result1.getInt(1));
+					paths.setItemId(result1.getInt(2));
+					paths.addPath(result1.getString(3));
+				}
+				completeItem.setItem(currentItem);
+				completeItem.setPaths(paths);
+				completeItems.add(completeItem);
+			}
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e.getMessage());
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				throw new PersistenceException(e.getMessage());
+			}
+		}
+		return completeItems;
 	}
 }

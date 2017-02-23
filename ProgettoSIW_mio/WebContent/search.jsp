@@ -241,17 +241,19 @@
 
 					<%
 						String searchItem = (String) request.getAttribute("search");
-						String searchCategory = (String) request.getAttribute("category");
 						String searchProducer = (String) request.getAttribute("producer");
+						String searchCategory = (String) request.getAttribute("category");
 
 						ArrayList<CompleteItem> completeItems = new ArrayList<CompleteItem>();
 
-						if (searchItem != null && !searchItem.equals("")) {
+						if (searchItem != null && !searchItem.equals("") && !searchItem.equals("null")) {
 							completeItems = DBManager.getInstance().getItemDAO().findItems(searchItem);
-						} else if (searchProducer != null && !searchProducer.equals("")) {
+						} else if (searchProducer != null && !searchProducer.equals("") && !searchProducer.equals("null")) {
 							completeItems = DBManager.getInstance().getItemDAO().findItemsPerProducer(searchProducer);
-						} else if (searchCategory != null && !searchCategory.equals("")) {
+							searchItem = searchProducer;
+						} else if (searchCategory != null && !searchCategory.equals("") && !searchCategory.equals("null")) {
 							completeItems = DBManager.getInstance().getItemDAO().findItemsPerCategory(searchCategory);
+							searchItem = searchCategory;
 						}
 
 						long currentDate = System.currentTimeMillis();
@@ -278,11 +280,11 @@
 											&& !request.getSession().getAttribute("email").equals("")) {
 										if (item.getItem().isBuy_now()) {
 											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
-													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+													+ searchItem + "&from=search.jsp\" class=\"btn btn-default add-to-cart\">");
 											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
 										} else if (item.getItem().isBid()) {
 											out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756) + "&search="
-													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+													+ searchItem + "&from=search.jsp\" class=\"btn btn-default add-to-cart\">");
 											out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
 										}
 									} else {
@@ -305,11 +307,11 @@
 											&& !request.getSession().getAttribute("email").equals("")) {
 										if (item.getItem().isBuy_now()) {
 											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756) + "&search="
-													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+													+ searchItem + "&from=search.jsp\" class=\"btn btn-default add-to-cart\">");
 											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
 										} else if (item.getItem().isBid()) {
 											out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756) + "&search="
-													+ searchItem + "\" class=\"btn btn-default add-to-cart\">");
+													+ searchItem + "&from=search.jsp\" class=\"btn btn-default add-to-cart\">");
 											out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
 										}
 									} else {

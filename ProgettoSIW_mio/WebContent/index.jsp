@@ -1,3 +1,8 @@
+<%@page import="model.Item"%>
+<%@page import="model.CompleteItem"%>
+<%@page import="model.Category"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.io.InputStream"%>
 <%@page import="persistence.DBManager"%>
 <%@page import="com.mysql.cj.mysqlx.protobuf.MysqlxCrud.Find"%>
@@ -95,8 +100,16 @@
 								</c:choose></li>
 							<li><a href="html/checkout.html"><i
 									class="fa fa-crosshairs"></i> Checkout</a></li>
-							<li><a href="html/cart.html"><i
-									class="fa fa-shopping-cart"></i> Cart</a></li>
+							<li>
+								<%
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals(""))
+										out.print("<a href=\"cart.jsp\">");
+									else {
+										out.print("<a href=\"login.jsp\">");
+									}
+								%> <i class="fa fa-shopping-cart"></i> Cart </a>
+							</li>
 							<li><c:choose>
 									<c:when test="${username == null }">
 										<a href="login.jsp" class="active"><i class="fa fa-unlock"></i>
@@ -119,10 +132,10 @@
 		<!--header-bottom-->
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-9">
+				<div class="col-sm-8">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
-							data-target=".navbar-collapse">
+							data-target=".navbar-collapse" style="float: left;">
 							<span class="sr-only">Toggle navigation</span> <span
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
@@ -137,22 +150,33 @@
 									<li><a href="shop.html">Products</a></li>
 									<li><a href="product-details.html">Product Details</a></li>
 									<li><a href="checkout.html">Checkout</a></li>
-									<li><a href="cart.html">Cart</a></li>
-									<li><a href="login.html" class="active">Login</a></li>
+									<li>
+										<%
+											if (request.getSession().getAttribute("email") != null
+													&& !request.getSession().getAttribute("email").equals("")) {
+												out.print("<a href=\"cart.jsp\">Cart</a>");
+											} else {
+												out.print("<a href=\"login.jsp\">Cart</a>");
+											}
+										%>
+									</li>
+									<li><a href="login.jsp" class="active">Login</a></li>
 								</ul></li>
-							<li class="dropdown"><a href="#">Blog<i
-									class="fa fa-angle-down"></i></a>
-								<ul role="menu" class="sub-menu">
-									<li><a href="html/blog.html">Blog List</a></li>
-									<li><a href="html/blog-single.html">Blog Single</a></li>
-								</ul></li>
+
 							<li><a href="html/contact-us.html">Contact</a></li>
 						</ul>
 					</div>
 				</div>
-				<div class="col-sm-3">
+				<div class="col-lg-2">
 					<div class="search_box pull-right">
-						<input type="text" placeholder="Search" />
+						<form action="search" method="post" class="searchForm">
+							<span> <input type="text" placeholder="Search"
+								name="search" class="search" />
+								<button type="submit" class="searchButton">
+									<i class="fa fa-search"></i>
+								</button>
+							</span>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -174,63 +198,50 @@
 						<li data-target="#slider-carousel" data-slide-to="1"></li>
 						<li data-target="#slider-carousel" data-slide-to="2"></li>
 					</ol>
-
 					<div class="carousel-inner">
-						<div class="item active">
-							<div class="col-sm-6">
-								<h1>
-									<span>E</span>-SHOPPER
-								</h1>
-								<h2>Free E-Commerce Template</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-									sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua.</p>
-								<button type="button" class="btn btn-default get">Get
-									it now</button>
-							</div>
-							<div class="col-sm-6">
-								<img src="images/home/girl1.jpg" class="girl img-responsive"
-									alt="" /> <img src="images/home/pricing.png" class="pricing"
-									alt="" />
-							</div>
-						</div>
-						<div class="item">
-							<div class="col-sm-6">
-								<h1>
-									<span>E</span>-SHOPPER
-								</h1>
-								<h2>100% Responsive Design</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-									sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua.</p>
-								<button type="button" class="btn btn-default get">Get
-									it now</button>
-							</div>
-							<div class="col-sm-6">
-								<img src="images/home/girl2.jpg" class="girl img-responsive"
-									alt="" /> <img src="images/home/pricing.png" class="pricing"
-									alt="" />
-							</div>
-						</div>
 
-						<div class="item">
-							<div class="col-sm-6">
-								<h1>
-									<span>E</span>-SHOPPER
-								</h1>
-								<h2>Free Ecommerce Template</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-									sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua.</p>
-								<button type="button" class="btn btn-default get">Get
-									it now</button>
-							</div>
-							<div class="col-sm-6">
-								<img src="images/home/girl3.jpg" class="girl img-responsive"
-									alt="" /> <img src="images/home/pricing.png" class="pricing"
-									alt="" />
-							</div>
-						</div>
+
+						<%
+							ArrayList<CompleteItem> upPreview = DBManager.getInstance().getItemDAO().findSomeItems(3);
+
+							long currentDate = System.currentTimeMillis();
+
+							if (!upPreview.isEmpty()) {
+
+								for (CompleteItem item : upPreview) {
+									if (item.getItem().getTimeToLive().getTime() > currentDate) {
+
+										if (item.equals(upPreview.get(0))) {
+											out.println("<div class=\"item active\">");
+										} else {
+											out.println("<div class=\"item\">");
+										}
+										out.println("<div class=\"col-sm-6\">");
+										out.println("<h1>Preview</h1>");
+										out.println("<h2>Lorem ipsum dolor sit amet</h2>");
+										out.println("<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,"
+												+ "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>");
+										out.println("</br></br></br>");
+										out.println("</div>");
+										out.println("<div class=\"col-sm-6\">");
+										out.println("<img src=\"" + item.getPath(0) + "\" class=\"girl img-responsive\" alt=\"\" />");
+
+										out.println("</div>");
+										out.println("</div>");
+									}
+								}
+							}
+						%>
+
+
+
+
+
+
+
+
+
+
 
 					</div>
 
@@ -256,170 +267,44 @@
 					<h2>Category</h2>
 					<div class="panel-group category-products" id="accordian">
 						<!--category-productsr-->
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordian"
-										href="#sportswear"> <span class="badge pull-right"><i
-											class="fa fa-plus"></i></span> Sportswear
-									</a>
-								</h4>
-							</div>
-							<div id="sportswear" class="panel-collapse collapse">
-								<div class="panel-body">
-									<ul>
-										<li><a href="#">Nike </a></li>
-										<li><a href="#">Under Armour </a></li>
-										<li><a href="#">Adidas </a></li>
-										<li><a href="#">Puma</a></li>
-										<li><a href="#">ASICS </a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordian" href="#mens">
-										<span class="badge pull-right"><i class="fa fa-plus"></i></span>
-										Mens
-									</a>
-								</h4>
-							</div>
-							<div id="mens" class="panel-collapse collapse">
-								<div class="panel-body">
-									<ul>
-										<li><a href="#">Fendi</a></li>
-										<li><a href="#">Guess</a></li>
-										<li><a href="#">Valentino</a></li>
-										<li><a href="#">Dior</a></li>
-										<li><a href="#">Versace</a></li>
-										<li><a href="#">Armani</a></li>
-										<li><a href="#">Prada</a></li>
-										<li><a href="#">Dolce and Gabbana</a></li>
-										<li><a href="#">Chanel</a></li>
-										<li><a href="#">Gucci</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
 
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordian"
-										href="#womens"> <span class="badge pull-right"><i
-											class="fa fa-plus"></i></span> Womens
-									</a>
-								</h4>
-							</div>
-							<div id="womens" class="panel-collapse collapse">
-								<div class="panel-body">
-									<ul>
-										<li><a href="#">Fendi</a></li>
-										<li><a href="#">Guess</a></li>
-										<li><a href="#">Valentino</a></li>
-										<li><a href="#">Dior</a></li>
-										<li><a href="#">Versace</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Kids</a>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Fashion</a>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Households</a>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Interiors</a>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Clothing</a>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Bags</a>
-								</h4>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a href="#">Shoes</a>
-								</h4>
-							</div>
-						</div>
-					</div>
-					<!--/category-products-->
+						<%
+							List<Category> categories = DBManager.getInstance().getCategoryDAO().findAll();
+							for (Category category : categories) {
 
-					<div class="brands_products">
-						<!--brands_products-->
-						<h2>Brands</h2>
-						<div class="brands-name">
-							<ul class="nav nav-pills nav-stacked">
-								<li><a href="#"> <span class="pull-right">(50)</span>Acne
-								</a></li>
-								<li><a href="#"> <span class="pull-right">(56)</span>Grüne
-										Erde
-								</a></li>
-								<li><a href="#"> <span class="pull-right">(27)</span>Albiro
-								</a></li>
-								<li><a href="#"> <span class="pull-right">(32)</span>Ronhill
-								</a></li>
-								<li><a href="#"> <span class="pull-right">(5)</span>Oddmolly
-								</a></li>
-								<li><a href="#"> <span class="pull-right">(9)</span>Boudestijn
-								</a></li>
-								<li><a href="#"> <span class="pull-right">(4)</span>Rösch
-										creative culture
-								</a></li>
-							</ul>
-						</div>
-					</div>
-					<!--/brands_products-->
+								out.println("<div class=\"panel panel-default\">");
+								out.println("<div class=\"panel-heading\">");
+								out.println("<h4 class=\"panel-title\">");
+								out.print("<a href=\"search?category=" + category.getName() + "&from=index.jsp\">" + category.getName() + "</a>");
+								out.println("</h4>");
+								out.println("</div>");
+								out.println("</div>");
+							}
+						%>
 
-					<div class="price-range">
-						<!--price-range-->
-						<h2>Price Range</h2>
-						<div class="well text-center">
-							<input type="text" class="span2" value="" data-slider-min="0"
-								data-slider-max="600" data-slider-step="5"
-								data-slider-value="[250,450]" id="sl2"><br /> <b
-								class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
-						</div>
 					</div>
-					<!--/price-range-->
 
-					<div class="shipping text-center">
-						<!--shipping-->
-						<img src="images/home/shipping.jpg" alt="" />
+					<h2>Producer</h2>
+					<div class="panel-group category-products" id="accordian">
+						<!--category-productsr-->
+
+						<%
+							ArrayList<String> producers = DBManager.getInstance().getItemDAO().findAllProducers();
+							for (String producer : producers) {
+
+								out.println("<div class=\"panel panel-default\">");
+								out.println("<div class=\"panel-heading\">");
+								out.println("<h4 class=\"panel-title\">");
+								out.print("<a href=\"search?producer=" + producer + "&from=index.jsp\">" + producer + "</a>");
+								out.println("</h4>");
+								out.println("</div>");
+								out.println("</div>");
+							}
+						%>
+
 					</div>
-					<!--/shipping-->
+
+					<!--/category-productsr-->
 
 				</div>
 			</div>
@@ -427,591 +312,188 @@
 			<div class="col-sm-9 padding-right">
 				<div class="features_items">
 					<!--features_items-->
-					<h2 class="title text-center">Features Items</h2>
-					<div class="col-sm-4">
-						<div class="product-image-wrapper">
-							<div class="single-products">
-								<div class="productinfo text-center">
-									<img src="images/home/product1.jpg" alt="" />
-									<h2>$56</h2>
-									<p>Easy Polo Black Edition</p>
-									<a href="#" class="btn btn-default add-to-cart"><i
-										class="fa fa-shopping-cart"></i>Add to cart</a>
-								</div>
-								<div class="product-overlay">
-									<div class="overlay-content">
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-								</div>
-							</div>
-							<div class="choose">
-								<ul class="nav nav-pills nav-justified">
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to wishlist</a></li>
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to compare</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="product-image-wrapper">
-							<div class="single-products">
-								<div class="productinfo text-center">
-									<img src="images/home/product2.jpg" alt="" />
-									<h2>$56</h2>
-									<p>Easy Polo Black Edition</p>
-									<a href="#" class="btn btn-default add-to-cart"><i
-										class="fa fa-shopping-cart"></i>Add to cart</a>
-								</div>
-								<div class="product-overlay">
-									<div class="overlay-content">
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-								</div>
-							</div>
-							<div class="choose">
-								<ul class="nav nav-pills nav-justified">
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to wishlist</a></li>
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to compare</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="product-image-wrapper">
-							<div class="single-products">
-								<div class="productinfo text-center">
-									<img src="images/home/product3.jpg" alt="" />
-									<h2>$56</h2>
-									<p>Easy Polo Black Edition</p>
-									<a href="#" class="btn btn-default add-to-cart"><i
-										class="fa fa-shopping-cart"></i>Add to cart</a>
-								</div>
-								<div class="product-overlay">
-									<div class="overlay-content">
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-								</div>
-							</div>
-							<div class="choose">
-								<ul class="nav nav-pills nav-justified">
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to wishlist</a></li>
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to compare</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="product-image-wrapper">
-							<div class="single-products">
-								<div class="productinfo text-center">
-									<img src="images/home/product4.jpg" alt="" />
-									<h2>$56</h2>
-									<p>Easy Polo Black Edition</p>
-									<a href="#" class="btn btn-default add-to-cart"><i
-										class="fa fa-shopping-cart"></i>Add to cart</a>
-								</div>
-								<div class="product-overlay">
-									<div class="overlay-content">
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-								</div>
-								<img src="images/home/new.png" class="new" alt="" />
-							</div>
-							<div class="choose">
-								<ul class="nav nav-pills nav-justified">
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to wishlist</a></li>
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to compare</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="product-image-wrapper">
-							<div class="single-products">
-								<div class="productinfo text-center">
-									<img src="images/home/product5.jpg" alt="" />
-									<h2>$56</h2>
-									<p>Easy Polo Black Edition</p>
-									<a href="#" class="btn btn-default add-to-cart"><i
-										class="fa fa-shopping-cart"></i>Add to cart</a>
-								</div>
-								<div class="product-overlay">
-									<div class="overlay-content">
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-								</div>
-								<img src="images/home/sale.png" class="new" alt="" />
-							</div>
-							<div class="choose">
-								<ul class="nav nav-pills nav-justified">
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to wishlist</a></li>
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to compare</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<div class="col-sm-4">
-						<div class="product-image-wrapper">
-							<div class="single-products">
-								<div class="productinfo text-center">
-									<img src="images/home/product6.jpg" alt="" />
-									<h2>$56</h2>
-									<p>Easy Polo Black Edition</p>
-									<a href="#" class="btn btn-default add-to-cart"><i
-										class="fa fa-shopping-cart"></i>Add to cart</a>
-								</div>
-								<div class="product-overlay">
-									<div class="overlay-content">
-										<h2>$56</h2>
-										<p>Easy Polo Black Edition</p>
-										<a href="#" class="btn btn-default add-to-cart"><i
-											class="fa fa-shopping-cart"></i>Add to cart</a>
-									</div>
-								</div>
-							</div>
-							<div class="choose">
-								<ul class="nav nav-pills nav-justified">
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to wishlist</a></li>
-									<li><a href="#"><i class="fa fa-plus-square"></i>Add
-											to compare</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
+					<h2 class="title text-center">In sell</h2>
+					<%
+						ArrayList<CompleteItem> inSell = DBManager.getInstance().getItemDAO().findSomeItems(10);
+
+						if (!inSell.isEmpty()) {
+
+							for (CompleteItem item : inSell) {
+								if (item.getItem().getTimeToLive().getTime() > currentDate) {
+									out.print("<div class=\"col-sm-4\">");
+									out.print("<div class=\"product-image-wrapper\">");
+									out.print("<div class=\"single-products\">");
+									out.print("<div class=\"productinfo text-center\">");
+									out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
+
+									if (item.getItem().getPrice() > item.getItem().getLastBid()) {
+										out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									} else {
+										out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+									}
+
+									out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals("")) {
+										if (item.getItem().isBuy_now()) {
+											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756)
+													+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+										} else if (item.getItem().isBid()) {
+											out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756)
+													+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
+										}
+									} else {
+										out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
+										out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
+									}
+
+									out.print("</div>");
+									out.print("<div class=\"product-overlay\">");
+									out.print("<div class=\"overlay-content\">");
+									out.print("<p>" + item.getItem().getDescription() + "</p>");
+
+									if (item.getItem().getPrice() > item.getItem().getLastBid()) {
+										out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+									} else {
+										out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+									}
+
+									if (request.getSession().getAttribute("email") != null
+											&& !request.getSession().getAttribute("email").equals("")) {
+										if (item.getItem().isBuy_now()) {
+											out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756)
+													+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+										} else if (item.getItem().isBid()) {
+											out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756)
+													+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+											out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
+										}
+									} else {
+										out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
+										out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
+									}
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+									out.print("</div>");
+								}
+							}
+						} else {
+							out.print("<div class=\"text-center\"> No items found :( </div>");
+						}
+					%>
 
 				</div>
 				<!--features_items-->
 
-				<div class="category-tab">
-					<!--category-tab-->
-					<div class="col-sm-12">
-						<ul class="nav nav-tabs">
-							<li class="active"><a href="#tshirt" data-toggle="tab">T-Shirt</a></li>
-							<li><a href="#blazers" data-toggle="tab">Blazers</a></li>
-							<li><a href="#sunglass" data-toggle="tab">Sunglass</a></li>
-							<li><a href="#kids" data-toggle="tab">Kids</a></li>
-							<li><a href="#poloshirt" data-toggle="tab">Polo shirt</a></li>
-						</ul>
-					</div>
-					<div class="tab-content">
-						<div class="tab-pane fade active in" id="tshirt">
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery1.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery2.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery3.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery4.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="tab-pane fade" id="blazers">
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery4.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery3.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery2.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery1.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="tab-pane fade" id="sunglass">
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery3.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery4.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery1.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery2.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="tab-pane fade" id="kids">
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery1.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery2.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery3.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery4.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="tab-pane fade" id="poloshirt">
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery2.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery4.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery3.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-3">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="images/home/gallery1.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-												class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!--/category-tab-->
 
 				<div class="recommended_items">
 					<!--recommended_items-->
 					<h2 class="title text-center">recommended items</h2>
-
 					<div id="recommended-item-carousel" class="carousel slide"
 						data-ride="carousel">
 						<div class="carousel-inner">
 							<div class="item active">
-								<div class="col-sm-4">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="images/home/recommend1.jpg" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
+								<%
+									ArrayList<CompleteItem> completeItems = DBManager.getInstance().getItemDAO().findSomeItems(6);
+									int firstSlideEnd = completeItems.size() / 2;
+									int secondSlideEnd = completeItems.size();
 
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="images/home/recommend2.jpg" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
+									if (!completeItems.isEmpty()) {
 
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="images/home/recommend3.jpg" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
+										for (int i = 0; i < firstSlideEnd; i++) {
+											CompleteItem item = completeItems.get(i);
+											if (item.getItem().getTimeToLive().getTime() > currentDate) {
+												out.println("<div class=\"col-sm-4\">");
+												out.println("<div class=\"product-image-wrapper\">");
+												out.println("<div class=\"single-products\">");
+												out.println("<div class=\"productinfo text-center\">");
+												out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
 
-										</div>
-									</div>
-								</div>
+												if (item.getItem().getPrice() > item.getItem().getLastBid()) {
+													out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												} else {
+													out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+												}
+
+												out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
+
+												if (request.getSession().getAttribute("email") != null
+														&& !request.getSession().getAttribute("email").equals("")) {
+													if (item.getItem().isBuy_now()) {
+														out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756)
+																+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+														out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+													} else if (item.getItem().isBid()) {
+														out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756)
+																+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+														out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
+													}
+												} else {
+													out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
+													out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
+												}
+
+												out.print("</div>");
+
+												out.print("</div>");
+												out.print("</div>");
+												out.print("</div>");
+											}
+										}
+									}
+								%>
 							</div>
 							<div class="item">
-								<div class="col-sm-4">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="images/home/recommend1.jpg" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
+								<%
+									if (!completeItems.isEmpty()) {
+										for (int i = firstSlideEnd; i < secondSlideEnd; i++) {
+											CompleteItem item = completeItems.get(i);
+											if (item.getItem().getTimeToLive().getTime() > currentDate) {
+												out.println("<div class=\"col-sm-4\">");
+												out.println("<div class=\"product-image-wrapper\">");
+												out.println("<div class=\"single-products\">");
+												out.println("<div class=\"productinfo text-center\">");
+												out.print("<img src=\"" + item.getPaths().getPath(0) + "\" alt=\"\" />");
 
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="images/home/recommend2.jpg" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
+												if (item.getItem().getPrice() > item.getItem().getLastBid()) {
+													out.print("<h2>&euro;" + item.getItem().getPrice() + "</h2>");
+												} else {
+													out.print("<h2>&euro;" + item.getItem().getLastBid() + "</h2>");
+												}
 
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-4">
-									<div class="product-image-wrapper">
-										<div class="single-products">
-											<div class="productinfo text-center">
-												<img src="images/home/recommend3.jpg" alt="" />
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-											</div>
+												out.print("<p>" + item.getItem().getProducer() + " " + item.getItem().getModel() + "</p>");
 
-										</div>
-									</div>
-								</div>
+												if (request.getSession().getAttribute("email") != null
+														&& !request.getSession().getAttribute("email").equals("")) {
+													if (item.getItem().isBuy_now()) {
+														out.print("<a href=\"addToCart?id=" + (item.getItem().getId() + 1029384756)
+																+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+														out.print("<i class=\"fa fa-shopping-cart\"></i>Add to cart</a>");
+													} else if (item.getItem().isBid()) {
+														out.print("<a href=\"makeBid?id=" + (item.getItem().getId() + 1029384756)
+																+ "&from=index.jsp\" class=\"btn btn-default add-to-cart\">");
+														out.print("<i class=\"fa fa-gavel\"></i>Make your bid</a>");
+													}
+												} else {
+													out.print("<a href=\"login.jsp\" class=\"btn btn-default add-to-cart\">");
+													out.print("<i class=\"fa fa-shopping-cart\"></i>Login first</a>");
+												}
+
+												out.print("</div>");
+
+												out.print("</div>");
+												out.print("</div>");
+												out.print("</div>");
+											}
+										}
+									}
+								%>
 							</div>
 						</div>
 						<a class="left recommended-item-control"

@@ -14,12 +14,12 @@ public class AddToCart extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		System.out.println("search value is: " + request.getParameter("search"));
+		String referer = request.getParameter("from");
 		if (request.getParameter("id") != null && !request.getParameter("id").equals("")) {
 			System.out.println("get if");
 			doPost(request, response);
 		} else {
-			System.out.println("get else");
-			request.getRequestDispatcher("search.jsp").forward(request, response);
+			request.getRequestDispatcher(referer).forward(request, response);
 		}
 	}
 
@@ -27,12 +27,12 @@ public class AddToCart extends HttpServlet {
 			throws ServletException, IOException {
 
 		String addToCart = request.getParameter("id");
+		String referer = request.getParameter("from");
 
 		DBManager.getInstance().getUserDAO().addToCart((String) request.getSession().getAttribute("email"),
 				(Integer.valueOf(addToCart) - 1029384756));
 		request.setAttribute("search", request.getParameter("search"));
-		request.getRequestDispatcher("search.jsp").forward(request, response);
-		System.out.println("aggiunt - add to cart do post");
+		request.getRequestDispatcher(referer).forward(request, response);
 
 	}
 
